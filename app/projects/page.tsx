@@ -49,22 +49,58 @@ export default function Projects() {
 
   const getStackIcon = (stack: string) => {
     const icons: { [key: string]: string } = {
+      // Programming languages
       react: "⚛️",
       typescript: "🔷",
       javascript: "🟨",
       python: "🐍",
       cpp: "⚙️",
+      java: "☕",
+      rust: "🦀",
+      ruby: "💎",
+
+      // Frameworks / Libraries / Tools
       node: "🟢",
       vite: "⚡",
+      next: "⏭️",
+      tailwind: "🌊",
       supabase: "⚡",
       juce: "🎵",
-      tailwind: "🌊",
-      next: "⏭️",
       howler: "🎵",
+
+      // Music / Audio
+      music: "🎵",
+      piano: "🎹",
+      guitar: "🎸",
+      drum: "🥁",
+      synth: "🎛️",
+      vocal: "🎤",
+      audio: "🔊",
+
+      // AI / ML / Robotics
+      ai: "🤖",
+      ml: "🤖",
+      bot: "🤖",
+      neural: "🧠",
+      automation: "⚙️",
+
+      // Databases
+      sql: "💾",
+      mongodb: "🍃",
+      postgres: "🐘",
+      redis: "🧩",
+
+      // Misc / Fun
+      docker: "🐳",
+      npm: "📦",
+      api: "🔗",
+      cloud: "☁️",
+      game: "🎮",
+      default: "🔧"
     };
 
+
     const lowerStack = stack.toLowerCase();
-    // Return first matching icon where key is included in the stack string
     for (const key in icons) {
       if (lowerStack.includes(key)) return icons[key];
     }
@@ -77,7 +113,7 @@ export default function Projects() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-brand to-brand-dark mb-6">
-            <Code2 size={32} className="text-slate-900" />
+            <Code2 size={32} className="text-white" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Projects</h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">

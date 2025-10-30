@@ -36,9 +36,9 @@ body {
 /* === Textured, circular animated background === */
 .bg-animated-dark {
   @apply relative; /* in case you want to layer elements */
-  background: radial-gradient(circle at center, rgb(15, 28, 42), #0a0a0a 80%);
+  background: radial-gradient(circle at center, rgb(15, 26, 48), #0a0a0a 80%);
   background-size: 250% 250%;
-  animation: subtle-radial 20s ease-in-out infinite;
+  animation: subtle-radial 60s ease-in-out infinite;
 }
 
 /* Optional subtle texture overlay using noise */
