@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 export default function ProjectsPage() {
   const [repos, setRepos] = useState<GithubRepo[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadRepos = async () => {
@@ -17,6 +18,8 @@ export default function ProjectsPage() {
         setRepos(data);
       } catch (err) {
         console.error("Error fetching GitHub repos:", err);
+      } finally {
+        setLoading(false);
       }
     };
     loadRepos();
@@ -53,7 +56,7 @@ export default function ProjectsPage() {
         </div>
 
         {/* Category Filter */}
-        {repos.length > 0 && (
+        {repos.length > 0 && !loading && (
           <CategoryFilter
             categories={categories}
             selected={selectedCategory}
@@ -62,16 +65,10 @@ export default function ProjectsPage() {
         )}
 
         {/* Repo Grid */}
-        {filteredRepos.length > 0 ? (
-          <RepoGrid repos={filteredRepos} />
-        ) : (
-          <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
-            <Code2 size={48} className="text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-400 mb-6">
-              Repositories will appear here once your GitHub account has public projects.
-            </p>
-          </div>
-        )}
+        <RepoGrid
+          repos={filteredRepos}
+          loading={loading}
+        />
 
         {/* GitHub Link */}
         <div className="mt-16 text-center">

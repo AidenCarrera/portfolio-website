@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 
 export default function Home() {
   const router = useRouter();
+  const speed = 0.8; // base multiplier, tweak this to speed up or slow down all fades
 
   const socialLinks = [
     { icon: Github, url: "https://github.com/aidencarrera", label: "GitHub", color: "hover:text-purple-400" },
@@ -35,7 +36,7 @@ export default function Home() {
             className="relative inline-block"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            transition={{ duration: 1 * speed, ease: "easeOut" }}
           >
             <div className="w-32 h-32 rounded-full bg-linear-to-br from-brand to-brand-dark mx-auto mb-6 flex items-center justify-center text-white shadow-lg">
               <Music size={48} strokeWidth={2} />
@@ -48,7 +49,7 @@ export default function Home() {
             className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight"
             initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+            transition={{ duration: 1 * speed, delay: 0.2 * speed, ease: "easeOut" }}
           >
             Musician. Producer.
             <br />
@@ -62,7 +63,7 @@ export default function Home() {
             className="text-xl sm:text-2xl text-slate-300 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
+            transition={{ duration: 1 * speed, delay: 0.4 * speed, ease: "easeOut" }}
           >
             Creating immersive music and innovative applications.
           </motion.p>
@@ -72,7 +73,7 @@ export default function Home() {
             className="flex flex-wrap justify-center gap-4 pt-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.6 }}
+            transition={{ duration: 1 * speed, delay: 0.6 * speed }}
           >
             {socialLinks.map((link) => (
               <a
@@ -104,7 +105,7 @@ export default function Home() {
           className="mt-24 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.8, ease: "easeOut" }}
+          transition={{ duration: 1.2 * speed, delay: 0.8 * speed, ease: "easeOut" }}
         >
           {/* About Me */}
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700 hover:border-brand/50 transition-all">
@@ -127,7 +128,7 @@ export default function Home() {
             className="space-y-4"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1 }}
+            transition={{ duration: 1 * speed, delay: 1 * speed }}
           >
             <button
               onClick={() => handleNavigate("projects")}
