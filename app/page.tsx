@@ -1,25 +1,26 @@
 "use client";
 
-import { Github, Linkedin, Music, Instagram, Youtube, Mail, ArrowRight } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { Github, Linkedin, Music, Instagram, Youtube, Mail, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const router = useRouter();
 
   const socialLinks = [
-    { icon: Github, url: 'https://github.com/aidencarrera', label: 'GitHub', color: 'hover:text-purple-400' },
-    { icon: Linkedin, url: 'https://linkedin.com/in/aiden-carrera', label: 'LinkedIn', color: 'hover:text-blue-400' },
-    { icon: Music, url: 'https://open.spotify.com/artist/1LgE8yhi5cPt1uBQPzaRAe', label: 'Spotify', color: 'hover:text-green-400' },
-    { icon: Instagram, url: 'https://instagram.com/aiden.carrera', label: 'Instagram', color: 'hover:text-pink-400' },
-    { icon: Youtube, url: 'https://youtube.com/@aidencarrera', label: 'YouTube', color: 'hover:text-red-400' },
+    { icon: Github, url: "https://github.com/aidencarrera", label: "GitHub", color: "hover:text-purple-400" },
+    { icon: Linkedin, url: "https://linkedin.com/in/aiden-carrera", label: "LinkedIn", color: "hover:text-blue-400" },
+    { icon: Music, url: "https://open.spotify.com/artist/1LgE8yhi5cPt1uBQPzaRAe", label: "Spotify", color: "hover:text-green-400" },
+    { icon: Instagram, url: "https://instagram.com/aiden.carrera", label: "Instagram", color: "hover:text-pink-400" },
+    { icon: Youtube, url: "https://youtube.com/@aidencarrera", label: "YouTube", color: "hover:text-red-400" },
   ];
 
   const handleNavigate = (page: string) => {
     const paths: Record<string, string> = {
-      projects: '/projects',
-      music: '/music',
-      contact: '/contact',
+      projects: "/projects",
+      music: "/music",
+      contact: "/contact",
     };
     router.push(paths[page]);
   };
@@ -27,35 +28,59 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 bg-animated-dark">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-        <div className="text-center space-y-8 animate-fade-in">
-          <div className="relative inline-block">
-            <div className="w-32 h-32 rounded-full bg-linear-to-br from-brand to-brand-dark mx-auto mb-6 flex items-center justify-center text-white">
+        {/* === HERO SECTION === */}
+        <div className="text-center space-y-8">
+          {/* Icon */}
+          <motion.div
+            className="relative inline-block"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+          >
+            <div className="w-32 h-32 rounded-full bg-linear-to-br from-brand to-brand-dark mx-auto mb-6 flex items-center justify-center text-white shadow-lg">
               <Music size={48} strokeWidth={2} />
             </div>
             <div className="absolute inset-0 rounded-full bg-brand/20 blur-xl animate-pulse"></div>
-          </div>
+          </motion.div>
 
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight">
+          {/* Title */}
+          <motion.h1
+            className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight"
+            initial={{ opacity: 0, y: -40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+          >
             Musician. Producer.
             <br />
             <span className="text-transparent bg-clip-text bg-linear-to-r from-brand to-brand-dark">
               Developer.
             </span>
-          </h1>
+          </motion.h1>
 
-          <p className="text-xl sm:text-2xl text-slate-300 max-w-3xl mx-auto">
+          {/* Subtitle */}
+          <motion.p
+            className="text-xl sm:text-2xl text-slate-300 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
+          >
             Creating immersive music and innovative applications.
-          </p>
+          </motion.p>
 
           {/* Social Icons */}
-          <div className="flex flex-wrap justify-center gap-4 pt-6">
+          <motion.div
+            className="flex flex-wrap justify-center gap-4 pt-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.6 }}
+          >
             {socialLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-brand transition-all hover:scale-110`}
+                className="p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-brand transition-all hover:scale-110"
                 aria-label={link.label}
               >
                 <link.icon
@@ -64,7 +89,6 @@ export default function Home() {
                 />
               </a>
             ))}
-            {/* Mail icon → contact page */}
             <Link
               href="/contact"
               className="p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-brand transition-all hover:scale-110"
@@ -72,10 +96,17 @@ export default function Home() {
             >
               <Mail size={24} className="text-slate-300 hover:text-brand transition-colors duration-300 ease-in-out" />
             </Link>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="mt-24 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        {/* === CONTENT SECTION === */}
+        <motion.div
+          className="mt-24 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 0.8, ease: "easeOut" }}
+        >
+          {/* About Me */}
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700 hover:border-brand/50 transition-all">
             <h2 className="text-2xl font-bold text-white mb-4">About Me</h2>
             <div className="text-slate-300 space-y-3 leading-relaxed">
@@ -91,9 +122,15 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="space-y-4">
+          {/* Buttons */}
+          <motion.div
+            className="space-y-4"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
             <button
-              onClick={() => handleNavigate('projects')}
+              onClick={() => handleNavigate("projects")}
               className="w-full bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark text-white font-semibold py-4 px-6 rounded-xl transition-all hover:scale-105 flex items-center justify-between group"
             >
               <span className="text-lg">View Projects</span>
@@ -101,7 +138,7 @@ export default function Home() {
             </button>
 
             <button
-              onClick={() => handleNavigate('music')}
+              onClick={() => handleNavigate("music")}
               className="w-full bg-slate-800/50 hover:bg-slate-700 text-white font-semibold py-4 px-6 rounded-xl border border-slate-700 hover:border-brand transition-all hover:scale-105 flex items-center justify-between group"
             >
               <span className="text-lg">Explore My Music</span>
@@ -109,14 +146,14 @@ export default function Home() {
             </button>
 
             <button
-              onClick={() => handleNavigate('contact')}
+              onClick={() => handleNavigate("contact")}
               className="w-full bg-slate-800/50 hover:bg-slate-700 text-white font-semibold py-4 px-6 rounded-xl border border-slate-700 hover:border-brand transition-all hover:scale-105 flex items-center justify-between group"
             >
               <span className="text-lg">Get In Touch</span>
               <ArrowRight className="group-hover:translate-x-1 transition-transform" />
             </button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

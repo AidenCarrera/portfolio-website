@@ -16,7 +16,20 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Aiden Carrera Portfolio",
-  description: "Musician & Developer Portfolio",
+  description: "Developer & Musician Portfolio",
+  openGraph: {
+    title: "Aiden Carrera | Developer & Musician",
+    description: "Portfolio showcasing software, music, and creative tech projects.",
+    url: "",
+    siteName: "Aiden Carrera",
+    images: [
+      { url: "/og-image.png", width: 1200, height: 630, alt: "Aiden Carrera Portfolio" },
+    ],
+    type: "website",
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
