@@ -2,17 +2,17 @@
 
 import { Github, Linkedin, Music, Instagram, Youtube, Mail, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Home() {
   const router = useRouter();
 
   const socialLinks = [
-    { icon: Github, url: 'https://github.com/aidencarrera', label: 'GitHub' },
-    { icon: Linkedin, url: 'https://linkedin.com/in/aidencarrera', label: 'LinkedIn' },
-    { icon: Music, url: 'https://open.spotify.com/artist/aidencarrera', label: 'Spotify' },
-    { icon: Instagram, url: 'https://instagram.com/aidencarrera', label: 'Instagram' },
-    { icon: Youtube, url: 'https://youtube.com/@aidencarrera', label: 'YouTube' },
-    { icon: Mail, url: 'mailto:aiden@example.com', label: 'Email' },
+    { icon: Github, url: 'https://github.com/aidencarrera', label: 'GitHub', color: 'hover:text-purple-400' },
+    { icon: Linkedin, url: 'https://linkedin.com/in/aiden-carrera', label: 'LinkedIn', color: 'hover:text-blue-400' },
+    { icon: Music, url: 'https://open.spotify.com/artist/1LgE8yhi5cPt1uBQPzaRAe', label: 'Spotify', color: 'hover:text-green-400' },
+    { icon: Instagram, url: 'https://instagram.com/aiden.carrera', label: 'Instagram', color: 'hover:text-pink-400' },
+    { icon: Youtube, url: 'https://youtube.com/@aidencarrera', label: 'YouTube', color: 'hover:text-red-400' },
   ];
 
   const handleNavigate = (page: string) => {
@@ -47,6 +47,7 @@ export default function Home() {
             Creating immersive music and innovative applications.
           </p>
 
+          {/* Social Icons */}
           <div className="flex flex-wrap justify-center gap-4 pt-6">
             {socialLinks.map((link) => (
               <a
@@ -54,12 +55,23 @@ export default function Home() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-brand transition-all hover:scale-110"
+                className={`p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-brand transition-all hover:scale-110`}
                 aria-label={link.label}
               >
-                <link.icon size={24} className="text-slate-300 hover:text-brand transition-colors" />
+                <link.icon
+                  size={24}
+                  className={`text-slate-300 transition-colors duration-300 ease-in-out ${link.color}`}
+                />
               </a>
             ))}
+            {/* Mail icon → contact page */}
+            <Link
+              href="/contact"
+              className="p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-brand transition-all hover:scale-110"
+              aria-label="Contact"
+            >
+              <Mail size={24} className="text-slate-300 hover:text-brand transition-colors duration-300 ease-in-out" />
+            </Link>
           </div>
         </div>
 
@@ -81,7 +93,7 @@ export default function Home() {
 
           <div className="space-y-4">
             <button
-              onClick={() => handleNavigate('music')}
+              onClick={() => handleNavigate('projects')}
               className="w-full bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark text-white font-semibold py-4 px-6 rounded-xl transition-all hover:scale-105 flex items-center justify-between group"
             >
               <span className="text-lg">View Projects</span>
