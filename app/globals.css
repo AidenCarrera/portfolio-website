@@ -1,18 +1,50 @@
+/* Keep your existing imports and theme */
 @import "tailwindcss";
 
 @theme {
   /* === Brand Colors === */
-  --color-brand: #00ffcc;       /* new teal */
-  --color-brand-dark: #00b399;  /* darker teal for hover/active states */
-  --color-brand-light: #66ffe6; /* lighter teal for gradients/highlights */
+  --color-brand: #00ffcc;         
+  --color-brand-dark: #00b399;    
+  --color-brand-darker: #009977;  
+  --color-brand-light: #66ffe6;   
 
   /* === Base Theme Variables === */
-  --color-background: #0a0a0a;  /* keeping dark background */
-  --color-foreground: #ededed;  /* text color */
+  --color-background: #0a0a0a;    
+  --color-foreground: #ededed;    
   --font-sans: var(--font-geist-sans, system-ui, sans-serif);
   --font-mono: var(--font-geist-mono, monospace);
 }
 
 body {
   @apply bg-background text-foreground font-sans;
+}
+
+/* === Subtle Animated Dark Gradient === */
+@keyframes subtle-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 50% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* === Keyframes for circular gradient movement === */
+@keyframes subtle-radial {
+  0% { background-position: 50% 50%; }
+  50% { background-position: 52% 48%; }
+  100% { background-position: 50% 50%; }
+}
+
+/* === Textured, circular animated background === */
+.bg-animated-dark {
+  @apply relative; /* in case you want to layer elements */
+  background: radial-gradient(circle at center, rgb(15, 26, 48), #0a0a0a 80%);
+  background-size: 250% 250%;
+  animation: subtle-radial 60s ease-in-out infinite;
+}
+
+/* Optional subtle texture overlay using noise */
+.bg-animated-dark::after {
+  content: '';
+  @apply absolute inset-0 pointer-events-none;
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAD1BMVEUAAAD///+ZmZmZmZn///9WVlZc8VJrAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==');
+  opacity: 0.05; /* very subtle noise */
 }

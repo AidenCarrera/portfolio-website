@@ -25,20 +25,20 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 bg-animated-dark">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
         <div className="text-center space-y-8 animate-fade-in">
           <div className="relative inline-block">
-            <div className="w-32 h-32 rounded-full bg-linear-to-br from-amber-400 to-orange-500 mx-auto mb-6 flex items-center justify-center text-white">
+            <div className="w-32 h-32 rounded-full bg-linear-to-br from-brand to-brand-dark mx-auto mb-6 flex items-center justify-center text-white">
               <Music size={48} strokeWidth={2} />
             </div>
-            <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-xl animate-pulse"></div>
+            <div className="absolute inset-0 rounded-full bg-brand/20 blur-xl animate-pulse"></div>
           </div>
 
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight">
             Musician. Producer.
             <br />
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-amber-400 to-orange-500">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand to-brand-dark">
               Developer.
             </span>
           </h1>
@@ -54,17 +54,17 @@ export default function Home() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-amber-400 transition-all hover:scale-110"
+                className="p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-brand transition-all hover:scale-110"
                 aria-label={link.label}
               >
-                <link.icon size={24} className="text-slate-300 hover:text-amber-400 transition-colors" />
+                <link.icon size={24} className="text-slate-300 hover:text-brand transition-colors" />
               </a>
             ))}
           </div>
         </div>
 
         <div className="mt-24 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700 hover:border-amber-400/50 transition-all">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700 hover:border-brand/50 transition-all">
             <h2 className="text-2xl font-bold text-white mb-4">About Me</h2>
             <div className="text-slate-300 space-y-3 leading-relaxed">
               <p>
@@ -82,7 +82,7 @@ export default function Home() {
           <div className="space-y-4">
             <button
               onClick={() => handleNavigate('music')}
-              className="w-full bg-linear-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-semibold py-4 px-6 rounded-xl transition-all hover:scale-105 flex items-center justify-between group"
+              className="w-full bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark text-white font-semibold py-4 px-6 rounded-xl transition-all hover:scale-105 flex items-center justify-between group"
             >
               <span className="text-lg">View Projects</span>
               <ArrowRight className="group-hover:translate-x-1 transition-transform" />
@@ -90,7 +90,7 @@ export default function Home() {
 
             <button
               onClick={() => handleNavigate('music')}
-              className="w-full bg-slate-800/50 hover:bg-slate-700 text-white font-semibold py-4 px-6 rounded-xl border border-slate-700 hover:border-amber-400 transition-all hover:scale-105 flex items-center justify-between group"
+              className="w-full bg-slate-800/50 hover:bg-slate-700 text-white font-semibold py-4 px-6 rounded-xl border border-slate-700 hover:border-brand transition-all hover:scale-105 flex items-center justify-between group"
             >
               <span className="text-lg">Explore My Music</span>
               <ArrowRight className="group-hover:translate-x-1 transition-transform" />
@@ -98,7 +98,7 @@ export default function Home() {
 
             <button
               onClick={() => handleNavigate('contact')}
-              className="w-full bg-slate-800/50 hover:bg-slate-700 text-white font-semibold py-4 px-6 rounded-xl border border-slate-700 hover:border-amber-400 transition-all hover:scale-105 flex items-center justify-between group"
+              className="w-full bg-slate-800/50 hover:bg-slate-700 text-white font-semibold py-4 px-6 rounded-xl border border-slate-700 hover:border-brand transition-all hover:scale-105 flex items-center justify-between group"
             >
               <span className="text-lg">Get In Touch</span>
               <ArrowRight className="group-hover:translate-x-1 transition-transform" />

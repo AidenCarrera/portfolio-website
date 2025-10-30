@@ -30,7 +30,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
         <div className="flex justify-between items-center h-16">
           <button
             onClick={() => handleNavClick("/")}
-            className="text-xl font-bold text-white hover:text-amber-400 transition-colors"
+            className="text-xl font-bold text-white hover:text-brand transition-colors"
           >
             Aiden Carrera
           </button>
@@ -42,7 +42,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
                 onClick={() => handleNavClick(item.path)}
                 className={`text-sm font-medium transition-colors ${
                   currentPage === item.id
-                    ? "text-amber-400"
+                    ? "text-brand"
                     : "text-slate-300 hover:text-white"
                 }`}
               >
@@ -69,7 +69,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
                 onClick={() => handleNavClick(item.path)}
                 className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${
                   currentPage === item.id
-                    ? "text-amber-400 bg-slate-700"
+                    ? "text-brand bg-slate-700"
                     : "text-slate-300 hover:text-white hover:bg-slate-700"
                 }`}
               >
