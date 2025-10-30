@@ -60,7 +60,7 @@ export default function Contact() {
     <div className="min-h-screen bg-slate-900 pt-24 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-amber-400 to-orange-500 mb-6">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-brand to-brand-dark mb-6">
             <Mail size={32} className="text-slate-900" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Get In Touch</h1>
@@ -85,7 +85,7 @@ export default function Contact() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
-                    className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
                     placeholder="Your name"
                   />
                 </div>
@@ -100,7 +100,7 @@ export default function Contact() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
-                    className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -115,7 +115,7 @@ export default function Contact() {
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     required
                     rows={5}
-                    className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition-all resize-none"
+                    className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all resize-none"
                     placeholder="Tell me about your project or idea..."
                   />
                 </div>
@@ -123,7 +123,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-linear-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center space-x-2"
+                  className="w-full bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center space-x-2"
                 >
                   {isSubmitting ? (
                     <span>Sending...</span>
@@ -157,7 +157,7 @@ export default function Contact() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 rounded-lg bg-slate-700/50 border border-slate-600">
                   <div className="flex items-center space-x-3">
-                    <Mail className="text-amber-400" size={20} />
+                    <Mail className="text-brand" size={20} />
                     <span className="text-slate-300 font-mono text-sm">{email}</span>
                   </div>
                   <button
@@ -192,7 +192,7 @@ export default function Contact() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`flex items-center space-x-4 p-4 rounded-lg bg-slate-700/50 border border-slate-600 hover:border-amber-400/50 transition-all group ${link.color}`}
+                    className={`flex items-center space-x-4 p-4 rounded-lg bg-slate-700/50 border border-slate-600 hover:border-brand/50 transition-all group ${link.color}`}
                   >
                     <link.icon size={24} className="text-slate-400 group-hover:text-current transition-colors" />
                     <span className="text-slate-300 group-hover:text-white transition-colors font-medium">

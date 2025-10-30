@@ -39,7 +39,7 @@ export default function Music() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-amber-400 to-orange-500 mb-6">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-brand to-brand-dark mb-6">
             <MusicIcon size={32} className="text-slate-900" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Music</h1>
@@ -51,7 +51,7 @@ export default function Music() {
         {/* Released Tracks */}
         <section className="mb-20">
           <div className="flex items-center space-x-3 mb-8">
-            <Disc3 className="text-amber-400" size={28} />
+            <Disc3 className="text-brand" size={28} />
             <h2 className="text-3xl font-bold text-white">Released Music</h2>
           </div>
           {tracks.length > 0 ? (
@@ -59,7 +59,7 @@ export default function Music() {
               {tracks.map((track) => (
                 <div
                   key={track.id}
-                  className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 hover:border-amber-400/50 transition-all"
+                  className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 hover:border-brand/50 transition-all"
                 >
                   <iframe
                     src={track.spotify_embed_url}
@@ -84,7 +84,7 @@ export default function Music() {
         {/* Upcoming Snippets */}
         <section className="mb-20">
           <div className="flex items-center space-x-3 mb-8">
-            <MusicIcon className="text-amber-400" size={28} />
+            <MusicIcon className="text-brand" size={28} />
             <h2 className="text-3xl font-bold text-white">Upcoming Snippets</h2>
           </div>
           <p className="text-slate-400 mb-6">
@@ -114,7 +114,7 @@ export default function Music() {
         {/* Gear */}
         <section>
           <div className="flex items-center space-x-3 mb-8">
-            <Wrench className="text-amber-400" size={28} />
+            <Wrench className="text-brand" size={28} />
             <h2 className="text-3xl font-bold text-white">Gear & Software</h2>
           </div>
 
@@ -141,7 +141,7 @@ export default function Music() {
               {filteredGear.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 hover:border-amber-400/50 transition-all group"
+                  className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 hover:border-brand/50 transition-all group"
                 >
                   {item.image_url ? (
                     <div className="w-full h-40 relative mb-4">
@@ -158,7 +158,7 @@ export default function Music() {
                     </div>
                   )}
 
-                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-amber-400 transition-colors">
+                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-brand transition-colors">
                     {item.name}
                   </h3>
                   <span className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-slate-700 text-slate-300 mb-2">
