@@ -27,7 +27,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 bg-animated-dark">
+    <div className="min-h-screen bg-linear-to-br bg-animated-dark">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
         {/* === HERO SECTION === */}
         <div className="text-center space-y-8">

@@ -35,16 +35,9 @@ body {
 
 /* === Textured, circular animated background === */
 .bg-animated-dark {
-  @apply relative; /* in case you want to layer elements */
+  position: relative; /* ensures pseudo-element positions relative to this container */
   background: radial-gradient(circle at center, rgb(15, 26, 48), #0a0a0a 80%);
   background-size: 250% 250%;
   animation: subtle-radial 60s ease-in-out infinite;
-}
-
-/* Optional subtle texture overlay using noise */
-.bg-animated-dark::after {
-  content: '';
-  @apply absolute inset-0 pointer-events-none;
-  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAD1BMVEUAAAD///+ZmZmZmZn///9WVlZc8VJrAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==');
-  opacity: 0.05; /* very subtle noise */
+  z-index: 0; /* ensures this layer is behind content */
 }
