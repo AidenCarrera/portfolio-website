@@ -26,7 +26,7 @@ interface TrackResponse {
 
 export async function GET() {
   try {
-    // 1️⃣ Get access token
+    // Get access token
     const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
@@ -47,7 +47,7 @@ export async function GET() {
     const tokenData = await tokenRes.json();
     const accessToken = tokenData.access_token as string;
 
-    // 2️⃣ Fetch albums & singles
+    // Fetch albums & singles
     const albumsRes = await fetch(
       `https://api.spotify.com/v1/artists/${ARTIST_ID}/albums?include_groups=album,single&market=US&limit=50`,
       {
@@ -61,7 +61,7 @@ export async function GET() {
 
     const albumsData: { items: SpotifyAlbum[] } = await albumsRes.json();
 
-    // 3️⃣ Fetch tracks for each album
+    // Fetch tracks for each album
     const trackPromises = albumsData.items.map(async (album) => {
       const tracksRes = await fetch(
         `https://api.spotify.com/v1/albums/${album.id}/tracks?market=US`,

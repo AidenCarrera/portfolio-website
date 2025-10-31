@@ -41,7 +41,7 @@ export default function Music() {
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Music</h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Explore my released tracks from Spotify, upcoming snippets, and the gear that brings it all to life.
+            Explore my released tracks from Spotify, upcoming snippets, and the gear behind them. I write, produce, mix, and master all of my music myself.
           </p>
         </div>
 
