@@ -1,35 +1,44 @@
 "use client";
 
-import { Send } from 'lucide-react';
-import { FormEvent, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { Send } from "lucide-react";
+import { FormEvent, useState } from "react";
 
 export default function ContactFormCard() {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus('idle');
+    setSubmitStatus("idle");
 
     try {
-      const { error } = await supabase.from('contact_submissions').insert([
-        {
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-        },
-      ]);
+      // Call the secure API route that uses the service role key
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          message: formData.message.trim(),
+        }),
+      });
 
-      if (error) throw error;
+      const data = await res.json();
 
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', message: '' });
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setSubmitStatus('error');
+      if (!res.ok) {
+        console.error("API Error:", data.error || "Unknown error");
+        setSubmitStatus("error");
+        return;
+      }
+
+      console.log("Form submitted successfully:", data);
+      setSubmitStatus("success");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (err) {
+      console.error("Network or unexpected error:", err);
+      setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
     }
@@ -101,13 +110,13 @@ export default function ContactFormCard() {
             )}
           </button>
 
-          {submitStatus === 'success' && (
+          {submitStatus === "success" && (
             <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/50 text-green-400 text-sm">
               Thanks for reaching out! I&apos;ll get back to you soon.
             </div>
           )}
 
-          {submitStatus === 'error' && (
+          {submitStatus === "error" && (
             <div className="p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm">
               Oops! Something went wrong. Please try again or email me directly.
             </div>

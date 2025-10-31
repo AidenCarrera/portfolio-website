@@ -6,6 +6,7 @@ export interface Project {
   github_url?: string;
   demo_url?: string;
   category?: string;
+  created_at?: string;
 }
 
 export interface MusicTrack {
@@ -14,6 +15,7 @@ export interface MusicTrack {
   spotify_embed_url?: string;
   caption?: string;
   release_date?: string;
+  created_at?: string;
 }
 
 export interface MusicSnippet {
@@ -23,6 +25,7 @@ export interface MusicSnippet {
   caption?: string;
   gear_used?: string;
   status?: string;
+  created_at?: string;
 }
 
 export interface GearItem {
@@ -31,6 +34,7 @@ export interface GearItem {
   category: string;
   image_url?: string;
   description?: string;
+  created_at?: string;
 }
 
 export interface ContactSubmission {
@@ -38,4 +42,5 @@ export interface ContactSubmission {
   name: string;
   email: string;
   message: string;
+  created_at?: string;
 }
