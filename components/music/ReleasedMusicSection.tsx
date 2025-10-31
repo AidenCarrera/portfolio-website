@@ -44,7 +44,7 @@ export default function ReleasedMusicSection({ tracks: initialTracks }: Released
 
       {loading && (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
-          <MusicIcon size={48} className="text-slate-600 mx-auto mb-4 animate-spin" />
+          <Disc3 size={48} className="text-slate-600 mx-auto mb-4 animate-spin" />
           <p className="text-slate-400">Loading tracks...</p>
         </div>
       )}

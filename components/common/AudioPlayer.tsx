@@ -64,7 +64,7 @@ export default function AudioPlayer({ src, title }: AudioPlayerProps) {
   };
 
   return (
-    <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700 flex flex-col space-y-2">
+    <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700 flex flex-col space-y-2 select-none">
       {title && (
         <>
           <h3 className="text-white font-semibold">{title}</h3>
@@ -82,18 +82,18 @@ export default function AudioPlayer({ src, title }: AudioPlayerProps) {
           value={progress}
           onChange={handleScrub}
           styles={{
-            track: { backgroundColor: "#1db954" },
-            handle: { borderColor: "#1db954", width: 12, height: 12 },
+            track: { backgroundColor: "#fff" },
+            handle: { borderColor: "#fff", width: 12, height: 12, boxShadow: "none" },
             rail: { backgroundColor: "#555" },
           }}
-          className="flex-1"
+          className="flex-1 cursor-pointer [&_.rc-slider-handle]:!cursor-pointer [&_.rc-slider-handle-dragging]:!cursor-pointer"
         />
         <span className="text-sm text-slate-300 w-12 text-right">
           {Math.floor(progress / 60)}:{("0" + Math.floor(progress % 60)).slice(-2)}
         </span>
         <button
           onClick={togglePlay}
-          className="bg-brand-dark hover:bg-brand text-white p-2 rounded-full"
+          className="bg-brand-dark hover:bg-brand text-white p-2 rounded-full transition-colors"
         >
           {isPlaying ? <Pause size={20} /> : <Play size={20} />}
         </button>
@@ -109,11 +109,11 @@ export default function AudioPlayer({ src, title }: AudioPlayerProps) {
           value={volume}
           onChange={handleVolumeChange}
           styles={{
-            track: { backgroundColor: "#1db954" },
-            handle: { borderColor: "#1db954", width: 10, height: 10 },
+            track: { backgroundColor: "#fff" },
+            handle: { borderColor: "#fff", width: 10, height: 10, boxShadow: "none" },
             rail: { backgroundColor: "#555" },
           }}
-          className="flex-1"
+          className="flex-1 cursor-pointer [&_.rc-slider-handle]:!cursor-pointer [&_.rc-slider-handle-dragging]:!cursor-pointer"
         />
       </div>
     </div>
