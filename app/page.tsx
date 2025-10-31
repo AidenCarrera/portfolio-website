@@ -138,6 +138,16 @@ export default function Home() {
               <ArrowRight className="group-hover:translate-x-1 transition-transform" />
             </button>
 
+            {/* Resume Download Button */}
+            <a
+              href="/Aiden_Carrera_Resume.pdf"
+              download
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-4 px-6 rounded-xl transition-all hover:scale-105 flex items-center justify-between group border border-blue-700 hover:border-blue-500"
+            >
+              <span className="text-lg">Download Resume</span>
+              <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+            </a>
+            
             <button
               onClick={() => handleNavigate("music")}
               className="w-full bg-slate-800/50 hover:bg-slate-700 text-white font-semibold py-4 px-6 rounded-xl border border-slate-700 hover:border-brand transition-all hover:scale-105 flex items-center justify-between group"
