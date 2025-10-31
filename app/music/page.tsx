@@ -1,7 +1,7 @@
 "use client";
 
 import { Music as MusicIcon, Disc3, Wrench } from "lucide-react";
-import AudioPlayer from "@/components/AudioPlayer";
+import AudioPlayer from "@/components/common/AudioPlayer";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { MusicTrack, MusicSnippet, GearItem } from "@/types";

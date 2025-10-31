@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Code2, Github, ExternalLink } from "lucide-react";
-import { RepoGrid, CategoryFilter, Navigation } from "@/components";
+import { RepoGrid, CategoryFilter, Navigation } from "@/components/common";
 import { GithubRepo, fetchGithubRepos } from "@/lib/github";
 import { cn } from "@/lib/utils";
 
