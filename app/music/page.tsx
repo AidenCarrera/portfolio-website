@@ -15,16 +15,19 @@ export default function Music() {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch("/api/spotify-tracks");
-      const spotifyTracks = await res.json();
+      // Fetch Spotify tracks
+      const spotifyRes = await fetch("/api/spotify-tracks");
+      const spotifyTracks = await spotifyRes.json();
       setTracks(spotifyTracks);
 
-      const [snippetsResult, gearResult] = await Promise.all([
-        supabase.from("music_snippets").select("*").order("created_at", { ascending: false }),
-        supabase.from("gear_items").select("*").order("name"),
-      ]);
-      if (snippetsResult.data) setSnippets(snippetsResult.data);
-      if (gearResult.data) setGear(gearResult.data);
+      // Fetch snippets via API
+      const snippetsRes = await fetch("/api/snippets");
+      const snippetsData: MusicSnippet[] = await snippetsRes.json();
+      setSnippets(snippetsData);
+
+      // Fetch gear directly (optional: could also make an API for gear)
+      const { data: gearData } = await supabase.from("gear_items").select("*").order("name");
+      if (gearData) setGear(gearData);
     })();
   }, []);
 
