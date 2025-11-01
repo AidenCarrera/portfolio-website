@@ -24,7 +24,7 @@ export default function Footer() {
                 className={`text-slate-400 transition-colors duration-300 ease-in-out ${link.color}`}
                 aria-label={link.label}
               >
-                <link.icon size={20} />
+                <link.icon size={24} />
               </a>
             ))}
             {/* Mail icon goes to contact page */}
@@ -33,7 +33,7 @@ export default function Footer() {
               className="text-slate-400 hover:text-brand transition-colors duration-300 ease-in-out"
               aria-label="Contact"
             >
-              <Mail size={20} />
+              <Mail size={24} />
             </Link>
           </div>
           <p className="text-slate-500 text-sm">
