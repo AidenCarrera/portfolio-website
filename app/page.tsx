@@ -2,7 +2,6 @@
 
 import { Music } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { motion } from "framer-motion";
 
 export default function Home() {
