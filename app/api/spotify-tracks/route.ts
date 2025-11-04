@@ -1,6 +1,7 @@
 "use server";
 
 import { NextResponse } from "next/server";
+import { redis } from "@/lib/redis"; // Upstash REST Redis client
 
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID!;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET!;
@@ -24,40 +25,45 @@ interface TrackResponse {
   release_date: string;
 }
 
+async function getSpotifyAccessToken(): Promise<string> {
+  const cachedToken = await redis.get("spotify_access_token");
+  if (cachedToken) return cachedToken as string;
+
+  const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      Authorization:
+        "Basic " +
+        Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString(
+          "base64"
+        ),
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({ grant_type: "client_credentials" }),
+  });
+
+  if (!tokenRes.ok) throw new Error("Failed to fetch Spotify access token");
+
+  const tokenData = await tokenRes.json();
+  const accessToken = tokenData.access_token as string;
+
+  // Cache token for 55 minutes
+  await redis.set("spotify_access_token", accessToken, { ex: 55 * 60 });
+
+  return accessToken;
+}
+
 export async function GET() {
   try {
-    // Get access token
-    const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
-      headers: {
-        Authorization:
-          "Basic " +
-          Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString(
-            "base64"
-          ),
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({ grant_type: "client_credentials" }),
-    });
-
-    if (!tokenRes.ok) {
-      throw new Error("Failed to fetch Spotify access token");
-    }
-
-    const tokenData = await tokenRes.json();
-    const accessToken = tokenData.access_token as string;
+    const accessToken = await getSpotifyAccessToken();
 
     // Fetch albums & singles
     const albumsRes = await fetch(
       `https://api.spotify.com/v1/artists/${ARTIST_ID}/albums?include_groups=album,single&market=US&limit=50`,
-      {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      }
+      { headers: { Authorization: `Bearer ${accessToken}` } }
     );
 
-    if (!albumsRes.ok) {
-      throw new Error("Failed to fetch albums from Spotify");
-    }
+    if (!albumsRes.ok) throw new Error("Failed to fetch albums from Spotify");
 
     const albumsData: { items: SpotifyAlbum[] } = await albumsRes.json();
 
@@ -68,9 +74,8 @@ export async function GET() {
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
-      if (!tracksRes.ok) {
+      if (!tracksRes.ok)
         throw new Error(`Failed to fetch tracks for album ${album.name}`);
-      }
 
       const tracksData: { items: SpotifyTrack[] } = await tracksRes.json();
 
@@ -87,6 +92,9 @@ export async function GET() {
     return NextResponse.json(allTracks);
   } catch (err) {
     console.error("Spotify API Error:", err);
-    return NextResponse.json({ error: "Failed to fetch Spotify tracks" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch Spotify tracks" },
+      { status: 500 }
+    );
   }
 }
