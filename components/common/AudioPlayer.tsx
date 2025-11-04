@@ -86,7 +86,7 @@ export default function AudioPlayer({ src, title }: AudioPlayerProps) {
             handle: { borderColor: "#fff", width: 12, height: 12, boxShadow: "none" },
             rail: { backgroundColor: "#555" },
           }}
-          className="flex-1 cursor-pointer [&_.rc-slider-handle]:!cursor-pointer [&_.rc-slider-handle-dragging]:!cursor-pointer"
+          className="flex-1 cursor-pointer [&_.rc-slider-handle]:cursor-pointer! [&_.rc-slider-handle-dragging]:cursor-pointer!"
         />
         <span className="text-sm text-slate-300 w-12 text-right">
           {Math.floor(progress / 60)}:{("0" + Math.floor(progress % 60)).slice(-2)}
@@ -113,7 +113,7 @@ export default function AudioPlayer({ src, title }: AudioPlayerProps) {
             handle: { borderColor: "#fff", width: 10, height: 10, boxShadow: "none" },
             rail: { backgroundColor: "#555" },
           }}
-          className="flex-1 cursor-pointer [&_.rc-slider-handle]:!cursor-pointer [&_.rc-slider-handle-dragging]:!cursor-pointer"
+          className="flex-1 cursor-pointer [&_.rc-slider-handle]:cursor-pointer! [&_.rc-slider-handle-dragging]:cursor-pointer!"
         />
       </div>
     </div>
