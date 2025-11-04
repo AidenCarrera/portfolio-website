@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Code2, Github, ExternalLink } from "lucide-react";
 import { RepoGrid, CategoryFilter, Navigation } from "@/components/common";
-import { GithubRepo, fetchGithubRepos } from "@/lib/github";
+import { GithubRepo } from "@/lib/github";
 import { cn } from "@/lib/utils";
 
 export default function ProjectsPage() {
@@ -12,22 +12,24 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadRepos = async () => {
+    const fetchRepos = async () => {
       try {
-        const data = await fetchGithubRepos("aidencarrera");
+        const res = await fetch("/api/github-repos");
+        const data: GithubRepo[] = await res.json();
         setRepos(data);
       } catch (err) {
-        console.error("Error fetching GitHub repos:", err);
+        console.error("Failed to fetch repos:", err);
       } finally {
         setLoading(false);
       }
     };
-    loadRepos();
+
+    fetchRepos();
   }, []);
 
   const categories = [
     "all",
-    ...new Set(repos.flatMap((r) => r.topics.map((t) => t.toLowerCase())))
+    ...Array.from(new Set(repos.flatMap((r) => r.topics.map((t) => t.toLowerCase())))),
   ];
 
   const filteredRepos =
@@ -51,7 +53,7 @@ export default function ProjectsPage() {
             Projects
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            My GitHub repositories: software projects, music tech experiments, and creative tools.
+            My GitHub repositories: software projects, AI experiments, interactive web apps, audio tools, and games — including projects I&apos;ve collaborated on.
           </p>
         </div>
 
@@ -65,10 +67,7 @@ export default function ProjectsPage() {
         )}
 
         {/* Repo Grid */}
-        <RepoGrid
-          repos={filteredRepos}
-          loading={loading}
-        />
+        <RepoGrid repos={filteredRepos} loading={loading} />
 
         {/* GitHub Link */}
         <div className="mt-16 text-center">

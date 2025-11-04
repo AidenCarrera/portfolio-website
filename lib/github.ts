@@ -7,6 +7,8 @@ export interface GithubRepo {
   html_url: string;
   homepage: string | null;
   topics: string[];
+  owner: string;       // GitHub username of the owner
+  isCollab: boolean;   // explicitly mark if it's a contributed repo
 }
 
 /**
@@ -35,6 +37,8 @@ export async function fetchGithubRepos(username: string): Promise<GithubRepo[]> 
         html_url: repo.html_url,
         homepage: repo.homepage,
         topics: repo.topics || [],
+        owner: repo.owner?.login ?? username, // set owner
+        isCollab: repo.owner?.login !== username, // mark as contributed repo
       }));
   } catch (err) {
     console.error("Error fetching GitHub repos:", err);
