@@ -2,7 +2,6 @@
 
 import { Music as MusicIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { MusicTrack, MusicSnippet, GearItem } from "@/types";
 import ReleasedMusicSection from "@/components/music/ReleasedMusicSection";
 import UpcomingSnippetsSection from "@/components/music/UpcomingSnippetsSection";
@@ -15,19 +14,24 @@ export default function Music() {
 
   useEffect(() => {
     (async () => {
-      // Fetch Spotify tracks
-      const spotifyRes = await fetch("/api/spotify-tracks");
-      const spotifyTracks = await spotifyRes.json();
-      setTracks(spotifyTracks);
+      try {
+        // Fetch Spotify tracks
+        const spotifyRes = await fetch("/api/spotify-tracks");
+        const spotifyTracks = await spotifyRes.json();
+        setTracks(spotifyTracks);
 
-      // Fetch snippets via API
-      const snippetsRes = await fetch("/api/snippets");
-      const snippetsData: MusicSnippet[] = await snippetsRes.json();
-      setSnippets(snippetsData);
+        // Fetch snippets via API
+        const snippetsRes = await fetch("/api/snippets");
+        const snippetsData: MusicSnippet[] = await snippetsRes.json();
+        setSnippets(snippetsData);
 
-      // Fetch gear directly (optional: could also make an API for gear)
-      const { data: gearData } = await supabase.from("gear_items").select("*").order("name");
-      if (gearData) setGear(gearData);
+        // Fetch gear via server API instead of direct Supabase call
+        const gearRes = await fetch("/api/gear");
+        const gearData: GearItem[] = await gearRes.json();
+        setGear(gearData);
+      } catch (err) {
+        console.error("Failed to fetch music data:", err);
+      }
     })();
   }, []);
 
