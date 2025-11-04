@@ -14,7 +14,7 @@ interface GraphQLRepoNode {
   name: string;
   description?: string | null;
   url: string;
-  homepage?: string | null;
+  homepageUrl?: string | null; // changed from homepage → homepageUrl
   owner: GraphQLOwner;
   repositoryTopics: { nodes: GraphQLTopicNode[] };
   collaborators?: { totalCount: number };
@@ -46,6 +46,7 @@ export async function GET() {
             name
             description
             url
+            homepageUrl   # added this line
             owner { login }
             repositoryTopics(first: 10) { nodes { topic { name } } }
             collaborators(first: 10) { totalCount }
@@ -57,6 +58,7 @@ export async function GET() {
             name
             description
             url
+            homepageUrl   # added this line
             owner { login }
             repositoryTopics(first: 10) { nodes { topic { name } } }
             collaborators(first: 10) { totalCount }
@@ -88,26 +90,22 @@ export async function GET() {
       return NextResponse.json({ data: [] });
     }
 
-    // Helper to convert GraphQL nodes to GithubRepo
     const convertNodeToRepo = (r: GraphQLRepoNode, isContributed: boolean): GithubRepo => ({
-        id: r.id ?? Math.floor(Math.random() * 1_000_000),
-        name: r.name,
-        description: r.description ?? "",
-        html_url: r.url,
-        homepage: r.homepage ?? null,
-        topics: r.repositoryTopics.nodes.map((t) => t.topic.name),
-        owner: r.owner.login,
-        // Mark as collab if it's a contributed repo OR has multiple collaborators
-        isCollab: isContributed || ((r.collaborators?.totalCount ?? 1) > 1),
+      id: r.id ?? Math.floor(Math.random() * 1_000_000),
+      name: r.name,
+      description: r.description ?? "",
+      html_url: r.url,
+      homepage: r.homepageUrl ?? null, // now correctly uses homepageUrl
+      topics: r.repositoryTopics.nodes.map((t) => t.topic.name),
+      owner: r.owner.login,
+      isCollab: isContributed || ((r.collaborators?.totalCount ?? 1) > 1),
     });
-
 
     const ownedRepos = userData.user.repositories.nodes.map((r) => convertNodeToRepo(r, false));
     const contributedRepos = userData.user.repositoriesContributedTo.nodes.map((r) =>
-        convertNodeToRepo(r, true)
+      convertNodeToRepo(r, true)
     );
 
-    // Combine and deduplicate by html_url
     const allRepos = [...ownedRepos, ...contributedRepos];
     const uniqueRepos = Array.from(new Map(allRepos.map((r) => [r.html_url, r])).values());
 
