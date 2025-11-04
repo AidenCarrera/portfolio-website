@@ -11,26 +11,35 @@ export default function Music() {
   const [tracks, setTracks] = useState<MusicTrack[]>([]);
   const [snippets, setSnippets] = useState<MusicSnippet[]>([]);
   const [gear, setGear] = useState<GearItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
+      setError(null); // Clear any previous errors
       try {
-        // Fetch Spotify tracks
-        const spotifyRes = await fetch("/api/spotify-tracks");
-        const spotifyTracks = await spotifyRes.json();
+        // Fetch all data in parallel
+        const [spotifyRes, snippetsRes, gearRes] = await Promise.all([
+          fetch("/api/spotify-tracks"),
+          fetch("/api/snippets"),
+          fetch("/api/gear"),
+        ]);
+
+        if (!spotifyRes.ok || !snippetsRes.ok || !gearRes.ok) {
+          throw new Error("One or more API requests failed");
+        }
+
+        const [spotifyTracks, snippetsData, gearData] = await Promise.all([
+          spotifyRes.json(),
+          snippetsRes.json(),
+          gearRes.json(),
+        ]);
+
         setTracks(spotifyTracks);
-
-        // Fetch snippets via API
-        const snippetsRes = await fetch("/api/snippets");
-        const snippetsData: MusicSnippet[] = await snippetsRes.json();
         setSnippets(snippetsData);
-
-        // Fetch gear via server API instead of direct Supabase call
-        const gearRes = await fetch("/api/gear");
-        const gearData: GearItem[] = await gearRes.json();
         setGear(gearData);
       } catch (err) {
         console.error("Failed to fetch music data:", err);
+        setError((err as Error).message ?? "Failed to load music data");
       }
     })();
   }, []);
@@ -48,6 +57,22 @@ export default function Music() {
             Explore my released tracks from Spotify, upcoming snippets, and the gear behind them. I write, produce, mix, and master all of my music myself.
           </p>
         </div>
+
+        {error && (
+          <div className="mb-8 relative bg-red-900/50 border border-red-500 rounded-lg p-4">
+            <div className="flex items-start">
+              <div className="flex-1 text-sm text-red-200">
+                {error}
+              </div>
+              <button 
+                onClick={() => setError(null)}
+                className="ml-4 text-red-200 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
 
         <ReleasedMusicSection tracks={tracks} />
         <UpcomingSnippetsSection snippets={snippets} />

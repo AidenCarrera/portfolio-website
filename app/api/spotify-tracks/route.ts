@@ -27,8 +27,9 @@ interface TrackResponse {
 
 async function getSpotifyAccessToken(): Promise<string> {
   const cachedToken = await redis.get("spotify_access_token");
-  if (cachedToken) return cachedToken as string;
-
+  if (cachedToken && typeof cachedToken === "string") {
+    return cachedToken;
+  }
   const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
@@ -43,12 +44,23 @@ async function getSpotifyAccessToken(): Promise<string> {
   });
 
   if (!tokenRes.ok) throw new Error("Failed to fetch Spotify access token");
-
   const tokenData = await tokenRes.json();
-  const accessToken = tokenData.access_token as string;
+  
+  if (!tokenData?.access_token || typeof tokenData.access_token !== "string") {
+    throw new Error("Invalid token response from Spotify");
+  }
+  
+  const accessToken = tokenData.access_token;
 
   // Cache token for 55 minutes
-  await redis.set("spotify_access_token", accessToken, { ex: 55 * 60 });
+  try {
+    await redis.set("spotify_access_token", accessToken, { ex: 55 * 60 });
+  } catch (redisErr) {
+    // Log but don't fail - token is still valid for this request
+    console.warn("Failed to cache Spotify token:", redisErr);
+  }
+
+  return accessToken;  await redis.set("spotify_access_token", accessToken, { ex: 55 * 60 });
 
   return accessToken;
 }

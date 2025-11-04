@@ -42,22 +42,27 @@ export async function POST(req: NextRequest) {
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
     const key = `contact_rate:${ip}`;
 
-    // Increment counter in Redis
-    const submissions = await redis.incr(key);
+    try {
+      // Increment counter in Redis
+      const submissions = await redis.incr(key);
 
-    // Set TTL if first submission
-    if (submissions === 1) {
-      await redis.expire(key, WINDOW_SECONDS);
+      // Set TTL if first submission
+      if (submissions === 1) {
+        await redis.expire(key, WINDOW_SECONDS);
+      }
+
+      // Check limit
+      if (submissions > MAX_SUBMISSIONS_PER_WINDOW) {
+        return NextResponse.json(
+          { error: "Too many submissions. Please wait before trying again." },
+          { status: 429 }
+        );
+      }
+    } catch (redisError) {
+      console.error("Redis error:", redisError);
+      // Optionally: allow request to proceed in degraded mode
+      // or return: NextResponse.json({ error: "Rate limiting unavailable." }, { status: 503 });
     }
-
-    // Check limit
-    if (submissions > MAX_SUBMISSIONS_PER_WINDOW) {
-      return NextResponse.json(
-        { error: "Too many submissions. Please wait before trying again." },
-        { status: 429 }
-      );
-    }
-
     // Duplicate submission check
     const { data: existing, error: selectError } = await supabase
       .from("contact_submissions")
@@ -88,7 +93,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Database write error." }, { status: 500 });
     }
 
-    console.log("Contact form submitted:", { name, email });
+    console.log("Contact form submitted successfully");
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Unexpected API error:", err);
