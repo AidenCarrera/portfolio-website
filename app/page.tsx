@@ -72,13 +72,13 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-white mb-4">About Me</h2>
             <div className="text-slate-300 space-y-3 leading-relaxed">
               <p>
-                Prospective OSU Honors College graduate in Computer Science. I like to combine software engineering and audio programming.
+                Prospective OSU Honors College graduate in Computer Science with interests in software engineering, audio programming, and music technologies.
               </p>
               <p>
-                Experienced with C++, Java, Python, and web development. I enjoy building projects that are primarily interactive including piano apps and C++ audio plugins.
+                Experienced with C++, Java, Python, TypeScript, JUCE, and web development. I build interactive projects, including piano apps and C++ audio plugins.
               </p>
               <p>
-                Beyond coding, I actively perform as a musician in musical ensembles, create original music, and play in the OSU Jazz Band.
+                Outside of coding, I&apos;m an active musician who performs in the OSU Jazz Band, Resistance Indoor Percussion, and other ensembles. I compose, produce, and release original music.
               </p>
             </div>
           </div>

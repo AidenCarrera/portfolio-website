@@ -15,7 +15,7 @@ export default function Contact() {
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Get In Touch</h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Have a project in mind or want to collaborate? Let&apos;s connect and create something amazing together.
+            Have a project in mind or want to collaborate? Let&apos;s connect!
           </p>
         </div>
 
