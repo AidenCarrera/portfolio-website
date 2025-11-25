@@ -2,7 +2,6 @@
 
 import { Music as MusicIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { MusicTrack, MusicSnippet, GearItem } from "@/types";
 import ReleasedMusicSection from "@/components/music/ReleasedMusicSection";
 import UpcomingSnippetsSection from "@/components/music/UpcomingSnippetsSection";
@@ -12,22 +11,36 @@ export default function Music() {
   const [tracks, setTracks] = useState<MusicTrack[]>([]);
   const [snippets, setSnippets] = useState<MusicSnippet[]>([]);
   const [gear, setGear] = useState<GearItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
-      // Fetch Spotify tracks
-      const spotifyRes = await fetch("/api/spotify-tracks");
-      const spotifyTracks = await spotifyRes.json();
-      setTracks(spotifyTracks);
+      setError(null); // Clear any previous errors
+      try {
+        // Fetch all data in parallel
+        const [spotifyRes, snippetsRes, gearRes] = await Promise.all([
+          fetch("/api/spotify-tracks"),
+          fetch("/api/snippets"),
+          fetch("/api/gear"),
+        ]);
 
-      // Fetch snippets via API
-      const snippetsRes = await fetch("/api/snippets");
-      const snippetsData: MusicSnippet[] = await snippetsRes.json();
-      setSnippets(snippetsData);
+        if (!spotifyRes.ok || !snippetsRes.ok || !gearRes.ok) {
+          throw new Error("One or more API requests failed");
+        }
 
-      // Fetch gear directly (optional: could also make an API for gear)
-      const { data: gearData } = await supabase.from("gear_items").select("*").order("name");
-      if (gearData) setGear(gearData);
+        const [spotifyTracks, snippetsData, gearData] = await Promise.all([
+          spotifyRes.json(),
+          snippetsRes.json(),
+          gearRes.json(),
+        ]);
+
+        setTracks(spotifyTracks);
+        setSnippets(snippetsData);
+        setGear(gearData);
+      } catch (err) {
+        console.error("Failed to fetch music data:", err);
+        setError((err as Error).message ?? "Failed to load music data");
+      }
     })();
   }, []);
 
@@ -44,6 +57,22 @@ export default function Music() {
             Explore my released tracks from Spotify, upcoming snippets, and the gear behind them. I write, produce, mix, and master all of my music myself.
           </p>
         </div>
+
+        {error && (
+          <div className="mb-8 relative bg-red-900/50 border border-red-500 rounded-lg p-4">
+            <div className="flex items-start">
+              <div className="flex-1 text-sm text-red-200">
+                {error}
+              </div>
+              <button 
+                onClick={() => setError(null)}
+                className="ml-4 text-red-200 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
 
         <ReleasedMusicSection tracks={tracks} />
         <UpcomingSnippetsSection snippets={snippets} />
