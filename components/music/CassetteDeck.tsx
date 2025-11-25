@@ -11,7 +11,7 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [volume, setVolume] = useState(1.0);
+    const [volume, setVolume] = useState(0.8);
     const [isDraggingVolume, setIsDraggingVolume] = useState(false);
     const [dragStartY, setDragStartY] = useState(0);
     const [dragStartVolume, setDragStartVolume] = useState(0);
@@ -188,7 +188,7 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                                             {activeSnippet.title}
                                         </span>
                                     </div>
-                                    <div className="absolute bottom-0 left-0 w-full h-2 bg-brand/80" />
+                                    <div className="absolute bottom-0 left-0 w-full h-3 bg-brand/80" />
                                 </div>
 
                                 {/* Tape Window Area - The Trapezoid Shape */}
@@ -233,7 +233,7 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                     </div>
 
                     {/* Controls Area */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-end">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
                         {/* LCD Display */}
                         <div className="bg-slate-800 rounded-lg p-4 border border-slate-600 shadow-inner font-mono relative overflow-hidden">
                             <div className="flex justify-between items-center text-brand mb-2">
@@ -257,7 +257,7 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                         </div>
 
                         {/* Buttons & Volume */}
-                        <div className="flex justify-end items-center space-x-6">
+                        <div className="flex justify-end items-end space-x-6">
                             {/* Volume Knob */}
                             <div className="flex flex-col items-center mr-4">
                                 <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest mb-1">Vol</div>
@@ -274,7 +274,7 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                                                 className="absolute w-0.5 h-1.5 bg-slate-600 origin-bottom"
                                                 style={{
                                                     transform: `rotate(${angle}deg) translateY(-18px)`,
-                                                    opacity: i / 10
+                                                    opacity: 0.3 + (i / 10) * 0.7
                                                 }}
                                             />
                                         );

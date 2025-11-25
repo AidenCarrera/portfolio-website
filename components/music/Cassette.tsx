@@ -11,11 +11,12 @@ export default function Cassette({ snippet, isSelected, onClick }: CassetteProps
     return (
         <motion.button
             onClick={onClick}
-            whileHover={{ scale: 1.02, rotate: 1 }}
+            whileHover={{ scale: 1.02, rotate: 1, transition: { duration: 0.1, ease: "easeOut" } }}
             whileTap={{ scale: 0.98 }}
-            className={`relative w-full aspect-[1.6] rounded-lg overflow-hidden transition-all duration-300 group ${isSelected
-                    ? "ring-4 ring-brand shadow-[0_0_30px_rgba(51,230,204,0.3)] opacity-50 grayscale"
-                    : "hover:shadow-xl hover:shadow-brand/10"
+            transition={{ duration: 0.1, ease: "easeOut" }}
+            className={`relative w-full aspect-[1.6] rounded-lg overflow-hidden transition-all duration-75 group ${isSelected
+                ? "ring-4 ring-brand shadow-[0_0_30px_rgba(51,230,204,0.3)] opacity-50 grayscale"
+                : "hover:shadow-xl hover:shadow-brand/5"
                 }`}
         >
             {/* Cassette Body - Dark Slate Plastic */}
@@ -32,7 +33,7 @@ export default function Cassette({ snippet, isSelected, onClick }: CassetteProps
                 {/* Label Area - Brand Color Accent */}
                 <div className="flex-1 bg-slate-200 rounded mx-1 relative overflow-hidden shadow-sm border border-slate-300">
                     {/* Header Stripe */}
-                    <div className="absolute top-0 left-0 w-full h-3 bg-brand" />
+                    <div className="absolute top-0 left-0 w-full h-2 bg-brand" />
 
                     {/* Title */}
                     <div className="h-full flex items-center justify-center pt-2">

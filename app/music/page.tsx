@@ -71,8 +71,8 @@ export default function Music() {
           </div>
         )}
 
-        <ReleasedMusicSection tracks={tracks} />
         <UpcomingSnippetsSection snippets={snippets} />
+        <ReleasedMusicSection tracks={tracks} />
         <GearSection gear={gearData} />
       </div>
     </div>
