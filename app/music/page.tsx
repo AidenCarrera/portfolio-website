@@ -2,15 +2,15 @@
 
 import { Music as MusicIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { MusicTrack, MusicSnippet, GearItem } from "@/types";
+import { MusicTrack, MusicSnippet } from "@/types";
 import ReleasedMusicSection from "@/components/music/ReleasedMusicSection";
 import UpcomingSnippetsSection from "@/components/music/UpcomingSnippetsSection";
 import GearSection from "@/components/music/GearSection";
+import { gearData } from "@/lib/gearData";
 
 export default function Music() {
   const [tracks, setTracks] = useState<MusicTrack[]>([]);
   const [snippets, setSnippets] = useState<MusicSnippet[]>([]);
-  const [gear, setGear] = useState<GearItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,25 +18,22 @@ export default function Music() {
       setError(null); // Clear any previous errors
       try {
         // Fetch all data in parallel
-        const [spotifyRes, snippetsRes, gearRes] = await Promise.all([
+        const [spotifyRes, snippetsRes] = await Promise.all([
           fetch("/api/spotify-tracks"),
           fetch("/api/snippets"),
-          fetch("/api/gear"),
         ]);
 
-        if (!spotifyRes.ok || !snippetsRes.ok || !gearRes.ok) {
+        if (!spotifyRes.ok || !snippetsRes.ok) {
           throw new Error("One or more API requests failed");
         }
 
-        const [spotifyTracks, snippetsData, gearData] = await Promise.all([
+        const [spotifyTracks, snippetsData] = await Promise.all([
           spotifyRes.json(),
           snippetsRes.json(),
-          gearRes.json(),
         ]);
 
         setTracks(spotifyTracks);
         setSnippets(snippetsData);
-        setGear(gearData);
       } catch (err) {
         console.error("Failed to fetch music data:", err);
         setError((err as Error).message ?? "Failed to load music data");
@@ -64,7 +61,7 @@ export default function Music() {
               <div className="flex-1 text-sm text-red-200">
                 {error}
               </div>
-              <button 
+              <button
                 onClick={() => setError(null)}
                 className="ml-4 text-red-200 hover:text-white"
               >
@@ -76,7 +73,7 @@ export default function Music() {
 
         <ReleasedMusicSection tracks={tracks} />
         <UpcomingSnippetsSection snippets={snippets} />
-        <GearSection gear={gear} />
+        <GearSection gear={gearData} />
       </div>
     </div>
   );
