@@ -42,14 +42,13 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     if (activeSnippet && audioRef.current) {
       audioRef.current.src = activeSnippet.audio_url;
       audioRef.current.load();
-      audioRef.current.volume = volume;
     }
-  }, [activeSnippet, controls, volume]);
+  }, [activeSnippet, controls]);
 
   // Update volume when state changes
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = volume;
+      audioRef.current.volume = volume * 0.75;
     }
   }, [volume]);
 
