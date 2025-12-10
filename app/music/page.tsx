@@ -1,46 +1,13 @@
 "use client";
 
 import { Music as MusicIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { MusicTrack, MusicSnippet } from "@/types";
+
 import ReleasedMusicSection from "@/components/music/ReleasedMusicSection";
 import UpcomingSnippetsSection from "@/components/music/UpcomingSnippetsSection";
 import GearSection from "@/components/music/GearSection";
 import { gearData } from "@/lib/gearData";
 
 export default function Music() {
-  const [tracks, setTracks] = useState<MusicTrack[]>([]);
-  const [snippets, setSnippets] = useState<MusicSnippet[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      setError(null); // Clear any previous errors
-      try {
-        // Fetch all data in parallel
-        const [spotifyRes, snippetsRes] = await Promise.all([
-          fetch("/api/spotify-tracks"),
-          fetch("/api/snippets"),
-        ]);
-
-        if (!spotifyRes.ok || !snippetsRes.ok) {
-          throw new Error("One or more API requests failed");
-        }
-
-        const [spotifyTracks, snippetsData] = await Promise.all([
-          spotifyRes.json(),
-          snippetsRes.json(),
-        ]);
-
-        setTracks(spotifyTracks);
-        setSnippets(snippetsData);
-      } catch (err) {
-        console.error("Failed to fetch music data:", err);
-        setError((err as Error).message ?? "Failed to load music data");
-      }
-    })();
-  }, []);
-
   return (
     <div className="min-h-screen bg-slate-900 pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,22 +26,8 @@ export default function Music() {
           </p>
         </div>
 
-        {error && (
-          <div className="mb-8 relative bg-red-900/50 border border-red-500 rounded-lg p-4">
-            <div className="flex items-start">
-              <div className="flex-1 text-sm text-red-200">{error}</div>
-              <button
-                onClick={() => setError(null)}
-                className="ml-4 text-red-200 hover:text-white"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-        )}
-
-        <UpcomingSnippetsSection snippets={snippets} />
-        <ReleasedMusicSection tracks={tracks} />
+        <UpcomingSnippetsSection />
+        <ReleasedMusicSection />
         <GearSection gear={gearData} />
       </div>
     </div>

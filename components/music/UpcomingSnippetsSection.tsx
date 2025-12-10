@@ -7,7 +7,7 @@ import CassetteDeck from "./CassetteDeck";
 import Cassette from "./Cassette";
 
 interface Props {
-  snippets: MusicSnippet[];
+  snippets?: MusicSnippet[];
 }
 
 export default function UpcomingSnippetsSection({
@@ -16,12 +16,18 @@ export default function UpcomingSnippetsSection({
   const [snippets, setSnippets] = useState<MusicSnippet[]>(
     initialSnippets || []
   );
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSnippet, setActiveSnippet] = useState<MusicSnippet | null>(null);
 
   useEffect(() => {
-    if (!initialSnippets || initialSnippets.length === 0) {
+    // If props are provided, use them and stop loading
+    if (initialSnippets && initialSnippets.length > 0) {
+      setSnippets(initialSnippets);
+      setActiveSnippet((prev) => prev || initialSnippets[0]);
+      setLoading(false);
+    } else if (!initialSnippets) {
+      // Only fetch if props are undefined (not just empty array)
       const fetchSnippets = async () => {
         setLoading(true);
         setError(null);
@@ -43,10 +49,11 @@ export default function UpcomingSnippetsSection({
       };
 
       fetchSnippets();
-    } else if (initialSnippets.length > 0 && !activeSnippet) {
-      setActiveSnippet(initialSnippets[0]);
+    } else {
+      // Empty array passed as prop -> Stop loading, show empty state
+      setLoading(false);
     }
-  }, [initialSnippets, activeSnippet]);
+  }, [initialSnippets]);
 
   return (
     <section className="mb-24">

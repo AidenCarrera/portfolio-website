@@ -52,7 +52,6 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     }
   }, [volume]);
 
-  // Handle Play/Pause
   const togglePlay = useCallback(() => {
     if (!activeSnippet || !audioRef.current) return;
 
@@ -66,11 +65,9 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
         transition: { repeat: Infinity, duration: 1, ease: "linear" },
       });
     }
-    // We toggle state based on previous state to be safe, though simple !isPlaying works too if closure is fresh
     setIsPlaying((p) => !p);
   }, [activeSnippet, controls, isPlaying]);
 
-  // Handle Stop
   const stop = () => {
     if (!audioRef.current) return;
     audioRef.current.pause();
@@ -80,7 +77,6 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     controls.set({ rotate: 0 });
   };
 
-  // Update time
   const handleTimeUpdate = () => {
     if (audioRef.current && !isDraggingTime) {
       setCurrentTime(audioRef.current.currentTime);
@@ -164,7 +160,6 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
   }, [activeSnippet, togglePlay]);
 
   // Scrubbing Logic
-  // Scrubbing Logic
   const calculateTime = useCallback(
     (e: React.MouseEvent | MouseEvent) => {
       if (!progressBarRef.current || !duration) return 0;
@@ -196,8 +191,6 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
   const handleTimeMouseDown = (e: React.MouseEvent) => {
     if (!activeSnippet) return;
     setIsDraggingTime(true);
-    // On play, we just update visual, commit happens on up?
-    // UX: If I click, I expect jump. If I click-drag, I expect drag.
     // Standard approach: Visual jump on down, commit on up.
     handleSeek(e, false);
   };

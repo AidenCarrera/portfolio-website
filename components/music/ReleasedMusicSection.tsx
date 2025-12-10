@@ -1,22 +1,25 @@
 "use client";
 
-import { Disc3, Music as MusicIcon } from "lucide-react";
+import { Disc3 } from "lucide-react";
 import { MusicTrack } from "@/types";
 import { useState, useEffect } from "react";
 
 interface ReleasedMusicSectionProps {
-  tracks: MusicTrack[];
+  tracks?: MusicTrack[];
 }
 
 export default function ReleasedMusicSection({
   tracks: initialTracks,
 }: ReleasedMusicSectionProps) {
   const [tracks, setTracks] = useState<MusicTrack[]>(initialTracks || []);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!initialTracks || initialTracks.length === 0) {
+    if (initialTracks && initialTracks.length > 0) {
+      setTracks(initialTracks);
+      setLoading(false);
+    } else {
       const fetchTracks = async () => {
         setLoading(true);
         setError(null);
@@ -80,15 +83,6 @@ export default function ReleasedMusicSection({
               />
             </div>
           ))}
-        </div>
-      )}
-
-      {!loading && !error && tracks.length === 0 && (
-        <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
-          <MusicIcon size={48} className="text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400">
-            Released tracks coming soon. Stay tuned!
-          </p>
         </div>
       )}
     </section>
