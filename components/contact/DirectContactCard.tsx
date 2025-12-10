@@ -1,9 +1,9 @@
 "use client";
 
-import { Mail, Copy, Check } from 'lucide-react';
-import { useState } from 'react';
+import { Mail, Copy, Check } from "lucide-react";
+import { useState } from "react";
 
-const email = 'aiden.carrera05@gmail.com';
+const email = "aiden.carrera05@gmail.com";
 
 export default function DirectContactCard() {
   const [copied, setCopied] = useState(false);
@@ -27,7 +27,11 @@ export default function DirectContactCard() {
           onClick={copyEmail}
           className="p-2 rounded-lg hover:bg-slate-600 transition-colors"
         >
-          {copied ? <Check className="text-green-400" size={20} /> : <Copy className="text-slate-400" size={20} />}
+          {copied ? (
+            <Check className="text-green-400" size={20} />
+          ) : (
+            <Copy className="text-slate-400" size={20} />
+          )}
         </button>
       </div>
 

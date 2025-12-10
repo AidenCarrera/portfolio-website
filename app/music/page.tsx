@@ -49,18 +49,20 @@ export default function Music() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-brand to-brand-dark mb-6">
             <MusicIcon size={32} className="text-white" />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Music</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+            Music
+          </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Explore my released tracks from Spotify, upcoming snippets, and the gear behind them. I write, produce, mix, and master all of my music myself.
+            Explore my released tracks from Spotify, upcoming snippets, and the
+            gear behind them. I write, produce, mix, and master all of my music
+            myself.
           </p>
         </div>
 
         {error && (
           <div className="mb-8 relative bg-red-900/50 border border-red-500 rounded-lg p-4">
             <div className="flex items-start">
-              <div className="flex-1 text-sm text-red-200">
-                {error}
-              </div>
+              <div className="flex-1 text-sm text-red-200">{error}</div>
               <button
                 onClick={() => setError(null)}
                 className="ml-4 text-red-200 hover:text-white"

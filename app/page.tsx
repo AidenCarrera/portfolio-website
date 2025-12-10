@@ -40,7 +40,11 @@ export default function Home() {
             className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight"
             initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 * speed, delay: 0.2 * speed, ease: "easeOut" }}
+            transition={{
+              duration: 1 * speed,
+              delay: 0.2 * speed,
+              ease: "easeOut",
+            }}
           >
             Musician. Producer.
             <br />
@@ -54,7 +58,11 @@ export default function Home() {
             className="text-xl sm:text-2xl text-slate-300 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 * speed, delay: 0.4 * speed, ease: "easeOut" }}
+            transition={{
+              duration: 1 * speed,
+              delay: 0.4 * speed,
+              ease: "easeOut",
+            }}
           >
             Creating innovative applications and immersive music.
           </motion.p>
@@ -65,20 +73,30 @@ export default function Home() {
           className="mt-24 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2 * speed, delay: 0.8 * speed, ease: "easeOut" }}
+          transition={{
+            duration: 1.2 * speed,
+            delay: 0.8 * speed,
+            ease: "easeOut",
+          }}
         >
           {/* About Me */}
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700 hover:border-brand/50 transition-all">
             <h2 className="text-2xl font-bold text-white mb-4">About Me</h2>
             <div className="text-slate-300 space-y-3 leading-relaxed">
               <p>
-                Prospective OSU Honors College graduate in Computer Science with interests in software engineering, audio programming, and music technologies.
+                Prospective OSU Honors College graduate in Computer Science with
+                interests in software engineering, audio programming, and music
+                technologies.
               </p>
               <p>
-                Experienced with C++, Java, Python, TypeScript, JUCE, and web development. I build interactive projects, including piano apps and C++ audio plugins.
+                Experienced with C++, Java, Python, TypeScript, JUCE, and web
+                development. I build interactive projects, including piano apps
+                and C++ audio plugins.
               </p>
               <p>
-                Outside of coding, I&apos;m an active musician who performs in the OSU Jazz Band, Resistance Indoor Percussion, and other ensembles. I compose, produce, and release original music.
+                Outside of coding, I&apos;m an active musician who performs in
+                the OSU Jazz Band, Resistance Indoor Percussion, and other
+                ensembles. I compose, produce, and release original music.
               </p>
             </div>
           </div>
@@ -95,7 +113,9 @@ export default function Home() {
               className="w-full bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark text-white font-semibold py-4 px-6 rounded-xl transition-all hover:scale-105 flex items-center justify-between group"
             >
               <span className="text-lg">View Projects</span>
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              <span className="group-hover:translate-x-1 transition-transform">
+                →
+              </span>
             </button>
 
             <a
@@ -104,7 +124,9 @@ export default function Home() {
               className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-4 px-6 rounded-xl transition-all hover:scale-105 flex items-center justify-between group border border-blue-700 hover:border-blue-500"
             >
               <span className="text-lg">Download Resume</span>
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              <span className="group-hover:translate-x-1 transition-transform">
+                →
+              </span>
             </a>
 
             <button
@@ -112,7 +134,9 @@ export default function Home() {
               className="w-full bg-slate-800/50 hover:bg-slate-700 text-white font-semibold py-4 px-6 rounded-xl border border-slate-700 hover:border-brand transition-all hover:scale-105 flex items-center justify-between group"
             >
               <span className="text-lg">Explore My Music</span>
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              <span className="group-hover:translate-x-1 transition-transform">
+                →
+              </span>
             </button>
 
             <button
@@ -120,11 +144,13 @@ export default function Home() {
               className="w-full bg-slate-800/50 hover:bg-slate-700 text-white font-semibold py-4 px-6 rounded-xl border border-slate-700 hover:border-brand transition-all hover:scale-105 flex items-center justify-between group"
             >
               <span className="text-lg">Get In Touch</span>
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
+              <span className="group-hover:translate-x-1 transition-transform">
+                →
+              </span>
             </button>
           </motion.div>
         </motion.div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }

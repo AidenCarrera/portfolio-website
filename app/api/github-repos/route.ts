@@ -14,7 +14,7 @@ interface GraphQLRepoNode {
   name: string;
   description?: string | null;
   url: string;
-  homepageUrl?: string | null; // changed from homepage → homepageUrl
+  homepageUrl?: string | null;
   owner: GraphQLOwner;
   repositoryTopics: { nodes: GraphQLTopicNode[] };
   collaborators?: { totalCount: number };

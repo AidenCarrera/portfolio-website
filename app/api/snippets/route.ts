@@ -1,8 +1,8 @@
 // app/api/snippets/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     // Fetch rows from Supabase; no generic on `from()`
     const { data, error } = await supabaseServer

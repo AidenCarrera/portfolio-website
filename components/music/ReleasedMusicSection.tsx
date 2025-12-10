@@ -8,7 +8,9 @@ interface ReleasedMusicSectionProps {
   tracks: MusicTrack[];
 }
 
-export default function ReleasedMusicSection({ tracks: initialTracks }: ReleasedMusicSectionProps) {
+export default function ReleasedMusicSection({
+  tracks: initialTracks,
+}: ReleasedMusicSectionProps) {
   const [tracks, setTracks] = useState<MusicTrack[]>(initialTracks || []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +27,9 @@ export default function ReleasedMusicSection({ tracks: initialTracks }: Released
           setTracks(data);
         } catch (err) {
           console.error("Error fetching tracks:", err);
-          setError("Unable to load released tracks at the moment. Please try again later.");
+          setError(
+            "Unable to load released tracks at the moment. Please try again later."
+          );
         } finally {
           setLoading(false);
         }
@@ -44,7 +48,10 @@ export default function ReleasedMusicSection({ tracks: initialTracks }: Released
 
       {loading && (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
-          <Disc3 size={48} className="text-slate-600 mx-auto mb-4 animate-spin" />
+          <Disc3
+            size={48}
+            className="text-slate-600 mx-auto mb-4 animate-spin"
+          />
           <p className="text-slate-400">Loading tracks...</p>
         </div>
       )}
@@ -79,7 +86,9 @@ export default function ReleasedMusicSection({ tracks: initialTracks }: Released
       {!loading && !error && tracks.length === 0 && (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
           <MusicIcon size={48} className="text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400">Released tracks coming soon. Stay tuned!</p>
+          <p className="text-slate-400">
+            Released tracks coming soon. Stay tuned!
+          </p>
         </div>
       )}
     </section>

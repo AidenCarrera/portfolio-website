@@ -58,7 +58,7 @@ export default function Cassette({
         {/* Tape Window Area - The Trapezoid Shape */}
         <div className="mt-1 h-16 relative mx-2">
           {/* The Trapezoid Background (simulated with clip-path or borders, but CSS shapes are easier) */}
-          <div className="absolute bottom-0 left-0 right-0 h-12 bg-slate-700 rounded-b-lg transform perspective-[100px] rotate-x-12 border-t border-slate-600" />
+          <div className="absolute bottom-0 left-0 right-0 h-12 bg-slate-700 rounded-b-lg transform perspective-dramatic rotate-x-12 border-t border-slate-600" />
 
           {/* Actual Window */}
           <div className="absolute bottom-2 left-4 right-4 h-8 bg-slate-900 rounded-full border-2 border-slate-600 flex items-center justify-between px-2 shadow-inner">

@@ -7,8 +7,7 @@ interface CategoryFilterProps {
 }
 
 // small helper to capitalize a string
-const capitalize = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1);
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 export default function CategoryFilter({
   categories,
@@ -27,9 +26,11 @@ export default function CategoryFilter({
             onClick={() => onSelect(normalized)}
             aria-pressed={isSelected}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out
-              ${isSelected
-                ? "bg-brand text-slate-900 shadow-md"
-                : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"}
+              ${
+                isSelected
+                  ? "bg-brand text-slate-900 shadow-md"
+                  : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
+              }
             `}
           >
             {capitalize(category)}

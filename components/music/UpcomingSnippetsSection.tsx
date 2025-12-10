@@ -10,8 +10,12 @@ interface Props {
   snippets: MusicSnippet[];
 }
 
-export default function UpcomingSnippetsSection({ snippets: initialSnippets }: Props) {
-  const [snippets, setSnippets] = useState<MusicSnippet[]>(initialSnippets || []);
+export default function UpcomingSnippetsSection({
+  snippets: initialSnippets,
+}: Props) {
+  const [snippets, setSnippets] = useState<MusicSnippet[]>(
+    initialSnippets || []
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeSnippet, setActiveSnippet] = useState<MusicSnippet | null>(null);
@@ -30,7 +34,9 @@ export default function UpcomingSnippetsSection({ snippets: initialSnippets }: P
           if (data.length > 0) setActiveSnippet(data[0]);
         } catch (err) {
           console.error("Error fetching snippets:", err);
-          setError("Unable to load upcoming snippets right now. Please try again later.");
+          setError(
+            "Unable to load upcoming snippets right now. Please try again later."
+          );
         } finally {
           setLoading(false);
         }
@@ -40,7 +46,7 @@ export default function UpcomingSnippetsSection({ snippets: initialSnippets }: P
     } else if (initialSnippets.length > 0 && !activeSnippet) {
       setActiveSnippet(initialSnippets[0]);
     }
-  }, [initialSnippets]);
+  }, [initialSnippets, activeSnippet]);
 
   return (
     <section className="mb-24">
@@ -51,7 +57,10 @@ export default function UpcomingSnippetsSection({ snippets: initialSnippets }: P
 
       {loading && (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
-          <Music size={48} className="text-slate-600 mx-auto mb-4 animate-spin" />
+          <Music
+            size={48}
+            className="text-slate-600 mx-auto mb-4 animate-spin"
+          />
           <p className="text-slate-400">Loading tape collection...</p>
         </div>
       )}
@@ -89,7 +98,9 @@ export default function UpcomingSnippetsSection({ snippets: initialSnippets }: P
       {!loading && !error && snippets.length === 0 && (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
           <Music size={48} className="text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400">Tape collection empty. Check back later!</p>
+          <p className="text-slate-400">
+            Tape collection empty. Check back later!
+          </p>
         </div>
       )}
     </section>

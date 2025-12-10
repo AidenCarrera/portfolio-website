@@ -1,13 +1,45 @@
-import { Github, Linkedin, Music, Instagram, Youtube, Mail } from 'lucide-react';
-import Link from 'next/link';
+import {
+  Github,
+  Linkedin,
+  Music,
+  Instagram,
+  Youtube,
+  Mail,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
   const socialLinks = [
-    { icon: Github, url: 'https://github.com/aidencarrera', label: 'GitHub', color: 'hover:text-purple-400' },
-    { icon: Linkedin, url: 'https://linkedin.com/in/aiden-carrera', label: 'LinkedIn', color: 'hover:text-blue-400' },
-    { icon: Music, url: 'https://open.spotify.com/artist/1LgE8yhi5cPt1uBQPzaRAe', label: 'Spotify', color: 'hover:text-green-400' },
-    { icon: Instagram, url: 'https://instagram.com/aiden.carrera', label: 'Instagram', color: 'hover:text-pink-400' },
-    { icon: Youtube, url: 'https://youtube.com/@aidencarrera', label: 'YouTube', color: 'hover:text-red-400' },
+    {
+      icon: Github,
+      url: "https://github.com/aidencarrera",
+      label: "GitHub",
+      color: "hover:text-purple-400",
+    },
+    {
+      icon: Linkedin,
+      url: "https://linkedin.com/in/aiden-carrera",
+      label: "LinkedIn",
+      color: "hover:text-blue-400",
+    },
+    {
+      icon: Music,
+      url: "https://open.spotify.com/artist/1LgE8yhi5cPt1uBQPzaRAe",
+      label: "Spotify",
+      color: "hover:text-green-400",
+    },
+    {
+      icon: Instagram,
+      url: "https://instagram.com/aiden.carrera",
+      label: "Instagram",
+      color: "hover:text-pink-400",
+    },
+    {
+      icon: Youtube,
+      url: "https://youtube.com/@aidencarrera",
+      label: "YouTube",
+      color: "hover:text-red-400",
+    },
   ];
 
   return (

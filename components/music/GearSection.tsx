@@ -1,19 +1,13 @@
 "use client";
 
-import { Wrench, Music, Mic2, Speaker, Piano, Laptop } from "lucide-react";
+import { Wrench, Music, Mic2, Speaker, Laptop } from "lucide-react";
 import { GearItem } from "@/types";
-import Image from "next/image";
 
 interface GearSectionProps {
   gear: GearItem[];
 }
 
-const CATEGORY_ORDER = [
-  "Software",
-  "Hardware",
-  "Instruments",
-  "UAD Plugins",
-];
+const CATEGORY_ORDER = ["Software", "Hardware", "Instruments", "UAD Plugins"];
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   Hardware: <Mic2 size={24} />,
@@ -47,8 +41,12 @@ export default function GearSection({ gear }: GearSectionProps) {
         return (
           <div key={category} className="relative">
             <div className="flex items-center space-x-3 mb-6 border-b border-slate-800 pb-2">
-              <span className="text-brand">{CATEGORY_ICONS[category] || <Wrench size={24} />}</span>
-              <h3 className="text-2xl font-semibold text-slate-200">{category}</h3>
+              <span className="text-brand">
+                {CATEGORY_ICONS[category] || <Wrench size={24} />}
+              </span>
+              <h3 className="text-2xl font-semibold text-slate-200">
+                {category}
+              </h3>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

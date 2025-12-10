@@ -40,7 +40,11 @@ export default function RepoCard({ repo, isGhost }: RepoCardProps) {
           {/* Live website link (if exists) */}
           {repo?.homepage && repo.homepage.trim() !== "" && (
             <a
-              href={repo.homepage.startsWith("http") ? repo.homepage : `https://${repo.homepage}`}
+              href={
+                repo.homepage.startsWith("http")
+                  ? repo.homepage
+                  : `https://${repo.homepage}`
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 rounded-lg text-slate-400 hover:text-brand hover:bg-slate-700 transition-all"

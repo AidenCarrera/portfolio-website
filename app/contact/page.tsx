@@ -1,9 +1,9 @@
 "use client";
 
-import ContactFormCard from '@/components/contact/ContactFormCard';
-import DirectContactCard from '@/components/contact/DirectContactCard';
-import ConnectCard from '@/components/contact/ConnectCard';
-import { Mail } from 'lucide-react';
+import ContactFormCard from "@/components/contact/ContactFormCard";
+import DirectContactCard from "@/components/contact/DirectContactCard";
+import ConnectCard from "@/components/contact/ConnectCard";
+import { Mail } from "lucide-react";
 
 export default function Contact() {
   return (
@@ -13,7 +13,9 @@ export default function Contact() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-brand to-brand-dark mb-6">
             <Mail size={32} className="text-white" />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Get In Touch</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+            Get In Touch
+          </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
             Have a project in mind or want to collaborate? Let&apos;s connect!
           </p>
