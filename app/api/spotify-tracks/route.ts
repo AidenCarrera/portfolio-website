@@ -1,7 +1,7 @@
-"use server";
-
 import { NextResponse } from "next/server";
-import { redis } from "@/lib/redis"; // Upstash REST Redis client
+
+// Cache this entire route response for 1 hour on Vercel's CDN
+export const revalidate = 3600;
 
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID!;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET!;
@@ -26,10 +26,6 @@ interface TrackResponse {
 }
 
 async function getSpotifyAccessToken(): Promise<string> {
-  const cachedToken = await redis.get("spotify_access_token");
-  if (cachedToken && typeof cachedToken === "string") {
-    return cachedToken;
-  }
   const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
@@ -41,28 +37,18 @@ async function getSpotifyAccessToken(): Promise<string> {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({ grant_type: "client_credentials" }),
+    // Next.js will cache this fetch for the duration of the route revalidation
+    next: { revalidate: 3600 },
   });
 
   if (!tokenRes.ok) throw new Error("Failed to fetch Spotify access token");
   const tokenData = await tokenRes.json();
-  
+
   if (!tokenData?.access_token || typeof tokenData.access_token !== "string") {
     throw new Error("Invalid token response from Spotify");
   }
-  
-  const accessToken = tokenData.access_token;
 
-  // Cache token for 55 minutes
-  try {
-    await redis.set("spotify_access_token", accessToken, { ex: 55 * 60 });
-  } catch (redisErr) {
-    // Log but don't fail - token is still valid for this request
-    console.warn("Failed to cache Spotify token:", redisErr);
-  }
-
-  return accessToken;  await redis.set("spotify_access_token", accessToken, { ex: 55 * 60 });
-
-  return accessToken;
+  return tokenData.access_token;
 }
 
 export async function GET() {
@@ -72,7 +58,10 @@ export async function GET() {
     // Fetch albums & singles
     const albumsRes = await fetch(
       `https://api.spotify.com/v1/artists/${ARTIST_ID}/albums?include_groups=album,single&market=US&limit=50`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        next: { revalidate: 3600 },
+      }
     );
 
     if (!albumsRes.ok) throw new Error("Failed to fetch albums from Spotify");
@@ -83,7 +72,10 @@ export async function GET() {
     const trackPromises = albumsData.items.map(async (album) => {
       const tracksRes = await fetch(
         `https://api.spotify.com/v1/albums/${album.id}/tracks?market=US`,
-        { headers: { Authorization: `Bearer ${accessToken}` } }
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          next: { revalidate: 3600 },
+        }
       );
 
       if (!tracksRes.ok)
