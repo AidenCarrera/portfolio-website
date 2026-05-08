@@ -8,38 +8,132 @@ export interface GithubRepo {
   homepage: string | null;
   topics: string[];
   owner: string;       // GitHub username of the owner
-  isCollab: boolean;   // explicitly mark if it's a contributed repo
+  isCollab: boolean;   // explicitly mark if it's a contributed/collaborated repo
+}
+
+interface GraphQLRepoNode {
+  databaseId: number;
+  name: string;
+  description?: string | null;
+  url: string;
+  homepageUrl?: string | null;
+  isPrivate: boolean;
+  isFork: boolean;
+  owner: { login: string };
+  repositoryTopics: { nodes: { topic: { name: string } }[] };
+  collaborators?: { totalCount: number };
 }
 
 /**
- * Fetches GitHub repositories for a given user.
- * Cached for 1 hour using Next.js revalidation.
+ * Fetches public GitHub repositories and collaborations for the user.
  */
-export async function fetchGithubRepos(username: string): Promise<GithubRepo[]> {
+export async function getGithubRepos(): Promise<GithubRepo[]> {
+  const token = process.env.GITHUB_TOKEN;
+  const username = "aidencarrera";
+
+  if (!token) {
+    console.error("Missing GITHUB_TOKEN environment variable");
+    return [];
+  }
+
+  const query = `
+    {
+      user(login: "${username}") {
+        repositories(
+          first: 100, 
+          privacy: PUBLIC, 
+          ownerAffiliations: [OWNER, COLLABORATOR], 
+          orderBy: {field: UPDATED_AT, direction: DESC}
+        ) {
+          nodes {
+            databaseId
+            name
+            description
+            url
+            homepageUrl
+            isPrivate
+            isFork
+            owner { login }
+            repositoryTopics(first: 10) { nodes { topic { name } } }
+            collaborators { totalCount }
+          }
+        }
+        repositoriesContributedTo(
+          first: 50,
+          contributionTypes: [COMMIT, PULL_REQUEST, REPOSITORY],
+          includeUserRepositories: false
+        ) {
+          nodes {
+            databaseId
+            name
+            description
+            url
+            homepageUrl
+            isPrivate
+            isFork
+            owner { login }
+            repositoryTopics(first: 10) { nodes { topic { name } } }
+          }
+        }
+      }
+    }
+  `;
+
   try {
-    const res = await fetch(
-      `https://api.github.com/users/${username}/repos?per_page=100&sort=updated`,
-      { next: { revalidate: 3600 } } // cache for 1 hour
-    );
+    const res = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query }),
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
 
-    if (!res.ok) throw new Error("Failed to fetch GitHub repos");
+    const { data, errors } = await res.json();
 
-    const data = await res.json();
+    if (errors) {
+      console.error("GitHub GraphQL errors:", errors);
+      return [];
+    }
 
-    if (!Array.isArray(data)) return [];
+    const user = data?.user;
+    if (!user) return [];
 
-    return data
-      .filter((r) => r && typeof r.id === "number")
-      .map((repo) => ({
-        id: repo.id,
-        name: repo.name,
-        description: repo.description,
-        html_url: repo.html_url,
-        homepage: repo.homepage,
-        topics: repo.topics || [],
-        owner: repo.owner?.login ?? username, // set owner
-        isCollab: repo.owner?.login !== username, // mark as contributed repo
-      }));
+    const mapNode = (node: GraphQLRepoNode, isContributed: boolean): GithubRepo => {
+      const isOwner = node.owner.login.toLowerCase() === username.toLowerCase();
+      return {
+        id: node.databaseId,
+        name: node.name,
+        description: node.description ?? "",
+        html_url: node.url,
+        homepage: node.homepageUrl || null,
+        topics: node.repositoryTopics.nodes.map((t) => t.topic.name),
+        owner: node.owner.login,
+        isCollab: isContributed || !isOwner || (node.collaborators?.totalCount ?? 0) > 1,
+      };
+    };
+
+    // Process sets
+    // 1. Owned/Collaborated: filter for public only, and exclude forks (unless it's a collab)
+    const mainRepos = (user.repositories.nodes as GraphQLRepoNode[])
+      .filter(n => !n.isPrivate && (!n.isFork || n.owner.login !== username))
+      .map(n => mapNode(n, false));
+
+    // 2. Contributed To: filter for public only
+    const contributed = (user.repositoriesContributedTo.nodes as GraphQLRepoNode[])
+      .filter(n => !n.isPrivate)
+      .map(n => mapNode(n, true));
+
+    // Deduplicate by URL
+    const uniqueMap = new Map<string, GithubRepo>();
+    [...mainRepos, ...contributed].forEach(repo => {
+      if (!uniqueMap.has(repo.html_url) || repo.isCollab) {
+        uniqueMap.set(repo.html_url, repo);
+      }
+    });
+
+    return Array.from(uniqueMap.values());
   } catch (err) {
     console.error("Error fetching GitHub repos:", err);
     return [];

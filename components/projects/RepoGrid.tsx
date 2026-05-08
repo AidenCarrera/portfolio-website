@@ -28,7 +28,7 @@ export default function RepoGrid({ repos, loading }: RepoGridProps) {
             ))
           : repos.map((repo) => (
               <motion.div
-                key={repo.id}
+                key={repo.html_url}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
