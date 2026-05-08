@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Code2, Github, ExternalLink } from "lucide-react";
+import { Code2, ExternalLink } from "lucide-react";
+import { SiGithub } from "react-icons/si";
 import { Navigation } from "@/components/common";
 import { RepoGrid, CategoryFilter } from "@/components/projects";
 import { GithubRepo } from "@/lib/github";
@@ -80,7 +81,7 @@ export default function ProjectsPage() {
               "inline-flex items-center space-x-2 text-brand hover:text-brand-light transition-colors"
             )}
           >
-            <Github size={20} />
+            <SiGithub size={20} />
             <span className="font-medium">View more on GitHub</span>
             <ExternalLink size={16} />
           </a>

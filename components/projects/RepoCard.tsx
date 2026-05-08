@@ -1,6 +1,7 @@
 "use client";
 
-import { Github, ExternalLink, Folder } from "lucide-react";
+import { ExternalLink, Folder } from "lucide-react";
+import { SiGithub } from "react-icons/si";
 import { getStackIcon } from "@/lib/utils";
 import { GithubRepo } from "@/lib/github";
 
@@ -35,7 +36,7 @@ export default function RepoCard({ repo, isGhost }: RepoCardProps) {
             rel="noopener noreferrer"
             className="p-2 rounded-lg text-slate-400 hover:text-brand hover:bg-slate-700 transition-all"
           >
-            <Github size={20} />
+            <SiGithub size={20} />
           </a>
           {/* Live website link (if exists) */}
           {repo?.homepage && repo.homepage.trim() !== "" && (

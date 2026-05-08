@@ -1,41 +1,36 @@
-import {
-  Github,
-  Linkedin,
-  Music,
-  Instagram,
-  Youtube,
-  Mail,
-} from "lucide-react";
+import { Mail } from "lucide-react";
+import { SiGithub, SiSpotify, SiInstagram, SiYoutube } from "react-icons/si";
+import { FaLinkedin } from "react-icons/fa6";
 import Link from "next/link";
 
 export default function Footer() {
   const socialLinks = [
     {
-      icon: Github,
+      icon: SiGithub,
       url: "https://github.com/aidencarrera",
       label: "GitHub",
       color: "hover:text-purple-400",
     },
     {
-      icon: Linkedin,
+      icon: FaLinkedin,
       url: "https://linkedin.com/in/aiden-carrera",
       label: "LinkedIn",
       color: "hover:text-blue-400",
     },
     {
-      icon: Music,
+      icon: SiSpotify,
       url: "https://open.spotify.com/artist/1LgE8yhi5cPt1uBQPzaRAe",
       label: "Spotify",
       color: "hover:text-green-400",
     },
     {
-      icon: Instagram,
+      icon: SiInstagram,
       url: "https://instagram.com/aiden.carrera",
       label: "Instagram",
       color: "hover:text-pink-400",
     },
     {
-      icon: Youtube,
+      icon: SiYoutube,
       url: "https://youtube.com/@aidencarrera",
       label: "YouTube",
       color: "hover:text-red-400",
