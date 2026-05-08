@@ -2,58 +2,18 @@
 
 import { Music } from "lucide-react";
 import { MusicSnippet } from "@/types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CassetteDeck from "./CassetteDeck";
 import Cassette from "./Cassette";
 
 interface Props {
-  snippets?: MusicSnippet[];
+  snippets: MusicSnippet[];
 }
 
-export default function UpcomingSnippetsSection({
-  snippets: initialSnippets,
-}: Props) {
-  const [snippets, setSnippets] = useState<MusicSnippet[]>(
-    initialSnippets || []
+export default function UpcomingSnippetsSection({ snippets }: Props) {
+  const [activeSnippet, setActiveSnippet] = useState<MusicSnippet | null>(
+    snippets[0] ?? null
   );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activeSnippet, setActiveSnippet] = useState<MusicSnippet | null>(null);
-
-  useEffect(() => {
-    // If props are provided, use them and stop loading
-    if (initialSnippets && initialSnippets.length > 0) {
-      setSnippets(initialSnippets);
-      setActiveSnippet((prev) => prev || initialSnippets[0]);
-      setLoading(false);
-    } else if (!initialSnippets) {
-      // Only fetch if props are undefined (not just empty array)
-      const fetchSnippets = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          const res = await fetch("/api/snippets");
-          if (!res.ok) throw new Error("Failed to fetch upcoming snippets");
-          const data = await res.json();
-          setSnippets(data);
-          // Auto-load the first snippet if available
-          if (data.length > 0) setActiveSnippet(data[0]);
-        } catch (err) {
-          console.error("Error fetching snippets:", err);
-          setError(
-            "Unable to load upcoming snippets right now. Please try again later."
-          );
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchSnippets();
-    } else {
-      // Empty array passed as prop -> Stop loading, show empty state
-      setLoading(false);
-    }
-  }, [initialSnippets]);
 
   return (
     <section className="mb-24">
@@ -62,23 +22,7 @@ export default function UpcomingSnippetsSection({
         <h2 className="text-3xl font-bold text-white">Upcoming Snippets</h2>
       </div>
 
-      {loading && (
-        <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
-          <Music
-            size={48}
-            className="text-slate-600 mx-auto mb-4 animate-spin"
-          />
-          <p className="text-slate-400">Loading tape collection...</p>
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-800/30 rounded-xl p-12 text-center border border-red-700">
-          <p className="text-red-400">{error}</p>
-        </div>
-      )}
-
-      {!loading && !error && snippets.length > 0 && (
+      {snippets.length > 0 ? (
         <div className="space-y-12">
           {/* The Deck */}
           <CassetteDeck activeSnippet={activeSnippet} />
@@ -100,14 +44,10 @@ export default function UpcomingSnippetsSection({
             </div>
           </div>
         </div>
-      )}
-
-      {!loading && !error && snippets.length === 0 && (
+      ) : (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
           <Music size={48} className="text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400">
-            Tape collection empty. Check back later!
-          </p>
+          <p className="text-slate-400">Tape collection empty. Check back later!</p>
         </div>
       )}
     </section>

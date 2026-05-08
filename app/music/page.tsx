@@ -1,5 +1,5 @@
-"use client";
-
+import { MusicSnippet } from "@/types";
+import { snippetsData } from "@/lib/snippetsData";
 import { Music as MusicIcon } from "lucide-react";
 
 import ReleasedMusicSection from "@/components/music/ReleasedMusicSection";
@@ -7,7 +7,10 @@ import UpcomingSnippetsSection from "@/components/music/UpcomingSnippetsSection"
 import GearSection from "@/components/music/GearSection";
 import { gearData } from "@/lib/gearData";
 
+// Server component — no client bundle needed for data fetching
 export default function Music() {
+  const snippets: MusicSnippet[] = snippetsData;
+
   return (
     <div className="min-h-screen bg-slate-900 pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,7 +29,7 @@ export default function Music() {
           </p>
         </div>
 
-        <UpcomingSnippetsSection />
+        <UpcomingSnippetsSection snippets={snippets} />
         <ReleasedMusicSection />
         <GearSection gear={gearData} />
       </div>
