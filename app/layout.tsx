@@ -40,6 +40,14 @@ export const metadata: Metadata = {
     siteName: "Aiden Carrera",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Aiden Carrera Portfolio",
+      },
+    ],
   },
   icons: {
     icon: "/favicon.ico",
@@ -49,6 +57,7 @@ export const metadata: Metadata = {
     title: "Aiden Carrera | Developer & Musician",
     description:
       "Portfolio showcasing software, music, and creative tech projects.",
+    images: ["/og-image.png"],
   },
 };
 
