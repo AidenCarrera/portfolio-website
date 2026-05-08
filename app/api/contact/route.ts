@@ -1,5 +1,8 @@
 // app/api/contact/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const WINDOW_MS = 60_000; // 1 minute
 const MAX_SUBMISSIONS_PER_WINDOW = 3;
@@ -72,10 +75,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // TODO: Add email delivery here (e.g. Resend — free 100 emails/day)
-    // For now, log the submission server-side so it appears in Vercel logs
-    console.log("Contact form submission:", { name, email, message });
+    // Send email via Resend
+    const { data, error } = await resend.emails.send({
+      from: "Portfolio Contact <onboarding@resend.dev>",
+      to: "aiden.carrera05@gmail.com", // Your verified owner email
+      subject: `New Message from ${name}`,
+      replyTo: email, // Allows you to just click "Reply" in your email client
+      html: `
+        <div style="font-family: sans-serif; color: #333; max-width: 600px;">
+          <h2 style="color: #000;">New Portfolio Submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Message:</strong></p>
+          <div style="background: #f4f4f4; padding: 15px; border-radius: 5px;">
+            ${message.replace(/\n/g, "<br>")}
+          </div>
+        </div>
+      `,
+    });
 
+    if (error) {
+      console.error("Resend Error:", error);
+      return NextResponse.json({ error: "Failed to send email." }, { status: 500 });
+    }
+
+    console.log("Contact form submission sent successfully:", data?.id);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Unexpected API error:", err);
