@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/common/Navigation";
 import Footer from "@/components/common/Footer";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // Font setup
 const geistSans = Geist({
@@ -20,7 +22,10 @@ const geistMono = Geist_Mono({
 // Next.js 16 metadata structure with metadataBase
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+    process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.NEXT_PUBLIC_VERCEL_URL
+        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+        : "http://localhost:3000"),
   ),
   title: {
     default: "Aiden Carrera Portfolio",
@@ -28,19 +33,11 @@ export const metadata: Metadata = {
   },
   description: "Developer & Musician Portfolio",
   openGraph: {
-    title: "Aiden Carrera | Developer & Musician",
+    title: "Aiden Carrera | Developer",
     description:
       "Portfolio showcasing software, music, and creative tech projects.",
     url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
     siteName: "Aiden Carrera",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Aiden Carrera Portfolio",
-      },
-    ],
     locale: "en_US",
     type: "website",
   },
@@ -52,7 +49,6 @@ export const metadata: Metadata = {
     title: "Aiden Carrera | Developer & Musician",
     description:
       "Portfolio showcasing software, music, and creative tech projects.",
-    images: ["/og-image.png"],
   },
 };
 
@@ -69,6 +65,8 @@ export default function RootLayout({
         <Navigation />
         <main className="grow">{children}</main>
         <Footer />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
