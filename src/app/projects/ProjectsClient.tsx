@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { RepoGrid, CategoryFilter } from "@/components/projects";
 import { GithubRepo } from "@/lib/github";
 
@@ -13,17 +13,11 @@ type SortOption = "featured" | "newest" | "name";
 export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortOption>("featured");
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [animateEntrance, setAnimateEntrance] = useState(true);
-
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const categories = [
     "all",
     ...Array.from(
-      new Set(
-        initialRepos.flatMap((r) => r.topics.map((t) => t.toLowerCase())),
-      ),
+      new Set(initialRepos.flatMap((r) => r.topics.map((t) => t.toLowerCase())))
     ).sort(),
   ];
 
@@ -31,7 +25,7 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
     selectedCategory === "all"
       ? initialRepos
       : initialRepos.filter((r) =>
-          r.topics.map((t) => t.toLowerCase()).includes(selectedCategory),
+          r.topics.map((t) => t.toLowerCase()).includes(selectedCategory)
         );
 
   // Sorting logic based on selected option
@@ -46,41 +40,18 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
     return a.name.localeCompare(b.name);
   });
 
-  // Safe transition trigger to prevent double-clicks or fast-click animation failures
-  const triggerTransition = (action: () => void) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setIsTransitioning(true);
-    action();
-    timeoutRef.current = setTimeout(() => {
-      setIsTransitioning(false);
-    }, 200); // brief 200ms loading skeleton animation
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
   return (
     <>
       {initialRepos.length > 0 ? (
         <>
-          {/* Category Filtering Row */}
+          {/* Category Filtering Row - Instant selection */}
           <CategoryFilter
             categories={categories}
             selected={selectedCategory}
-            onSelect={(category) => {
-              setAnimateEntrance(false);
-              setSelectedCategory(category);
-            }}
+            onSelect={setSelectedCategory}
           />
 
-          {/* Minimal Sort Controls Toolbar */}
+          {/* Minimal Sort Controls Toolbar - Instant sorting */}
           <div className="flex justify-center items-center gap-4 mb-12 text-sm">
             <span className="text-slate-400 font-mono text-xs uppercase tracking-wider">
               Sort By:
@@ -89,10 +60,7 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
               {(["featured", "newest", "name"] as const).map((option) => (
                 <button
                   key={option}
-                  onClick={() => {
-                    setAnimateEntrance(true);
-                    triggerTransition(() => setSortBy(option));
-                  }}
+                  onClick={() => setSortBy(option)}
                   className={`px-3.5 py-1.5 rounded-md text-xs font-medium capitalize transition-all duration-200 cursor-pointer
                     ${
                       sortBy === option
@@ -107,8 +75,8 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
             </div>
           </div>
 
-          {/* Render Sorted/Filtered Repo Grid */}
-          <RepoGrid repos={sortedRepos} loading={isTransitioning} animateEntrance={animateEntrance} />
+          {/* Render Sorted/Filtered Repo Grid instantly without entrance animations */}
+          <RepoGrid repos={sortedRepos} loading={false} animateEntrance={false} />
         </>
       ) : (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
