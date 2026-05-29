@@ -88,7 +88,7 @@ export default function ContactFormCard() {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center space-x-2"
+            className="w-full bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center space-x-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
           >
             {isPending ? (
               <span>Sending...</span>
@@ -101,13 +101,13 @@ export default function ContactFormCard() {
           </button>
 
           {state.status === "success" && (
-            <div className="p-4 rounded-lg bg-green-500/20 border border-green-500/50 text-green-400 text-sm">
+            <div role="status" className="p-4 rounded-lg bg-green-500/20 border border-green-500/50 text-green-400 text-sm">
               Thanks for reaching out! I&apos;ll get back to you soon.
             </div>
           )}
 
           {state.status === "error" && (
-            <div className="p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm">
+            <div role="status" className="p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm">
               Oops! Something went wrong. Please try again or email me directly.
             </div>
           )}

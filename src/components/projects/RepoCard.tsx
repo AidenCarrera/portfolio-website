@@ -64,8 +64,9 @@ export default function RepoCard({ repo, isGhost }: RepoCardProps) {
             href={repo?.html_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-lg bg-slate-800/40 border border-slate-700/30 text-slate-400 hover:text-brand hover:bg-slate-700/40 transition-all duration-200"
+            className="p-2 rounded-lg bg-slate-800/40 border border-slate-700/30 text-slate-400 hover:text-brand hover:bg-slate-700/40 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             title="View GitHub Repository"
+            aria-label={`View GitHub repository for ${repo?.name || ""}`}
           >
             <SiGithub size={20} />
           </a>
@@ -79,8 +80,9 @@ export default function RepoCard({ repo, isGhost }: RepoCardProps) {
               }
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg bg-slate-800/40 border border-slate-700/30 text-slate-400 hover:text-brand hover:bg-slate-700/40 transition-all duration-200"
+              className="p-2 rounded-lg bg-slate-800/40 border border-slate-700/30 text-slate-400 hover:text-brand hover:bg-slate-700/40 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               title="View Live Site"
+              aria-label={`View live site for ${repo?.name || ""}`}
             >
               <ExternalLink size={20} />
             </a>

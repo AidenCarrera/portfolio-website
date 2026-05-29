@@ -61,7 +61,8 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
                 <button
                   key={option}
                   onClick={() => setSortBy(option)}
-                  className={`px-3.5 py-1.5 rounded-md text-xs font-medium capitalize transition-all duration-200 cursor-pointer
+                  aria-pressed={sortBy === option}
+                  className={`px-3.5 py-1.5 rounded-md text-xs font-medium capitalize transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand
                     ${
                       sortBy === option
                         ? "bg-brand text-slate-900 shadow-sm"

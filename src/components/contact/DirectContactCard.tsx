@@ -25,7 +25,8 @@ export default function DirectContactCard() {
         </div>
         <button
           onClick={copyEmail}
-          className="p-2 rounded-lg hover:bg-slate-600 transition-colors"
+          aria-label={copied ? "Email address copied to clipboard" : "Copy email address to clipboard"}
+          className="p-2 rounded-lg hover:bg-slate-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
         >
           {copied ? (
             <Check className="text-green-400" size={20} />
@@ -37,7 +38,7 @@ export default function DirectContactCard() {
 
       <a
         href={`mailto:${email}`}
-        className="block w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-6 rounded-lg text-center"
+        className="block w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-6 rounded-lg text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
       >
         Send Email Directly
       </a>

@@ -23,9 +23,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ||
-      (process.env.NEXT_PUBLIC_VERCEL_URL
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : process.env.NEXT_PUBLIC_VERCEL_URL
         ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-        : "http://localhost:3000"),
+        : "http://localhost:3000")
   ),
   title: {
     default: "Aiden Carrera Portfolio",
@@ -50,7 +52,7 @@ export const metadata: Metadata = {
     ],
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/developer-favicon.svg",
   },
   twitter: {
     card: "summary_large_image",
@@ -71,8 +73,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-slate-900 text-white`}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] bg-brand text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-brand"
+        >
+          Skip to content
+        </a>
         <Navigation />
-        <main className="grow">{children}</main>
+        <main id="main-content" className="grow outline-none" tabIndex={-1}>
+          {children}
+        </main>
         <Footer />
         <Analytics />
         <SpeedInsights />

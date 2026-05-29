@@ -25,7 +25,7 @@ export default function CategoryFilter({
             key={normalized}
             onClick={() => onSelect(normalized)}
             aria-pressed={isSelected}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand
               ${
                 isSelected
                   ? "bg-brand text-slate-900 shadow-md"

@@ -22,7 +22,9 @@ export default function Cassette({
       }}
       whileTap={{ scale: 0.98 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className={`relative w-full aspect-[1.6] rounded-lg overflow-hidden transition-all duration-75 group ${
+      aria-label={`Load cassette tape: ${snippet.title}`}
+      aria-pressed={isSelected}
+      className={`relative w-full aspect-[1.6] rounded-lg overflow-hidden transition-all duration-75 group focus:outline-none focus-visible:ring-4 focus-visible:ring-brand ${
         isSelected
           ? "ring-4 ring-brand shadow-[0_0_30px_rgba(51,230,204,0.3)] opacity-50 grayscale"
           : "hover:shadow-xl hover:shadow-brand/5"

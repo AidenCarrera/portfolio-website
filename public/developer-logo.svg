@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Linear Gradient from top-left to bottom-right -->
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00ffcc" />
+      <stop offset="100%" stop-color="#00b399" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Gradient Circle -->
+  <circle cx="256" cy="256" r="256" fill="url(#brandGradient)" />
+
+  <!-- Centered White Combined Music + Code (Audio Developer) Icon (Scale 11) -->
+  <g transform="translate(124, 124) scale(11)" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left Angle Code Bracket -->
+    <path d="m5 8-3 4 3 4" fill="none" />
+    
+    <!-- Waveform / Equalizer Bars -->
+    <path d="M8 10v4" fill="none" />
+    <path d="M11 6v12" fill="none" />
+    <path d="M14 8v8" fill="none" />
+    <path d="M17 10v4" fill="none" />
+    
+    <!-- Right Angle Code Bracket -->
+    <path d="m19 16 3-4-3-4" fill="none" />
+  </g>
+</svg>

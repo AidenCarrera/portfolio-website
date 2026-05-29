@@ -1,6 +1,5 @@
 "use client";
 
-import { Music } from "lucide-react";
 import { motion } from "motion/react";
 import AboutCard from "@/components/home/AboutCard";
 import HomeNavLinks from "@/components/home/HomeNavLinks";
@@ -25,10 +24,14 @@ export default function HomeClient() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ ...springTransition, delay: 0 }}
           >
-            <div className="w-32 h-32 rounded-full bg-linear-to-br from-brand to-brand-dark mx-auto mb-6 flex items-center justify-center text-white shadow-lg">
-              <Music size={48} strokeWidth={2} />
+            <div className="w-32 h-32 mx-auto mb-6 rounded-full shadow-lg overflow-hidden bg-slate-900 flex items-center justify-center border border-brand/20">
+              <img
+                src="/developer-logo.svg"
+                alt="Aiden Carrera - Audio Developer Logo"
+                className="w-full h-full object-contain"
+              />
             </div>
-            <div className="absolute inset-0 rounded-full bg-brand/20 blur-xl animate-pulse"></div>
+            <div className="absolute inset-0 rounded-full bg-brand/20 blur-xl animate-pulse -z-10"></div>
           </motion.div>
 
           {/* Title */}

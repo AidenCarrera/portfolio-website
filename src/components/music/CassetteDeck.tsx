@@ -33,12 +33,22 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
   const [dragStartVolume, setDragStartVolume] = useState(0);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  // Volume Knob Logic (Vertical Drag)
+  // Volume Knob Logic (Vertical Drag & Keyboard support)
   const handleVolumeMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDraggingVolume(true);
     setDragStartY(e.clientY);
     setDragStartVolume(volume);
+  };
+
+  const handleVolumeKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowUp" || e.key === "ArrowRight") {
+      e.preventDefault();
+      setVolume((v) => Math.min(1, v + 0.05));
+    } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      setVolume((v) => Math.max(0, v - 0.05));
+    }
   };
 
   const handleVolumeMouseMove = (e: MouseEvent) => {
@@ -90,6 +100,17 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     if (!activeSnippet) return;
     setIsDraggingTime(true);
     seek(calculateTime(e), false);
+  };
+
+  const handleTimeKeyDown = (e: React.KeyboardEvent) => {
+    if (!activeSnippet || !duration) return;
+    if (e.key === "ArrowUp" || e.key === "ArrowRight") {
+      e.preventDefault();
+      seek(Math.min(duration, currentTime + 5), true);
+    } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      seek(Math.max(0, currentTime - 5), true);
+    }
   };
 
   useEffect(() => {
@@ -186,7 +207,15 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
               </div>
               <div
                 ref={progressBarRef}
-                className={`w-full bg-slate-800 h-2 rounded-full relative group ${activeSnippet ? "cursor-pointer" : ""}`}
+                role="slider"
+                aria-label="Playback position"
+                aria-valuemin={0}
+                aria-valuemax={Math.round(duration || 0)}
+                aria-valuenow={Math.round(currentTime)}
+                aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration || 0)}`}
+                tabIndex={activeSnippet ? 0 : -1}
+                onKeyDown={handleTimeKeyDown}
+                className={`w-full bg-slate-800 h-2 rounded-full relative group focus:outline-none ${activeSnippet ? "cursor-pointer focus-visible:ring-2 focus-visible:ring-brand" : ""}`}
                 onMouseDown={handleTimeMouseDown}
               >
                 <div
@@ -205,7 +234,18 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
             <div className="flex justify-end items-end space-x-6">
               <div className="flex flex-col items-center mr-4">
                 <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest mb-1">Vol</div>
-                <div className="relative w-12 h-12 flex items-center justify-center cursor-ns-resize group" onMouseDown={handleVolumeMouseDown}>
+                <div
+                  role="slider"
+                  aria-label="Volume"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(volume * 100)}
+                  aria-valuetext={`${Math.round(volume * 100)}%`}
+                  tabIndex={0}
+                  onKeyDown={handleVolumeKeyDown}
+                  className="relative w-12 h-12 flex items-center justify-center cursor-ns-resize group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-full"
+                  onMouseDown={handleVolumeMouseDown}
+                >
                   {Array.from({ length: 11 }).map((_, i) => (
                     <div
                       key={i}
@@ -225,14 +265,16 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
               <button
                 onClick={stop}
                 disabled={!activeSnippet}
-                className="w-12 h-12 rounded bg-slate-700 shadow-md active:translate-y-1 transition-all flex items-center justify-center text-slate-300 hover:bg-slate-600 disabled:opacity-50"
+                aria-label="Stop playback"
+                className="w-12 h-12 rounded bg-slate-700 shadow-md active:translate-y-1 transition-all flex items-center justify-center text-slate-300 hover:bg-slate-600 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
               >
                 <Square size={16} fill="currentColor" />
               </button>
               <button
                 onClick={togglePlay}
                 disabled={!activeSnippet}
-                className="w-12 h-12 rounded bg-brand shadow-md active:translate-y-1 transition-all flex items-center justify-center text-slate-900 hover:brightness-110 disabled:opacity-50"
+                aria-label={isPlaying ? "Pause playback" : "Start playback"}
+                className="w-12 h-12 rounded bg-brand shadow-md active:translate-y-1 transition-all flex items-center justify-center text-slate-900 hover:brightness-110 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               >
                 {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
               </button>

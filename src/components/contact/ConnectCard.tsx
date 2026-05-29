@@ -47,7 +47,7 @@ export default function ConnectCard() {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center space-x-4 p-4 rounded-lg bg-slate-700/50 border border-slate-600 hover:border-brand/50 transition-all group ${link.color}`}
+            className={`flex items-center space-x-4 p-4 rounded-lg bg-slate-700/50 border border-slate-600 hover:border-brand/50 transition-all group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand ${link.color}`}
           >
             <link.icon
               size={24}

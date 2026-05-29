@@ -39,7 +39,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
           <MotionLink
             href="/"
             whileHover={hoverLift}
-            className="text-xl font-bold text-white hover:text-brand transition-colors"
+            className="text-xl font-bold text-white hover:text-brand transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg px-2 py-1"
           >
             Aiden Carrera
           </MotionLink>
@@ -50,7 +50,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
                 key={item.id}
                 href={item.path}
                 whileHover={hoverLift}
-                className={`text-sm font-medium transition-colors ${
+                className={`text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded px-2 py-1 ${
                   isActive(item.path)
                     ? "text-brand"
                     : "text-slate-300 hover:text-white"
@@ -63,8 +63,9 @@ export default function Navigation({ currentPage }: NavigationProps) {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-white p-2"
+            className="md:hidden text-white p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded"
             aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -80,7 +81,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
                 href={item.path}
                 onClick={() => setMobileMenuOpen(false)}
                 whileHover={hoverLift}
-                className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
                   isActive(item.path)
                     ? "text-brand bg-slate-700"
                     : "text-slate-300 hover:text-white hover:bg-slate-700"

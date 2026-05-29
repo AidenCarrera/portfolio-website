@@ -73,6 +73,7 @@ export default function ReleasedMusicSection({
               className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 hover:border-brand/50 transition-all"
             >
               <iframe
+                title={`Spotify player for ${track.title}`}
                 src={track.spotify_embed_url}
                 width="100%"
                 height="152"

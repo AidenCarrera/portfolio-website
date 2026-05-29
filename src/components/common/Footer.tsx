@@ -48,7 +48,7 @@ export default function Footer() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`text-slate-400 transition-colors duration-300 ease-in-out ${link.color}`}
+                className={`text-slate-400 transition-colors duration-300 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded p-1 ${link.color}`}
                 aria-label={link.label}
               >
                 <link.icon size={24} />
@@ -57,7 +57,7 @@ export default function Footer() {
             {/* Mail icon goes to contact page */}
             <Link
               href="/contact"
-              className="text-slate-400 hover:text-brand transition-colors duration-300 ease-in-out"
+              className="text-slate-400 hover:text-brand transition-colors duration-300 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded p-1"
               aria-label="Contact"
             >
               <Mail size={24} />
