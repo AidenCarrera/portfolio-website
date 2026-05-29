@@ -1,7 +1,7 @@
 import { MusicSnippet } from "@/types";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Pause, Square } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useTapePlayer } from "@/hooks/useTapePlayer";
 
 interface CassetteDeckProps {

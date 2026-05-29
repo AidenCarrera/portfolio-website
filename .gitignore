@@ -45,3 +45,6 @@ next-env.d.ts
 # optional: logs
 logs
 *.log
+
+# plans
+/.plans/

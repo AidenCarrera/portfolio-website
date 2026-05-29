@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 interface NavigationProps {
   currentPage?: string; // Kept for backward compatibility, usePathname is used instead
 }
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 export default function Navigation({ currentPage }: NavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

@@ -2,7 +2,7 @@
 
 import RepoCard from "./RepoCard";
 import { GithubRepo } from "@/lib/github";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 interface RepoGridProps {
   repos: GithubRepo[];
