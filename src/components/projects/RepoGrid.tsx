@@ -10,21 +10,15 @@ interface RepoGridProps {
 }
 
 export default function RepoGrid({ repos, loading }: RepoGridProps) {
-  // Number of ghost cards while loading
-  const ghostCount = 6;
+  // Show matching number of skeleton cards, at least 9 to fill rows
+  const ghostCount = Math.max(repos.length, 9);
 
   return (
     <>
-      {/* Temporary spacer while loading */}
-      {loading && <div className="h-24 md:h-32 lg:h-32" />}
-
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading
           ? Array.from({ length: ghostCount }).map((_, i) => (
-              <div
-                key={i}
-                className="bg-slate-800/30 rounded-xl h-64 animate-pulse"
-              />
+              <RepoCard key={i} isGhost />
             ))
           : repos.map((repo) => (
               <motion.div

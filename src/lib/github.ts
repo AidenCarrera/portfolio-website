@@ -9,6 +9,9 @@ export interface GithubRepo {
   topics: string[];
   owner: string;       // GitHub username of the owner
   isCollab: boolean;   // explicitly mark if it's a contributed/collaborated repo
+  pushedAt: string;    // ISO timestamp for sorting by newest
+  priority: number;    // manually curated priority rank
+  isFeatured: boolean; // boolean flag for display of visual "Featured" badge
 }
 
 interface GraphQLRepoNode {
@@ -22,7 +25,24 @@ interface GraphQLRepoNode {
   owner: { login: string };
   repositoryTopics: { nodes: { topic: { name: string } }[] };
   collaborators?: { totalCount: number };
+  pushedAt: string;
 }
+
+// Manually curated project order behind the scenes
+const PROJECT_PRIORITY: Record<string, number> = {
+  "stillwater-pulse": 1,
+  "olo-eq": 2,
+  "solfege-piano": 3,
+  "opengl-audio-visualizer": 4,
+  "spyfall-clone": 5,
+  "ai-learning": 6,
+  "random-web": 7,
+  "portfolio-website": 8,
+  "SeniorCapstone": 9,
+  "paperclip-collector": 10,
+  "neetcode-submissions": 11,
+  "ProjectMaVe": 12,
+};
 
 /**
  * Fetches public GitHub repositories and collaborations for the user.
@@ -56,6 +76,7 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
             owner { login }
             repositoryTopics(first: 10) { nodes { topic { name } } }
             collaborators { totalCount }
+            pushedAt
           }
         }
         repositoriesContributedTo(
@@ -73,6 +94,7 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
             isFork
             owner { login }
             repositoryTopics(first: 10) { nodes { topic { name } } }
+            pushedAt
           }
         }
       }
@@ -102,15 +124,23 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
 
     const mapNode = (node: GraphQLRepoNode, isContributed: boolean): GithubRepo => {
       const isOwner = node.owner.login.toLowerCase() === username.toLowerCase();
+      const repoName = node.name;
+      const priority = PROJECT_PRIORITY[repoName] ?? 999;
+      // Only the top 3 suggested are visually tagged as Featured
+      const isFeatured = ["stillwater-pulse", "olo-eq", "solfege-piano"].includes(repoName);
+
       return {
         id: node.databaseId,
-        name: node.name,
+        name: repoName,
         description: node.description ?? "",
         html_url: node.url,
         homepage: node.homepageUrl || null,
         topics: node.repositoryTopics.nodes.map((t) => t.topic.name),
         owner: node.owner.login,
         isCollab: isContributed || !isOwner || (node.collaborators?.totalCount ?? 0) > 1,
+        pushedAt: node.pushedAt,
+        priority,
+        isFeatured,
       };
     };
 
