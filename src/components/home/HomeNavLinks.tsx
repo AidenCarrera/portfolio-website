@@ -2,16 +2,16 @@ import Link from "next/link";
 import { motion } from "motion/react";
 
 interface HomeNavLinksProps {
-  speed: number;
+  delay?: number;
 }
 
-export default function HomeNavLinks({ speed }: HomeNavLinksProps) {
+export default function HomeNavLinks({ delay = 0.55 }: HomeNavLinksProps) {
   return (
     <motion.div
       className="space-y-4"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1 * speed, delay: 1 * speed }}
+      transition={{ type: "spring", stiffness: 45, damping: 16, delay }}
     >
       <Link
         href="/projects"

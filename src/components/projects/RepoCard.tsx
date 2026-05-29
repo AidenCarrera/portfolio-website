@@ -1,5 +1,3 @@
-"use client";
-
 import { ExternalLink, Folder } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { getStackIcon } from "@/lib/utils";

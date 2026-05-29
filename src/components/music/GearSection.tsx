@@ -1,5 +1,3 @@
-"use client";
-
 import { Wrench, Music, Mic2, Speaker, Laptop } from "lucide-react";
 import { GearItem } from "@/types";
 

@@ -31,7 +31,7 @@ export default function RepoGrid({ repos, loading }: RepoGridProps) {
                 key={repo.html_url}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+                transition={{ type: "spring", stiffness: 100, damping: 15 }}
               >
                 <RepoCard repo={repo} />
               </motion.div>

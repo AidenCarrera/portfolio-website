@@ -6,7 +6,12 @@ import AboutCard from "@/components/home/AboutCard";
 import HomeNavLinks from "@/components/home/HomeNavLinks";
 
 export default function HomeClient() {
-  const speed = 0.8; // base multiplier for animation speed
+  // Slower, elegant spring curve for premium feel
+  const springTransition = {
+    type: "spring",
+    stiffness: 45,
+    damping: 16,
+  } as const;
 
   return (
     <div className="min-h-screen bg-linear-to-br bg-animated-dark">
@@ -18,7 +23,7 @@ export default function HomeClient() {
             className="relative inline-block"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 * speed, ease: "easeOut" }}
+            transition={{ ...springTransition, delay: 0 }}
           >
             <div className="w-32 h-32 rounded-full bg-linear-to-br from-brand to-brand-dark mx-auto mb-6 flex items-center justify-center text-white shadow-lg">
               <Music size={48} strokeWidth={2} />
@@ -31,11 +36,7 @@ export default function HomeClient() {
             className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight"
             initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 1 * speed,
-              delay: 0.2 * speed,
-              ease: "easeOut",
-            }}
+            transition={{ ...springTransition, delay: 0.15 }}
           >
             Musician. Producer.
             <br />
@@ -49,11 +50,7 @@ export default function HomeClient() {
             className="text-xl sm:text-2xl text-slate-300 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 1 * speed,
-              delay: 0.4 * speed,
-              ease: "easeOut",
-            }}
+            transition={{ ...springTransition, delay: 0.3 }}
           >
             Creating innovative applications and immersive music.
           </motion.p>
@@ -64,14 +61,10 @@ export default function HomeClient() {
           className="mt-24 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 1.2 * speed,
-            delay: 0.8 * speed,
-            ease: "easeOut",
-          }}
+          transition={{ ...springTransition, delay: 0.45 }}
         >
           <AboutCard />
-          <HomeNavLinks speed={speed} />
+          <HomeNavLinks delay={0.55} />
         </motion.div>
       </div>
     </div>

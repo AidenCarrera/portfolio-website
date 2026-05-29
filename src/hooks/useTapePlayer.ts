@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAnimation, animationControls } from "motion/react";
 import { MusicSnippet } from "@/types";
 
@@ -36,7 +36,7 @@ export function useTapePlayer(activeSnippet: MusicSnippet | null) {
     }
   }, [volume]);
 
-  const togglePlay = useCallback(() => {
+  const togglePlay = () => {
     if (!activeSnippet || !audioRef.current) return;
 
     if (isPlaying) {
@@ -50,23 +50,23 @@ export function useTapePlayer(activeSnippet: MusicSnippet | null) {
       });
     }
     setIsPlaying((p) => !p);
-  }, [activeSnippet, controls, isPlaying]);
+  };
 
-  const stop = useCallback(() => {
+  const stop = () => {
     if (!audioRef.current) return;
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
     setIsPlaying(false);
     controls.stop();
     controls.set({ rotate: 0 });
-  }, [controls]);
+  };
 
-  const seek = useCallback((newTime: number, commit: boolean) => {
+  const seek = (newTime: number, commit: boolean) => {
     setCurrentTime(newTime);
     if (commit && audioRef.current) {
       audioRef.current.currentTime = newTime;
     }
-  }, []);
+  };
 
   const handleTimeUpdate = () => {
     if (audioRef.current && !isDraggingTime) {

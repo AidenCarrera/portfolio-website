@@ -1,5 +1,5 @@
 import { MusicSnippet } from "@/types";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Square } from "lucide-react";
 import { motion } from "motion/react";
 import { useTapePlayer } from "@/hooks/useTapePlayer";
@@ -41,16 +41,13 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     setDragStartVolume(volume);
   };
 
-  const handleVolumeMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!isDraggingVolume) return;
-      const deltaY = dragStartY - e.clientY;
-      const volumeChange = deltaY / 100;
-      const newVolume = Math.min(1, Math.max(0, dragStartVolume + volumeChange));
-      setVolume(newVolume);
-    },
-    [isDraggingVolume, dragStartY, dragStartVolume, setVolume]
-  );
+  const handleVolumeMouseMove = (e: MouseEvent) => {
+    if (!isDraggingVolume) return;
+    const deltaY = dragStartY - e.clientY;
+    const volumeChange = deltaY / 100;
+    const newVolume = Math.min(1, Math.max(0, dragStartVolume + volumeChange));
+    setVolume(newVolume);
+  };
 
   useEffect(() => {
     const up = () => setIsDraggingVolume(false);
@@ -81,16 +78,13 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
   }, [activeSnippet, togglePlay]);
 
   // Scrubbing logic
-  const calculateTime = useCallback(
-    (e: React.MouseEvent | MouseEvent) => {
-      if (!progressBarRef.current || !duration) return 0;
-      const rect = progressBarRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const percentage = Math.min(Math.max(x / rect.width, 0), 1);
-      return percentage * duration;
-    },
-    [duration]
-  );
+  const calculateTime = (e: React.MouseEvent | MouseEvent) => {
+    if (!progressBarRef.current || !duration) return 0;
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percentage = Math.min(Math.max(x / rect.width, 0), 1);
+    return percentage * duration;
+  };
 
   const handleTimeMouseDown = (e: React.MouseEvent) => {
     if (!activeSnippet) return;

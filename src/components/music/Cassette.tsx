@@ -18,10 +18,10 @@ export default function Cassette({
       whileHover={{
         scale: 1.02,
         rotate: 1,
-        transition: { duration: 0.1, ease: "easeOut" },
+        transition: { type: "spring", stiffness: 300, damping: 20 },
       }}
       whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.1, ease: "easeOut" }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className={`relative w-full aspect-[1.6] rounded-lg overflow-hidden transition-all duration-75 group ${
         isSelected
           ? "ring-4 ring-brand shadow-[0_0_30px_rgba(51,230,204,0.3)] opacity-50 grayscale"
