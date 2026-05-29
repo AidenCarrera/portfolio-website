@@ -14,13 +14,16 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortOption>("featured");
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [animateEntrance, setAnimateEntrance] = useState(true);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const categories = [
     "all",
     ...Array.from(
-      new Set(initialRepos.flatMap((r) => r.topics.map((t) => t.toLowerCase())))
+      new Set(
+        initialRepos.flatMap((r) => r.topics.map((t) => t.toLowerCase())),
+      ),
     ).sort(),
   ];
 
@@ -28,7 +31,7 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
     selectedCategory === "all"
       ? initialRepos
       : initialRepos.filter((r) =>
-          r.topics.map((t) => t.toLowerCase()).includes(selectedCategory)
+          r.topics.map((t) => t.toLowerCase()).includes(selectedCategory),
         );
 
   // Sorting logic based on selected option
@@ -52,7 +55,7 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
     action();
     timeoutRef.current = setTimeout(() => {
       setIsTransitioning(false);
-    }, 250); // brief 250ms loading skeleton animation
+    }, 200); // brief 200ms loading skeleton animation
   };
 
   useEffect(() => {
@@ -71,17 +74,25 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
           <CategoryFilter
             categories={categories}
             selected={selectedCategory}
-            onSelect={(category) => triggerTransition(() => setSelectedCategory(category))}
+            onSelect={(category) => {
+              setAnimateEntrance(false);
+              setSelectedCategory(category);
+            }}
           />
 
           {/* Minimal Sort Controls Toolbar */}
           <div className="flex justify-center items-center gap-4 mb-12 text-sm">
-            <span className="text-slate-400 font-mono text-xs uppercase tracking-wider">Sort By:</span>
+            <span className="text-slate-400 font-mono text-xs uppercase tracking-wider">
+              Sort By:
+            </span>
             <div className="flex items-center bg-slate-800/40 border border-slate-700/50 rounded-lg p-1">
               {(["featured", "newest", "name"] as const).map((option) => (
                 <button
                   key={option}
-                  onClick={() => triggerTransition(() => setSortBy(option))}
+                  onClick={() => {
+                    setAnimateEntrance(true);
+                    triggerTransition(() => setSortBy(option));
+                  }}
                   className={`px-3.5 py-1.5 rounded-md text-xs font-medium capitalize transition-all duration-200 cursor-pointer
                     ${
                       sortBy === option
@@ -97,7 +108,7 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
           </div>
 
           {/* Render Sorted/Filtered Repo Grid */}
-          <RepoGrid repos={sortedRepos} loading={isTransitioning} />
+          <RepoGrid repos={sortedRepos} loading={isTransitioning} animateEntrance={animateEntrance} />
         </>
       ) : (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
