@@ -10,13 +10,13 @@ export default function AboutCard() {
         </p>
         <p>
           Experienced with C++, Java, Python, TypeScript, JUCE, and web
-          development. I build interactive projects, including piano apps
-          and C++ audio plugins.
+          development. I build interactive projects, including piano apps and
+          C++ audio plugins.
         </p>
         <p>
-          Outside of coding, I&apos;m an active musician who performs in
-          the OSU Jazz Band, Resistance Indoor Percussion, and other
-          ensembles. I compose, produce, and release original music.
+          Outside of coding, I&apos;m an active musician who performs in the OSU
+          Jazz Band, Resistance Indoor Percussion, and other ensembles. I
+          compose, produce, and release original music.
         </p>
       </div>
     </div>

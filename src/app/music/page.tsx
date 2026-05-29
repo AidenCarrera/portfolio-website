@@ -11,7 +11,8 @@ import { getSpotifyTracks } from "@/lib/spotify";
 
 export const metadata: Metadata = {
   title: "Music",
-  description: "Explore my released Spotify tracks, upcoming music snippets, and production gear.",
+  description:
+    "Explore my released Spotify tracks, upcoming music snippets, and production gear.",
 };
 
 // Server component — data is fetched on the server at request/build time

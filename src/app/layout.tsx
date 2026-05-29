@@ -26,8 +26,8 @@ export const metadata: Metadata = {
       (process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}`
         : process.env.NEXT_PUBLIC_VERCEL_URL
-        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-        : "http://localhost:3000")
+          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+          : "http://localhost:3000"),
   ),
   title: {
     default: "Aiden Carrera Portfolio",
@@ -75,7 +75,7 @@ export default function RootLayout({
       >
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] bg-brand text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-brand"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 bg-brand text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-brand"
         >
           Skip to content
         </a>

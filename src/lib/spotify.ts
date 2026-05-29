@@ -17,7 +17,9 @@ interface SpotifyTrack {
 
 async function getSpotifyAccessToken(): Promise<string> {
   if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) {
-    throw new Error("Missing SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET env variables");
+    throw new Error(
+      "Missing SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET env variables",
+    );
   }
 
   const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
@@ -26,7 +28,7 @@ async function getSpotifyAccessToken(): Promise<string> {
       Authorization:
         "Basic " +
         Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString(
-          "base64"
+          "base64",
         ),
       "Content-Type": "application/x-www-form-urlencoded",
     },
@@ -48,7 +50,7 @@ export async function getSpotifyTracks(): Promise<MusicTrack[]> {
       {
         headers: { Authorization: `Bearer ${accessToken}` },
         next: { revalidate: 3600 },
-      }
+      },
     );
 
     if (!albumsRes.ok) throw new Error("Failed to fetch albums from Spotify");
@@ -60,7 +62,7 @@ export async function getSpotifyTracks(): Promise<MusicTrack[]> {
         {
           headers: { Authorization: `Bearer ${accessToken}` },
           next: { revalidate: 3600 },
-        }
+        },
       );
 
       if (!tracksRes.ok)

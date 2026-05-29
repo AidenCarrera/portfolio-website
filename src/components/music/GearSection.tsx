@@ -16,14 +16,17 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 
 export default function GearSection({ gear }: GearSectionProps) {
   // Group gear by category
-  const groupedGear = gear.reduce((acc, item) => {
-    const category = item.category || "Other";
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(item);
-    return acc;
-  }, {} as Record<string, GearItem[]>);
+  const groupedGear = gear.reduce(
+    (acc, item) => {
+      const category = item.category || "Other";
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(item);
+      return acc;
+    },
+    {} as Record<string, GearItem[]>,
+  );
 
   return (
     <section className="space-y-16">

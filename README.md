@@ -15,44 +15,48 @@ Visitors can explore my projects, listen to my released and upcoming music, and 
 - Project portfolio with descriptions, tech stack, and links to demos/repositories
 - Dynamic navigation menu with smooth scrolling
 - Contact form to send messages via email
-- Dark/light theme toggle
-- Optimized images with lazy loading
-- SEO-friendly meta tags and titles
-- Easy content updates through modular components
+- Responsive layout for desktop and mobile
+- Interactive analog cassette deck player for listening to upcoming music snippets
+- Spotify released music player integrations
+- Project grid with dynamic, instant topic filtering and manually curated sorting controls
+- Audio gear & software showcase section grouped by hardware, software, instruments, and plugins
+- Contact form card utilizing Next.js Server Actions and Resend integrations
+- WCAG AA/AAA accessibility compliance (skip links, keyboard slider seeking, accessible forms, focus rings)
+- Automated sitemap (`sitemap.ts`) and SEO optimizations conforming to Next.js 16 and Vercel standards
 
 ## Tech Stack
 
-- **Next.js 16** – Frontend framework with Turbopack for fast builds
-- **React 19** – UI library for building interactive components
-- **Tailwind CSS v4** – Utility-first CSS framework for responsive design
-- **TypeScript** – Adds static type checking and improved developer experience
+- **Next.js 16** – Frontend React framework with Turbopack
+- **React 19** – UI library utilizing advanced hooks and Server Actions
+- **Tailwind CSS v4** – Utility-first CSS styling
+- **Motion** – Fluid animations and spring transitions
+- **TypeScript** – Static type checking
 
 ## Installation and setup
 
-To clone and run this application, you'll need Git and Node.js installed. Then:
-```
+To clone and run this application locally, make sure you have Git, Node.js, and **pnpm** installed. Then:
+
+```bash
 # Clone this repository
 git clone https://github.com/AidenCarrera/portfolio-website.git
 
-# Go into the repository
+# Navigate into the folder
 cd portfolio-website
 
-# Install dependencies
-npm install
+# Install dependencies using pnpm
+pnpm install
 
-# Run the development server
-npm run dev
+# Run the local development server
+pnpm dev
 
 # Open your browser at http://localhost:3000 to view the website
 ```
 
 ## Future Improvements
 
-- Add gear section
-- Add more interactivity
-- Add more animations and microinteractions with UI
-- Improve SEO and performance scores
-- Create performances section
+- Add more C++ VST/AU audio plugin interactive previews directly in-browser
+- Add a performances section (live gigs, ensemble schedule, recording sessions)
+- Integrate Spotify API directly for real-time track updates
 
 ## Learn More
 
@@ -61,4 +65,3 @@ To learn more about the technologies used, check out the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) – features and API guide
 - [React Documentation](https://reactjs.org/docs/getting-started.html) – building interactive components
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs) – utility-first styling framework
-

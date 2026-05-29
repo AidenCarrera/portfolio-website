@@ -43,7 +43,10 @@ export default function RepoCard({ repo, isGhost }: RepoCardProps) {
         {/* Left: Folder Icon and Collab Label side-by-side */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-linear-to-br from-brand/10 to-brand-dark/5 border border-brand/20 flex items-center justify-center shadow-inner">
-            <Folder size={18} className="text-brand filter drop-shadow-[0_2px_6px_rgba(0,255,204,0.25)]" />
+            <Folder
+              size={18}
+              className="text-brand filter drop-shadow-[0_2px_6px_rgba(0,255,204,0.25)]"
+            />
           </div>
           {repo?.isFeatured && (
             <span className="bg-brand/10 border border-brand/20 text-brand text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full animate-pulse">

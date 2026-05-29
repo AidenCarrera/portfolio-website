@@ -3,14 +3,14 @@
 
 @theme {
   /* === Brand Colors === */
-  --color-brand: #00ffcc;         
-  --color-brand-dark: #00b399;    
-  --color-brand-darker: #009977;  
+  --color-brand: #00ffcc;
+  --color-brand-dark: #00b399;
+  --color-brand-darker: #009977;
   --color-brand-light: #33e6cc;
 
   /* === Base Theme Variables === */
-  --color-background: #0a0a0a;    
-  --color-foreground: #ededed;    
+  --color-background: #0a0a0a;
+  --color-foreground: #ededed;
   --font-sans: var(--font-geist-sans, system-ui, sans-serif);
   --font-mono: var(--font-geist-mono, monospace);
 }
@@ -21,16 +21,28 @@ body {
 
 /* === Subtle Animated Dark Gradient === */
 @keyframes subtle-gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 50% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 50% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* === Keyframes for circular gradient movement === */
 @keyframes subtle-radial {
-  0% { background-position: 50% 50%; }
-  50% { background-position: 52% 48%; }
-  100% { background-position: 50% 50%; }
+  0% {
+    background-position: 50% 50%;
+  }
+  50% {
+    background-position: 52% 48%;
+  }
+  100% {
+    background-position: 50% 50%;
+  }
 }
 
 /* === Textured, circular animated background === */

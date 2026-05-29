@@ -7,6 +7,9 @@ export async function GET() {
     return NextResponse.json(repos);
   } catch (err) {
     console.error("API route error:", err);
-    return NextResponse.json({ error: "Failed to fetch repositories" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch repositories" },
+      { status: 500 },
+    );
   }
 }

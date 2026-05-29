@@ -17,7 +17,9 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
   const categories = [
     "all",
     ...Array.from(
-      new Set(initialRepos.flatMap((r) => r.topics.map((t) => t.toLowerCase())))
+      new Set(
+        initialRepos.flatMap((r) => r.topics.map((t) => t.toLowerCase())),
+      ),
     ).sort(),
   ];
 
@@ -25,7 +27,7 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
     selectedCategory === "all"
       ? initialRepos
       : initialRepos.filter((r) =>
-          r.topics.map((t) => t.toLowerCase()).includes(selectedCategory)
+          r.topics.map((t) => t.toLowerCase()).includes(selectedCategory),
         );
 
   // Sorting logic based on selected option
@@ -77,7 +79,11 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
           </div>
 
           {/* Render Sorted/Filtered Repo Grid instantly without entrance animations */}
-          <RepoGrid repos={sortedRepos} loading={false} animateEntrance={false} />
+          <RepoGrid
+            repos={sortedRepos}
+            loading={false}
+            animateEntrance={false}
+          />
         </>
       ) : (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">

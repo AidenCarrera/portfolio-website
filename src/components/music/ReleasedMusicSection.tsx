@@ -31,7 +31,7 @@ export default function ReleasedMusicSection({
         } catch (err) {
           console.error("Error fetching tracks:", err);
           setError(
-            "Unable to load released tracks at the moment. Please try again later."
+            "Unable to load released tracks at the moment. Please try again later.",
           );
         } finally {
           setLoading(false);

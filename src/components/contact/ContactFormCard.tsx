@@ -7,7 +7,10 @@ interface FormState {
   status: "idle" | "success" | "error";
 }
 
-async function contactAction(prevState: FormState, formData: FormData): Promise<FormState> {
+async function contactAction(
+  prevState: FormState,
+  formData: FormData,
+): Promise<FormState> {
   try {
     const res = await fetch("/api/contact", {
       method: "POST",
@@ -28,7 +31,9 @@ async function contactAction(prevState: FormState, formData: FormData): Promise<
 }
 
 export default function ContactFormCard() {
-  const [state, formAction, isPending] = useActionState(contactAction, { status: "idle" } as FormState);
+  const [state, formAction, isPending] = useActionState(contactAction, {
+    status: "idle",
+  } as FormState);
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -44,7 +49,10 @@ export default function ContactFormCard() {
 
         <form ref={formRef} action={formAction} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-slate-300 mb-2"
+            >
               Name
             </label>
             <input
@@ -58,7 +66,10 @@ export default function ContactFormCard() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-slate-300 mb-2"
+            >
               Email
             </label>
             <input
@@ -72,7 +83,10 @@ export default function ContactFormCard() {
           </div>
 
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">
+            <label
+              htmlFor="message"
+              className="block text-sm font-medium text-slate-300 mb-2"
+            >
               Message
             </label>
             <textarea
@@ -101,13 +115,19 @@ export default function ContactFormCard() {
           </button>
 
           {state.status === "success" && (
-            <div role="status" className="p-4 rounded-lg bg-green-500/20 border border-green-500/50 text-green-400 text-sm">
+            <div
+              role="status"
+              className="p-4 rounded-lg bg-green-500/20 border border-green-500/50 text-green-400 text-sm"
+            >
               Thanks for reaching out! I&apos;ll get back to you soon.
             </div>
           )}
 
           {state.status === "error" && (
-            <div role="status" className="p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm">
+            <div
+              role="status"
+              className="p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm"
+            >
               Oops! Something went wrong. Please try again or email me directly.
             </div>
           )}

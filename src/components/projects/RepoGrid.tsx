@@ -10,7 +10,11 @@ interface RepoGridProps {
   animateEntrance?: boolean;
 }
 
-export default function RepoGrid({ repos, loading, animateEntrance = true }: RepoGridProps) {
+export default function RepoGrid({
+  repos,
+  loading,
+  animateEntrance = true,
+}: RepoGridProps) {
   // Show matching number of skeleton cards, at least 9 to fill rows
   const ghostCount = Math.max(repos.length, 9);
 

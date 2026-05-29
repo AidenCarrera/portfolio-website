@@ -25,7 +25,11 @@ export default function DirectContactCard() {
         </div>
         <button
           onClick={copyEmail}
-          aria-label={copied ? "Email address copied to clipboard" : "Copy email address to clipboard"}
+          aria-label={
+            copied
+              ? "Email address copied to clipboard"
+              : "Copy email address to clipboard"
+          }
           className="p-2 rounded-lg hover:bg-slate-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
         >
           {copied ? (
