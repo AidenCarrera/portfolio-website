@@ -87,7 +87,7 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ query }),
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: process.env.NODE_ENV === "development" ? 0 : 300 }, // No cache in dev, 5 min cache in prod
     });
 
     const { data, errors } = await res.json();
