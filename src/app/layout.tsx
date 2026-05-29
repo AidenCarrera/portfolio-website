@@ -33,7 +33,22 @@ export const metadata: Metadata = {
     default: "Aiden Carrera Portfolio",
     template: "%s | Aiden Carrera",
   },
-  description: "Developer & Musician Portfolio",
+  description:
+    "Software engineering, audio programming, and music production portfolio of Aiden Carrera.",
+  keywords: [
+    "Aiden Carrera",
+    "Software Engineer",
+    "Music Producer",
+    "Audio Programmer",
+    "JUCE C++",
+    "React Developer",
+    "Web Audio API",
+  ],
+  authors: [{ name: "Aiden Carrera" }],
+  creator: "Aiden Carrera",
+  verification: {
+    google: "ivXP4BMnsO5q10Rcb1-RDmAgpQmwBQR-d4ckfFDQB9c",
+  },
   openGraph: {
     title: "Aiden Carrera | Developer",
     description:
@@ -61,6 +76,12 @@ export const metadata: Metadata = {
       "Portfolio showcasing software, music, and creative tech projects.",
     images: ["/og-image.png"],
   },
+};
+
+export const viewport = {
+  themeColor: "#0a0a0a",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
