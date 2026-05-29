@@ -1,9 +1,13 @@
-"use client";
-
 import ContactFormCard from "@/components/contact/ContactFormCard";
 import DirectContactCard from "@/components/contact/DirectContactCard";
 import ConnectCard from "@/components/contact/ConnectCard";
 import { Mail } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Get in touch with Aiden Carrera for software development and music production inquiries.",
+};
 
 export default function Contact() {
   return (

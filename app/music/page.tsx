@@ -1,15 +1,23 @@
 import { MusicSnippet } from "@/types";
 import { snippetsData } from "@/lib/snippetsData";
 import { Music as MusicIcon } from "lucide-react";
+import type { Metadata } from "next";
 
 import ReleasedMusicSection from "@/components/music/ReleasedMusicSection";
 import UpcomingSnippetsSection from "@/components/music/UpcomingSnippetsSection";
 import GearSection from "@/components/music/GearSection";
 import { gearData } from "@/lib/gearData";
+import { getSpotifyTracks } from "@/lib/spotify";
 
-// Server component — no client bundle needed for data fetching
-export default function Music() {
+export const metadata: Metadata = {
+  title: "Music",
+  description: "Explore my released Spotify tracks, upcoming music snippets, and production gear.",
+};
+
+// Server component — data is fetched on the server at request/build time
+export default async function Music() {
   const snippets: MusicSnippet[] = snippetsData;
+  const tracks = await getSpotifyTracks();
 
   return (
     <div className="min-h-screen bg-slate-900 pt-24 pb-20">
@@ -30,7 +38,7 @@ export default function Music() {
         </div>
 
         <UpcomingSnippetsSection snippets={snippets} />
-        <ReleasedMusicSection />
+        <ReleasedMusicSection tracks={tracks} />
         <GearSection gear={gearData} />
       </div>
     </div>

@@ -1,50 +1,21 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import { Code2, ExternalLink } from "lucide-react";
 import { SiGithub } from "react-icons/si";
-import { Navigation } from "@/components/common";
-import { RepoGrid, CategoryFilter } from "@/components/projects";
-import { GithubRepo } from "@/lib/github";
+import { getGithubRepos } from "@/lib/github";
 import { cn } from "@/lib/utils";
+import ProjectsClient from "./ProjectsClient";
+import type { Metadata } from "next";
 
-export default function ProjectsPage() {
-  const [repos, setRepos] = useState<GithubRepo[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [loading, setLoading] = useState(true);
+export const metadata: Metadata = {
+  title: "Projects",
+  description: "Browse my GitHub repositories for software engineering, audio programming, and web development projects.",
+};
 
-  useEffect(() => {
-    const fetchRepos = async () => {
-      try {
-        const res = await fetch("/api/github-repos");
-        const data: GithubRepo[] = await res.json();
-        setRepos(data);
-      } catch (err) {
-        console.error("Failed to fetch repos:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRepos();
-  }, []);
-
-  const categories = [
-    "all",
-    ...Array.from(new Set(repos.flatMap((r) => r.topics.map((t) => t.toLowerCase())))),
-  ];
-
-  const filteredRepos =
-    selectedCategory === "all"
-      ? repos
-      : repos.filter((r) =>
-          r.topics.map((t) => t.toLowerCase()).includes(selectedCategory)
-        );
+// Server component — direct server-side data fetching
+export default async function ProjectsPage() {
+  const repos = await getGithubRepos();
 
   return (
     <div className="min-h-screen bg-slate-900 pt-24 pb-20">
-      <Navigation />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -59,17 +30,8 @@ export default function ProjectsPage() {
           </p>
         </div>
 
-        {/* Category Filter */}
-        {repos.length > 0 && !loading && (
-          <CategoryFilter
-            categories={categories}
-            selected={selectedCategory}
-            onSelect={setSelectedCategory}
-          />
-        )}
-
-        {/* Repo Grid */}
-        <RepoGrid repos={filteredRepos} loading={loading} />
+        {/* Client side category filtering and grid */}
+        <ProjectsClient initialRepos={repos} />
 
         {/* GitHub Link */}
         <div className="mt-16 text-center">

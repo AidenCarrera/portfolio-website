@@ -2,16 +2,19 @@
 
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 
 interface NavigationProps {
-  currentPage?: string;
+  currentPage?: string; // Kept for backward compatibility, usePathname is used instead
 }
+
+const MotionLink = motion(Link);
 
 export default function Navigation({ currentPage }: NavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const router = useRouter();
+  const pathname = usePathname();
 
   const navItems = [
     { id: "home", label: "Home", path: "/" },
@@ -20,9 +23,11 @@ export default function Navigation({ currentPage }: NavigationProps) {
     { id: "contact", label: "Contact", path: "/contact" },
   ];
 
-  const handleNavClick = (path: string) => {
-    router.push(path); // navigate
-    setMobileMenuOpen(false);
+  const isActive = (path: string) => {
+    if (path === "/") {
+      return pathname === "/";
+    }
+    return pathname.startsWith(path);
   };
 
   const hoverLift = { scale: 1.05, y: -2 }; // lift and slightly scale on hover
@@ -31,34 +36,35 @@ export default function Navigation({ currentPage }: NavigationProps) {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <motion.button
-            onClick={() => handleNavClick("/")}
+          <MotionLink
+            href="/"
             whileHover={hoverLift}
             className="text-xl font-bold text-white hover:text-brand transition-colors"
           >
             Aiden Carrera
-          </motion.button>
+          </MotionLink>
 
           <div className="hidden md:flex space-x-8">
             {navItems.map((item) => (
-              <motion.button
+              <MotionLink
                 key={item.id}
-                onClick={() => handleNavClick(item.path)}
+                href={item.path}
                 whileHover={hoverLift}
                 className={`text-sm font-medium transition-colors ${
-                  currentPage === item.id
+                  isActive(item.path)
                     ? "text-brand"
                     : "text-slate-300 hover:text-white"
                 }`}
               >
                 {item.label}
-              </motion.button>
+              </MotionLink>
             ))}
           </div>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden text-white p-2"
+            aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -69,18 +75,19 @@ export default function Navigation({ currentPage }: NavigationProps) {
         <div className="md:hidden bg-slate-800 border-t border-slate-700">
           <div className="px-4 py-3 space-y-3">
             {navItems.map((item) => (
-              <motion.button
+              <MotionLink
                 key={item.id}
-                onClick={() => handleNavClick(item.path)}
+                href={item.path}
+                onClick={() => setMobileMenuOpen(false)}
                 whileHover={hoverLift}
                 className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  currentPage === item.id
+                  isActive(item.path)
                     ? "text-brand bg-slate-700"
                     : "text-slate-300 hover:text-white hover:bg-slate-700"
                 }`}
               >
                 {item.label}
-              </motion.button>
+              </MotionLink>
             ))}
           </div>
         </div>
