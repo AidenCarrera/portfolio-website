@@ -6,7 +6,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with Aiden Carrera for software development and music production inquiries.",
+  description:
+    "Get in touch with Aiden Carrera for software development and music production inquiries.",
 };
 
 export default function Contact() {

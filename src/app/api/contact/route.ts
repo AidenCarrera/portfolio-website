@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     if (message.length > MAX_MESSAGE_LENGTH) {
       return NextResponse.json(
         { error: `Message exceeds ${MAX_MESSAGE_LENGTH} characters.` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     if (!emailRegex.test(email)) {
       return NextResponse.json(
         { error: "Invalid email address." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
         { error: "Too many submissions. Please wait before trying again." },
-        { status: 429 }
+        { status: 429 },
       );
     }
 
@@ -96,7 +96,10 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error("Resend Error:", error);
-      return NextResponse.json({ error: "Failed to send email." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to send email." },
+        { status: 500 },
+      );
     }
 
     console.log("Contact form submission sent successfully:", data?.id);
@@ -105,7 +108,7 @@ export async function POST(req: NextRequest) {
     console.error("Unexpected API error:", err);
     return NextResponse.json(
       { error: "Unexpected server error." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

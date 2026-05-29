@@ -30,7 +30,11 @@ export default function Navigation({ currentPage }: NavigationProps) {
     return pathname.startsWith(path);
   };
 
-  const hoverLift = { scale: 1.05, y: -2, transition: { type: "spring", stiffness: 300, damping: 15 } } as const; // lift and slightly scale on hover
+  const hoverLift = {
+    scale: 1.05,
+    y: -2,
+    transition: { type: "spring", stiffness: 300, damping: 15 },
+  } as const; // lift and slightly scale on hover
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">

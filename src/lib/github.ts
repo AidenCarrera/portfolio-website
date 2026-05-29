@@ -7,10 +7,10 @@ export interface GithubRepo {
   html_url: string;
   homepage: string | null;
   topics: string[];
-  owner: string;       // GitHub username of the owner
-  isCollab: boolean;   // explicitly mark if it's a contributed/collaborated repo
-  pushedAt: string;    // ISO timestamp for sorting by newest
-  priority: number;    // manually curated priority rank
+  owner: string; // GitHub username of the owner
+  isCollab: boolean; // explicitly mark if it's a contributed/collaborated repo
+  pushedAt: string; // ISO timestamp for sorting by newest
+  priority: number; // manually curated priority rank
   isFeatured: boolean; // boolean flag for display of visual "Featured" badge
 }
 
@@ -38,10 +38,10 @@ const PROJECT_PRIORITY: Record<string, number> = {
   "ai-learning": 6,
   "random-web": 7,
   "portfolio-website": 8,
-  "SeniorCapstone": 9,
+  SeniorCapstone: 9,
   "paperclip-collector": 10,
   "neetcode-submissions": 11,
-  "ProjectMaVe": 12,
+  ProjectMaVe: 12,
 };
 
 /**
@@ -122,12 +122,19 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
     const user = data?.user;
     if (!user) return [];
 
-    const mapNode = (node: GraphQLRepoNode, isContributed: boolean): GithubRepo => {
+    const mapNode = (
+      node: GraphQLRepoNode,
+      isContributed: boolean,
+    ): GithubRepo => {
       const isOwner = node.owner.login.toLowerCase() === username.toLowerCase();
       const repoName = node.name;
       const priority = PROJECT_PRIORITY[repoName] ?? 999;
       // Only the top 3 suggested are visually tagged as Featured
-      const isFeatured = ["stillwater-pulse", "olo-eq", "solfege-piano"].includes(repoName);
+      const isFeatured = [
+        "stillwater-pulse",
+        "olo-eq",
+        "solfege-piano",
+      ].includes(repoName);
 
       return {
         id: node.databaseId,
@@ -137,7 +144,10 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
         homepage: node.homepageUrl || null,
         topics: node.repositoryTopics.nodes.map((t) => t.topic.name),
         owner: node.owner.login,
-        isCollab: isContributed || !isOwner || (node.collaborators?.totalCount ?? 0) > 1,
+        isCollab:
+          isContributed ||
+          !isOwner ||
+          (node.collaborators?.totalCount ?? 0) > 1,
         pushedAt: node.pushedAt,
         priority,
         isFeatured,
@@ -147,17 +157,19 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
     // Process sets
     // 1. Owned/Collaborated: filter for public only, and exclude forks (unless it's a collab)
     const mainRepos = (user.repositories.nodes as GraphQLRepoNode[])
-      .filter(n => !n.isPrivate && (!n.isFork || n.owner.login !== username))
-      .map(n => mapNode(n, false));
+      .filter((n) => !n.isPrivate && (!n.isFork || n.owner.login !== username))
+      .map((n) => mapNode(n, false));
 
     // 2. Contributed To: filter for public only
-    const contributed = (user.repositoriesContributedTo.nodes as GraphQLRepoNode[])
-      .filter(n => !n.isPrivate)
-      .map(n => mapNode(n, true));
+    const contributed = (
+      user.repositoriesContributedTo.nodes as GraphQLRepoNode[]
+    )
+      .filter((n) => !n.isPrivate)
+      .map((n) => mapNode(n, true));
 
     // Deduplicate by URL
     const uniqueMap = new Map<string, GithubRepo>();
-    [...mainRepos, ...contributed].forEach(repo => {
+    [...mainRepos, ...contributed].forEach((repo) => {
       if (!uniqueMap.has(repo.html_url) || repo.isCollab) {
         uniqueMap.set(repo.html_url, repo);
       }

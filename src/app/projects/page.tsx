@@ -7,7 +7,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Browse my GitHub repositories for software engineering, audio programming, and web development projects.",
+  description:
+    "Browse my GitHub repositories for software engineering, audio programming, and web development projects.",
 };
 
 // Server component — direct server-side data fetching
@@ -26,7 +27,9 @@ export default async function ProjectsPage() {
             Projects
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            My GitHub repositories: software projects, AI experiments, interactive web apps, audio tools, and games — including projects I&apos;ve collaborated on.
+            My GitHub repositories: software projects, AI experiments,
+            interactive web apps, audio tools, and games — including projects
+            I&apos;ve collaborated on.
           </p>
         </div>
 
@@ -40,7 +43,7 @@ export default async function ProjectsPage() {
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              "inline-flex items-center space-x-2 text-brand hover:text-brand-light transition-colors"
+              "inline-flex items-center space-x-2 text-brand hover:text-brand-light transition-colors",
             )}
           >
             <SiGithub size={20} />

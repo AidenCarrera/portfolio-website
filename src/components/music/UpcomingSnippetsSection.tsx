@@ -12,7 +12,7 @@ interface Props {
 
 export default function UpcomingSnippetsSection({ snippets }: Props) {
   const [activeSnippet, setActiveSnippet] = useState<MusicSnippet | null>(
-    snippets[0] ?? null
+    snippets[0] ?? null,
   );
 
   return (
@@ -47,7 +47,9 @@ export default function UpcomingSnippetsSection({ snippets }: Props) {
       ) : (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
           <Music size={48} className="text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400">Tape collection empty. Check back later!</p>
+          <p className="text-slate-400">
+            Tape collection empty. Check back later!
+          </p>
         </div>
       )}
     </section>

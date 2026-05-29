@@ -11,7 +11,7 @@ export async function GET() {
     console.error("Spotify API Route Error:", err);
     return NextResponse.json(
       { error: "Failed to fetch Spotify tracks" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
