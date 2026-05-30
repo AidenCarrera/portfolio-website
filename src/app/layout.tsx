@@ -31,12 +31,17 @@ export const metadata: Metadata = {
   ),
   title: {
     default: "Aiden Carrera Portfolio",
-    template: "%s | Aiden Carrera",
+    template: "%s | Aiden Carrera Portfolio",
   },
   description:
     "Software engineering, audio programming, and music production portfolio of Aiden Carrera.",
   keywords: [
     "Aiden Carrera",
+    "Aiden Carrera Portfolio",
+    "portfolio",
+    "Software Engineer Portfolio",
+    "Audio Developer Portfolio",
+    "Music Portfolio",
     "Software Engineer",
     "Music Producer",
     "Audio Programmer",
@@ -50,11 +55,11 @@ export const metadata: Metadata = {
     google: "ivXP4BMnsO5q10Rcb1-RDmAgpQmwBQR-d4ckfFDQB9c",
   },
   openGraph: {
-    title: "Aiden Carrera | Developer",
+    title: "Aiden Carrera Portfolio",
     description:
-      "Portfolio showcasing software, music, and creative tech projects.",
+      "Software engineering, audio programming, and music production portfolio of Aiden Carrera.",
     url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-    siteName: "Aiden Carrera",
+    siteName: "Aiden Carrera Portfolio",
     locale: "en_US",
     type: "website",
     images: [
@@ -67,13 +72,24 @@ export const metadata: Metadata = {
     ],
   },
   icons: {
-    icon: "/developer-favicon.svg",
+    icon: [
+      {
+        url: "/developer-favicon.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    apple: [
+      {
+        url: "/developer-favicon.svg",
+        type: "image/svg+xml",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aiden Carrera | Developer & Musician",
+    title: "Aiden Carrera | Developer & Musician Portfolio",
     description:
-      "Portfolio showcasing software, music, and creative tech projects.",
+      "Software engineering, audio programming, and music production portfolio of Aiden Carrera.",
     images: ["/og-image.png"],
   },
 };
