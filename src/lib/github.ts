@@ -9,7 +9,7 @@ export interface GithubRepo {
   topics: string[];
   owner: string; // GitHub username of the owner
   isCollab: boolean; // explicitly mark if it's a contributed/collaborated repo
-  pushedAt: string; // ISO timestamp for sorting by newest
+  createdAt: string; // ISO timestamp for sorting by newest
   priority: number; // manually curated priority rank
   isFeatured: boolean; // boolean flag for display of visual "Featured" badge
 }
@@ -25,7 +25,7 @@ interface GraphQLRepoNode {
   owner: { login: string };
   repositoryTopics: { nodes: { topic: { name: string } }[] };
   collaborators?: { totalCount: number };
-  pushedAt: string;
+  createdAt: string;
 }
 
 // Manually curated project order behind the scenes
@@ -63,7 +63,7 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
           first: 100, 
           privacy: PUBLIC, 
           ownerAffiliations: [OWNER, COLLABORATOR], 
-          orderBy: {field: UPDATED_AT, direction: DESC}
+          orderBy: {field: CREATED_AT, direction: DESC}
         ) {
           nodes {
             databaseId
@@ -76,7 +76,7 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
             owner { login }
             repositoryTopics(first: 10) { nodes { topic { name } } }
             collaborators { totalCount }
-            pushedAt
+            createdAt
           }
         }
         repositoriesContributedTo(
@@ -94,7 +94,7 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
             isFork
             owner { login }
             repositoryTopics(first: 10) { nodes { topic { name } } }
-            pushedAt
+            createdAt
           }
         }
       }
@@ -149,15 +149,7 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
         repoName = "fitsync";
         description =
           "A web application built with ASP.NET Core and MariaDB that tracks fitness metrics and utilizes Google AI Studio to generate personalized workouts based on user progress.";
-        topics = [
-          "ai",
-          "aspnet",
-          "docker",
-          "mariadb",
-          "html-css",
-          "csharp",
-          "gemini api",
-        ];
+        topics = ["ai", "aspnet", "docker", "mariadb", "csharp", "gemini-api"];
       }
 
       const priority = PROJECT_PRIORITY[node.name] ?? 999;
@@ -180,7 +172,7 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
           isContributed ||
           !isOwner ||
           (node.collaborators?.totalCount ?? 0) > 1,
-        pushedAt: node.pushedAt,
+        createdAt: node.createdAt,
         priority,
         isFeatured,
       };

@@ -14,11 +14,13 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortOption>("featured");
 
+  const normalizeTag = (tag: string) => tag.toLowerCase().trim().replace(/-/g, " ");
+
   const categories = [
     "all",
     ...Array.from(
       new Set(
-        initialRepos.flatMap((r) => r.topics.map((t) => t.toLowerCase())),
+        initialRepos.flatMap((r) => r.topics.map((t) => normalizeTag(t))),
       ),
     ).sort(),
   ];
@@ -27,7 +29,7 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
     selectedCategory === "all"
       ? initialRepos
       : initialRepos.filter((r) =>
-          r.topics.map((t) => t.toLowerCase()).includes(selectedCategory),
+          r.topics.map((t) => normalizeTag(t)).includes(selectedCategory),
         );
 
   // Sorting logic based on selected option
@@ -36,7 +38,7 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
       return a.priority - b.priority;
     }
     if (sortBy === "newest") {
-      return new Date(b.pushedAt).getTime() - new Date(a.pushedAt).getTime();
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
     // alphabetical
     return a.name.localeCompare(b.name);

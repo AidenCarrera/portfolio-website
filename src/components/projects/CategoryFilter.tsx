@@ -1,13 +1,12 @@
 "use client";
 
+import { formatTagName } from "@/lib/utils";
+
 interface CategoryFilterProps {
   categories: string[];
   selected: string;
   onSelect: (category: string) => void;
 }
-
-// small helper to capitalize a string
-const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 export default function CategoryFilter({
   categories,
@@ -38,7 +37,7 @@ export default function CategoryFilter({
                 }
               `}
             >
-              {capitalize(category)}
+              {formatTagName(category)}
             </button>
           );
         })}
