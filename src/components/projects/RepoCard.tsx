@@ -1,6 +1,5 @@
 import { ExternalLink, Folder } from "lucide-react";
 import { SiGithub } from "react-icons/si";
-import { getStackIcon } from "@/lib/utils";
 import { GithubRepo } from "@/lib/github";
 
 interface RepoCardProps {
@@ -110,7 +109,6 @@ export default function RepoCard({ repo, isGhost }: RepoCardProps) {
             key={tech}
             className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-slate-700 text-slate-300"
           >
-            {getStackIcon(tech)}
             <span className="capitalize">{tech.replace(/-/g, " ")}</span>
           </span>
         ))}

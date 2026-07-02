@@ -1,13 +1,3 @@
-export interface Project {
-  id: string;
-  name: string;
-  description: string;
-  stack: string[];
-  github_url?: string;
-  demo_url?: string;
-  category?: string;
-}
-
 export interface MusicTrack {
   id: string;
   title: string;
@@ -33,9 +23,3 @@ export interface GearItem {
   description?: string;
 }
 
-export interface ContactSubmission {
-  id: string;
-  name: string;
-  email: string;
-  message: string;
-}

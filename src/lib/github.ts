@@ -127,22 +127,54 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
       isContributed: boolean,
     ): GithubRepo => {
       const isOwner = node.owner.login.toLowerCase() === username.toLowerCase();
-      const repoName = node.name;
-      const priority = PROJECT_PRIORITY[repoName] ?? 999;
+      let repoName = node.name;
+      let description = node.description ?? "";
+      let topics = node.repositoryTopics.nodes.map((t) => t.topic.name);
+
+      if (node.name === "SeniorCapstone") {
+        repoName = "cyberlock-senior-capstone";
+        description =
+          "A full-stack, multiplayer cyberpunk Tabletop RPG featuring real-time combat, persistent character progression, and dynamic storytelling powered by AI-driven NPCs.";
+        topics = [
+          "chromadb",
+          "fastapi",
+          "nodejs",
+          "react",
+          "socketio",
+          "typescript",
+          "python",
+          "game",
+        ];
+      } else if (node.name === "ProjectMaVe") {
+        repoName = "fitsync";
+        description =
+          "A web application built with ASP.NET Core and MariaDB that tracks fitness metrics and utilizes Google AI Studio to generate personalized workouts based on user progress.";
+        topics = [
+          "ai",
+          "aspnet",
+          "docker",
+          "mariadb",
+          "html-css",
+          "csharp",
+          "gemini api",
+        ];
+      }
+
+      const priority = PROJECT_PRIORITY[node.name] ?? 999;
       // Only the top 3 suggested are visually tagged as Featured
       const isFeatured = [
         "stillwater-pulse",
         "olo-eq",
         "solfege-piano",
-      ].includes(repoName);
+      ].includes(node.name);
 
       return {
         id: node.databaseId,
         name: repoName,
-        description: node.description ?? "",
+        description: description,
         html_url: node.url,
         homepage: node.homepageUrl || null,
-        topics: node.repositoryTopics.nodes.map((t) => t.topic.name),
+        topics: topics,
         owner: node.owner.login,
         isCollab:
           isContributed ||

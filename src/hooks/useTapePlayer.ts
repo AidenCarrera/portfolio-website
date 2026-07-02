@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useAnimation, animationControls } from "motion/react";
+import { useAnimation } from "motion/react";
 import { MusicSnippet } from "@/types";
 
 export function useTapePlayer(activeSnippet: MusicSnippet | null) {
