@@ -14,7 +14,8 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortOption>("featured");
 
-  const normalizeTag = (tag: string) => tag.toLowerCase().trim().replace(/-/g, " ");
+  const normalizeTag = (tag: string) =>
+    tag.toLowerCase().trim().replace(/-/g, " ");
 
   const categories = [
     "all",

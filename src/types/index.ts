@@ -22,4 +22,3 @@ export interface GearItem {
   image_url?: string;
   description?: string;
 }
-
