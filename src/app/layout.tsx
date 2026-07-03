@@ -5,6 +5,7 @@ import Navigation from "@/components/common/Navigation";
 import Footer from "@/components/common/Footer";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SITE_URL } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,14 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ||
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : process.env.NEXT_PUBLIC_VERCEL_URL
-          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-          : "http://localhost:3000"),
-  ),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Aiden Carrera Portfolio",
     template: "%s | Aiden Carrera Portfolio",
@@ -56,7 +50,7 @@ export const metadata: Metadata = {
     title: "Aiden Carrera Portfolio",
     description:
       "Software engineering, audio programming, and music production portfolio of Aiden Carrera.",
-    url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+    url: SITE_URL,
     siteName: "Aiden Carrera Portfolio",
     locale: "en_US",
     type: "website",

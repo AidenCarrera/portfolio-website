@@ -1,8 +1,8 @@
 import { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/utils";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://aidencarrera.vercel.app";
+  const baseUrl = SITE_URL;
 
   return [
     {

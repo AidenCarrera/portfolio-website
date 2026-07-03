@@ -70,3 +70,10 @@ export function formatTagName(tag: string): string {
     })
     .join(" ");
 }
+
+// Base site URL dynamically resolved without hardcoding
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000");

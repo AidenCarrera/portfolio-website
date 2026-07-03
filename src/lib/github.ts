@@ -48,11 +48,11 @@ const PROJECT_PRIORITY: Record<string, number> = {
  * Fetches public GitHub repositories and collaborations for the user.
  */
 export async function getGithubRepos(): Promise<GithubRepo[]> {
-  const token = process.env.GITHUB_TOKEN;
+  const token = process.env.GITHUB_PAT;
   const username = "aidencarrera";
 
   if (!token) {
-    console.error("Missing GITHUB_TOKEN environment variable");
+    console.error("Missing GITHUB_PAT environment variable");
     return [];
   }
 
