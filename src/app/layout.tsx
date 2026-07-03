@@ -6,11 +6,10 @@ import Footer from "@/components/common/Footer";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-// Font setup
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: "swap", // helps avoid FOIT (flash of invisible text)
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -19,7 +18,6 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-// Next.js 16 metadata structure with metadataBase
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ||
@@ -92,7 +90,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aiden Carrera | Developer & Musician Portfolio",
+    title: "Aiden Carrera Portfolio",
     description:
       "Software engineering, audio programming, and music production portfolio of Aiden Carrera.",
     images: ["/og-image.png"],
