@@ -70,7 +70,7 @@ export const metadata: Metadata = {
         sizes: "any",
       },
       {
-        url: "/developer-favicon.svg",
+        url: "/favicon.svg",
         type: "image/svg+xml",
       },
     ],
