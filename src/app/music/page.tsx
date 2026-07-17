@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   title: "Music",
   description:
     "Explore my released Spotify tracks, upcoming music snippets, and production gear.",
+  alternates: {
+    canonical: "/music",
+  },
 };
 
 // Server component — data is fetched on the server at request/build time

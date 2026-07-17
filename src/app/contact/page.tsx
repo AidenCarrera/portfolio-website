@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Contact",
   description:
     "Get in touch with Aiden Carrera for software development and music production inquiries.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export default function Contact() {

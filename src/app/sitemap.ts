@@ -4,26 +4,22 @@ import { SITE_URL } from "@/lib/utils";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: SITE_URL,
-      lastModified: new Date(),
+      url: new URL("/", SITE_URL).toString(),
       changeFrequency: "monthly",
       priority: 1,
     },
     {
-      url: `${SITE_URL}/projects`,
-      lastModified: new Date(),
+      url: new URL("/projects", SITE_URL).toString(),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
-      url: `${SITE_URL}/music`,
-      lastModified: new Date(),
+      url: new URL("/music", SITE_URL).toString(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: `${SITE_URL}/contact`,
-      lastModified: new Date(),
+      url: new URL("/contact", SITE_URL).toString(),
       changeFrequency: "yearly",
       priority: 0.5,
     },

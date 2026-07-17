@@ -6,6 +6,8 @@ import Footer from "@/components/common/Footer";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE_URL } from "@/lib/utils";
+import JsonLd from "@/components/common/JsonLd";
+import { globalStructuredData } from "@/lib/structuredData";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,6 +29,9 @@ export const metadata: Metadata = {
   },
   description:
     "Software engineering, audio programming, and music production portfolio of Aiden Carrera.",
+  alternates: {
+    canonical: "/",
+  },
   keywords: [
     "Aiden Carrera",
     "Aiden Carrera Portfolio",
@@ -107,6 +112,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-slate-900 text-white`}
       >
+        <JsonLd data={globalStructuredData} />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 bg-brand text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-brand"
@@ -114,7 +120,11 @@ export default function RootLayout({
           Skip to content
         </a>
         <Navigation />
-        <main id="main-content" className="grow outline-none" tabIndex={-1}>
+        <main
+          id="main-content"
+          className="flex grow flex-col outline-none"
+          tabIndex={-1}
+        >
           {children}
         </main>
         <Footer />

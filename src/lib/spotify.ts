@@ -1,8 +1,22 @@
-import { MusicTrack } from "@/types";
+import type { MusicTrack } from "@/types";
 
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const ARTIST_ID = "1LgE8yhi5cPt1uBQPzaRAe";
+
+// Last-known release data keeps the music page useful during Spotify outages.
+const FALLBACK_SPOTIFY_TRACKS: MusicTrack[] = [
+  {
+    id: "14UiomCSXMRsMVINVZmK4O",
+    title: "Rain From 93",
+    spotify_embed_url:
+      "https://open.spotify.com/embed/track/14UiomCSXMRsMVINVZmK4O",
+  },
+];
+
+function getFallbackSpotifyTracks(): MusicTrack[] {
+  return FALLBACK_SPOTIFY_TRACKS.map((track) => ({ ...track }));
+}
 
 interface SpotifyAlbum {
   id: string;
@@ -77,9 +91,9 @@ export async function getSpotifyTracks(): Promise<MusicTrack[]> {
     });
 
     const allTracks = (await Promise.all(trackPromises)).flat();
-    return allTracks;
+    return allTracks.length > 0 ? allTracks : getFallbackSpotifyTracks();
   } catch (err) {
     console.error("Spotify API Helper Error:", err);
-    return [];
+    return getFallbackSpotifyTracks();
   }
 }

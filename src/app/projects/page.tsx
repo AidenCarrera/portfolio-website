@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Projects",
   description:
     "Browse my GitHub repositories for software engineering, audio programming, and web development projects.",
+  alternates: {
+    canonical: "/projects",
+  },
 };
 
 // Server component — direct server-side data fetching
@@ -27,7 +30,7 @@ export default async function ProjectsPage() {
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
             My open-source GitHub repos: interactive web apps, full-stack
-            applications, audio tools, and games – including collaborative team
+            applications, audio tools, and games - including collaborative team
             projects.
           </p>
         </div>
