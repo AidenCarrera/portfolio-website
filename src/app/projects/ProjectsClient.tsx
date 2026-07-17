@@ -33,7 +33,6 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
           r.topics.map((t) => normalizeTag(t)).includes(selectedCategory),
         );
 
-  // Sorting logic based on selected option
   const sortedRepos = [...filteredRepos].sort((a, b) => {
     if (sortBy === "featured") {
       return a.priority - b.priority;
@@ -41,7 +40,6 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
     if (sortBy === "newest") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
-    // alphabetical
     return a.name.localeCompare(b.name);
   });
 
@@ -49,14 +47,12 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
     <>
       {initialRepos.length > 0 ? (
         <>
-          {/* Category Filtering Row - Instant selection */}
           <CategoryFilter
             categories={categories}
             selected={selectedCategory}
             onSelect={setSelectedCategory}
           />
 
-          {/* Minimal Sort Controls Toolbar - Instant sorting */}
           <div className="flex justify-center items-center gap-4 mb-12 text-sm">
             <span className="text-slate-400 font-mono text-xs uppercase tracking-wider">
               Sort By:
@@ -81,7 +77,6 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
             </div>
           </div>
 
-          {/* Render Sorted/Filtered Repo Grid instantly without entrance animations */}
           <RepoGrid repos={sortedRepos} />
         </>
       ) : (

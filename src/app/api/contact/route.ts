@@ -1,10 +1,9 @@
-// app/api/contact/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const WINDOW_MS = 60_000; // 1 minute
+const WINDOW_MS = 60_000;
 const MAX_SUBMISSIONS_PER_WINDOW = 3;
 const MAX_NAME_LENGTH = 100;
 const MAX_EMAIL_LENGTH = 254;
@@ -22,7 +21,7 @@ function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (character) => HTML_ENTITIES[character]);
 }
 
-// In-memory rate limiter — resets on server restart, sufficient for a portfolio site
+// Per-instance limits do not persist across restarts or deployments.
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
 function checkRateLimit(ip: string): boolean {
@@ -31,15 +30,15 @@ function checkRateLimit(ip: string): boolean {
 
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + WINDOW_MS });
-    return true; // allowed
+    return true;
   }
 
   if (entry.count >= MAX_SUBMISSIONS_PER_WINDOW) {
-    return false; // blocked
+    return false;
   }
 
   entry.count++;
-  return true; // allowed
+  return true;
 }
 
 export async function POST(req: NextRequest) {
@@ -78,7 +77,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -87,7 +85,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Rate limiting
     const forwarded = req.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
 
@@ -103,12 +100,11 @@ export async function POST(req: NextRequest) {
     const safeMessage = escapeHtml(message).replace(/\r?\n/g, "<br>");
     const subjectName = name.replace(/[\r\n]+/g, " ");
 
-    // Send email via Resend
     const { data, error } = await resend.emails.send({
       from: "Portfolio Contact <onboarding@resend.dev>",
-      to: "aiden.carrera05@gmail.com", // Your verified owner email
+      to: "aiden.carrera05@gmail.com",
       subject: `New Message from ${subjectName}`,
-      replyTo: email, // Allows you to just click "Reply" in your email client
+      replyTo: email,
       text: `New Portfolio Submission\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
       html: `
         <div style="font-family: sans-serif; color: #333; max-width: 600px;">

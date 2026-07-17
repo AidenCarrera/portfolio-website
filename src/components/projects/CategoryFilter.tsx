@@ -15,7 +15,7 @@ export default function CategoryFilter({
 }: CategoryFilterProps) {
   return (
     <div className="relative w-full -mx-4 px-4 mb-10 overflow-hidden md:mx-0 md:px-0">
-      {/* Left/Right Edge Fades for Mobile Horizontal Scroll Indication */}
+      {/* Mobile fades indicate horizontal overflow. */}
       <div className="absolute top-0 bottom-0 left-0 w-8 bg-linear-to-r from-slate-900 to-transparent pointer-events-none z-10 md:hidden" />
       <div className="absolute top-0 bottom-0 right-0 w-8 bg-linear-to-l from-slate-900 to-transparent pointer-events-none z-10 md:hidden" />
 

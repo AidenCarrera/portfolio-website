@@ -10,9 +10,7 @@ interface RepoCardProps {
 export default function RepoCard({ repo }: RepoCardProps) {
   return (
     <div className="h-full bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 hover:border-brand/50 transition-all group flex flex-col">
-      {/* Header: Icon + Links */}
       <div className="flex items-center justify-between mb-4">
-        {/* Left: Folder Icon and Collab Label side-by-side */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-linear-to-br from-brand/10 to-brand-dark/5 border border-brand/20 flex items-center justify-center shadow-inner">
             <Folder
@@ -32,9 +30,7 @@ export default function RepoCard({ repo }: RepoCardProps) {
           )}
         </div>
 
-        {/* Right: GitHub / External Links */}
         <div className="flex space-x-2">
-          {/* GitHub link */}
           <a
             href={repo.html_url}
             target="_blank"
@@ -45,7 +41,6 @@ export default function RepoCard({ repo }: RepoCardProps) {
           >
             <SiGithub size={20} />
           </a>
-          {/* Live website link (if exists) */}
           {repo.homepage && repo.homepage.trim() !== "" && (
             <a
               href={
@@ -65,17 +60,14 @@ export default function RepoCard({ repo }: RepoCardProps) {
         </div>
       </div>
 
-      {/* Repo name */}
       <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-brand transition-colors">
         {repo.name}
       </h3>
 
-      {/* Description: clamped to 3 lines */}
       <p className="text-slate-400 text-sm mb-4 line-clamp-3">
         {repo.description || "No description"}
       </p>
 
-      {/* Topics */}
       <div className="flex flex-wrap gap-2">
         {repo.topics.map((tech) => (
           <span
@@ -87,7 +79,6 @@ export default function RepoCard({ repo }: RepoCardProps) {
         ))}
       </div>
 
-      {/* Spacer to push card bottom */}
       <div className="grow" />
     </div>
   );

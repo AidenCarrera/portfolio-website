@@ -6,7 +6,6 @@ import AboutCard from "@/components/home/AboutCard";
 import HomeNavLinks from "@/components/home/HomeNavLinks";
 
 export default function HomeClient() {
-  // Slower, elegant spring curve for premium feel
   const springTransition = {
     type: "spring",
     stiffness: 45,
@@ -16,9 +15,7 @@ export default function HomeClient() {
   return (
     <div className="min-h-screen bg-linear-to-br bg-animated-dark">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-        {/* === HERO SECTION === */}
         <div className="text-center space-y-8">
-          {/* Icon */}
           <motion.div
             className="relative inline-block"
             initial={{ opacity: 0, scale: 0.8 }}
@@ -38,7 +35,6 @@ export default function HomeClient() {
             <div className="absolute inset-0 rounded-full bg-brand/20 blur-xl animate-pulse -z-10"></div>
           </motion.div>
 
-          {/* Title */}
           <motion.h1
             className="text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight"
             initial={{ opacity: 0, y: -40 }}
@@ -52,7 +48,6 @@ export default function HomeClient() {
             </span>
           </motion.h1>
 
-          {/* Subtitle */}
           <motion.p
             className="text-xl sm:text-2xl text-slate-300 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
@@ -63,7 +58,6 @@ export default function HomeClient() {
           </motion.p>
         </div>
 
-        {/* === CONTENT SECTION === */}
         <motion.div
           className="mt-24 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 40 }}

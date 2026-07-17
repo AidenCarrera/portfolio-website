@@ -1,6 +1,5 @@
 import { MusicSnippet } from "@/types";
 
-// Audio files are served from /public
 export const snippetsData: MusicSnippet[] = [
   {
     id: "1",

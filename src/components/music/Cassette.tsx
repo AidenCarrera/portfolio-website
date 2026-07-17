@@ -33,7 +33,6 @@ export default function Cassette({
     >
       <CassetteVisual title={snippet.title} variant="shelf" />
 
-      {/* Selection Overlay */}
       {isSelected && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
           <span className="bg-brand text-slate-900 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg border border-white/20">

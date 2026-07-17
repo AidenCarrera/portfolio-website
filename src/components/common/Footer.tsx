@@ -20,7 +20,6 @@ export default function Footer() {
                 <link.icon size={24} />
               </a>
             ))}
-            {/* Mail icon goes to contact page */}
             <Link
               href="/contact"
               className="text-slate-400 hover:text-brand transition-colors duration-300 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded p-1"

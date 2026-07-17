@@ -4,7 +4,7 @@ const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const ARTIST_ID = "1LgE8yhi5cPt1uBQPzaRAe";
 
-// Last-known release data keeps the music page useful during Spotify outages.
+// Static fallback preserves released music when Spotify is unavailable.
 const FALLBACK_SPOTIFY_TRACKS: MusicTrack[] = [
   {
     id: "14UiomCSXMRsMVINVZmK4O",

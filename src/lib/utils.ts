@@ -1,4 +1,3 @@
-// Map tech tags to their proper casing/naming
 export function formatTagName(tag: string): string {
   const mapping: Record<string, string> = {
     nextjs: "Next.js",
@@ -55,7 +54,6 @@ export function formatTagName(tag: string): string {
     return mapping[lower];
   }
 
-  // Fallback: format each word using the mapping if available, otherwise capitalize
   return tag
     .replace(/-/g, " ")
     .split(" ")
@@ -66,7 +64,6 @@ export function formatTagName(tag: string): string {
     .join(" ");
 }
 
-// Base site URL dynamically resolved without hardcoding
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_URL

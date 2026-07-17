@@ -24,13 +24,11 @@ export default function UpcomingSnippetsSection({ snippets }: Props) {
 
       {snippets.length > 0 ? (
         <div className="space-y-12">
-          {/* The Deck */}
           <CassetteDeck
             key={activeSnippet?.id ?? "empty"}
             activeSnippet={activeSnippet}
           />
 
-          {/* The Shelf */}
           <div>
             <h3 className="text-slate-400 text-sm font-mono uppercase tracking-widest mb-6 border-b border-slate-800 pb-2">
               Tape Collection

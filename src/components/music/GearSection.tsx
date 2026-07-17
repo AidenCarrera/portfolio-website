@@ -15,7 +15,6 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 };
 
 export default function GearSection({ gear }: GearSectionProps) {
-  // Group gear by category
   const groupedGear = gear.reduce(
     (acc, item) => {
       const category = item.category || "Other";

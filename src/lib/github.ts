@@ -1,15 +1,13 @@
-// lib/github.ts
-
 export interface GithubRepo {
   name: string;
   description: string | null;
   html_url: string;
   homepage: string | null;
   topics: string[];
-  isCollab: boolean; // explicitly mark if it's a contributed/collaborated repo
-  createdAt: string; // ISO timestamp for sorting by newest
-  priority: number; // manually curated priority rank
-  isFeatured: boolean; // boolean flag for display of visual "Featured" badge
+  isCollab: boolean;
+  createdAt: string;
+  priority: number;
+  isFeatured: boolean;
 }
 
 interface GraphQLRepoNode {
@@ -25,7 +23,6 @@ interface GraphQLRepoNode {
   createdAt: string;
 }
 
-// Manually curated project order behind the scenes
 const PROJECT_PRIORITY: Record<string, number> = {
   "stillwater-pulse": 1,
   "olo-eq": 2,
@@ -41,7 +38,7 @@ const PROJECT_PRIORITY: Record<string, number> = {
   ProjectMaVe: 12,
 };
 
-// Last-known public project data keeps the page useful during GitHub API outages.
+// Static fallback preserves project content when GitHub is unavailable.
 const FALLBACK_GITHUB_REPOS: GithubRepo[] = [
   {
     name: "stillwater-pulse",
@@ -228,9 +225,6 @@ function getFallbackGithubRepos(): GithubRepo[] {
   }));
 }
 
-/**
- * Fetches public GitHub repositories and collaborations for the user.
- */
 export async function getGithubRepos(): Promise<GithubRepo[]> {
   const token = process.env.GITHUB_PAT;
   const username = "aidencarrera";
@@ -291,7 +285,7 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ query }),
-      next: { revalidate: process.env.NODE_ENV === "development" ? 0 : 300 }, // No cache in dev, 5 min cache in prod
+      next: { revalidate: process.env.NODE_ENV === "development" ? 0 : 300 },
     });
 
     const { data, errors } = await res.json();
@@ -335,7 +329,6 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
       }
 
       const priority = PROJECT_PRIORITY[node.name] ?? 999;
-      // Only the top 3 suggested are visually tagged as Featured
       const isFeatured = [
         "stillwater-pulse",
         "olo-eq",
@@ -358,20 +351,17 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
       };
     };
 
-    // Process sets
-    // 1. Owned/Collaborated: filter for public only, and exclude forks (unless it's a collab)
     const mainRepos = (user.repositories.nodes as GraphQLRepoNode[])
       .filter((n) => !n.isPrivate && (!n.isFork || n.owner.login !== username))
       .map((n) => mapNode(n, false));
 
-    // 2. Contributed To: filter for public only
     const contributed = (
       user.repositoriesContributedTo.nodes as GraphQLRepoNode[]
     )
       .filter((n) => !n.isPrivate)
       .map((n) => mapNode(n, true));
 
-    // Deduplicate by URL
+    // Prefer collaborative records when the API returns duplicate URLs.
     const uniqueMap = new Map<string, GithubRepo>();
     [...mainRepos, ...contributed].forEach((repo) => {
       if (!uniqueMap.has(repo.html_url) || repo.isCollab) {
