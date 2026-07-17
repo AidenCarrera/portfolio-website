@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import Image from "next/image";
 import AboutCard from "@/components/home/AboutCard";
 import HomeNavLinks from "@/components/home/HomeNavLinks";
 
@@ -25,10 +26,13 @@ export default function HomeClient() {
             transition={{ ...springTransition, delay: 0 }}
           >
             <div className="w-32 h-32 mx-auto mb-6 rounded-full shadow-lg overflow-hidden bg-slate-900 flex items-center justify-center border border-brand/20">
-              <img
+              <Image
                 src="/developer-logo.svg"
                 alt="Aiden Carrera - Audio Developer Logo"
+                width={128}
+                height={128}
                 className="w-full h-full object-contain"
+                priority
               />
             </div>
             <div className="absolute inset-0 rounded-full bg-brand/20 blur-xl animate-pulse -z-10"></div>
