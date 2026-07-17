@@ -1,24 +1,15 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useAnimation } from "motion/react";
-import { MusicSnippet } from "@/types";
+import type { MusicSnippet } from "@/types";
 
 export function useTapePlayer(activeSnippet: MusicSnippet | null) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
-  const [isDraggingTime, setIsDraggingTime] = useState(false);
-  const [prevSnippetId, setPrevSnippetId] = useState(activeSnippet?.id);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const controls = useAnimation();
-
-  // Reset state when snippet changes
-  if (activeSnippet?.id !== prevSnippetId) {
-    setPrevSnippetId(activeSnippet?.id);
-    setIsPlaying(false);
-    setCurrentTime(0);
-  }
 
   useEffect(() => {
     controls.stop();
@@ -36,55 +27,65 @@ export function useTapePlayer(activeSnippet: MusicSnippet | null) {
     }
   }, [volume]);
 
-  const togglePlay = () => {
-    if (!activeSnippet || !audioRef.current) return;
+  const togglePlay = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!activeSnippet || !audio) return;
 
-    if (isPlaying) {
-      audioRef.current.pause();
+    if (!audio.paused) {
+      audio.pause();
+      setIsPlaying(false);
       controls.stop();
-    } else {
-      audioRef.current.play();
+      return;
+    }
+
+    try {
+      await audio.play();
+      setIsPlaying(true);
       controls.start({
         rotate: 360,
         transition: { repeat: Infinity, duration: 1, ease: "linear" },
       });
+    } catch (error) {
+      console.error("Unable to start audio playback:", error);
+      setIsPlaying(false);
+      controls.stop();
+      controls.set({ rotate: 0 });
     }
-    setIsPlaying((p) => !p);
-  };
+  }, [activeSnippet, controls]);
 
-  const stop = () => {
+  const stop = useCallback(() => {
     if (!audioRef.current) return;
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
     setIsPlaying(false);
     controls.stop();
     controls.set({ rotate: 0 });
-  };
+  }, [controls]);
 
-  const seek = (newTime: number, commit: boolean) => {
+  const seek = useCallback((newTime: number) => {
     setCurrentTime(newTime);
-    if (commit && audioRef.current) {
+    if (audioRef.current) {
       audioRef.current.currentTime = newTime;
     }
-  };
+  }, []);
 
-  const handleTimeUpdate = () => {
-    if (audioRef.current && !isDraggingTime) {
+  const handleTimeUpdate = useCallback(() => {
+    if (audioRef.current) {
       setCurrentTime(audioRef.current.currentTime);
     }
-  };
+  }, []);
 
-  const handleLoadedMetadata = () => {
+  const handleLoadedMetadata = useCallback(() => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration);
     }
-  };
+  }, []);
 
-  const handleEnded = () => {
+  const handleEnded = useCallback(() => {
     setIsPlaying(false);
     controls.stop();
     controls.set({ rotate: 0 });
-  };
+  }, [controls]);
 
   return {
     isPlaying,
@@ -92,8 +93,6 @@ export function useTapePlayer(activeSnippet: MusicSnippet | null) {
     duration,
     volume,
     setVolume,
-    isDraggingTime,
-    setIsDraggingTime,
     audioRef,
     controls,
     togglePlay,

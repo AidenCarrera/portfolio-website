@@ -25,7 +25,10 @@ export default function UpcomingSnippetsSection({ snippets }: Props) {
       {snippets.length > 0 ? (
         <div className="space-y-12">
           {/* The Deck */}
-          <CassetteDeck activeSnippet={activeSnippet} />
+          <CassetteDeck
+            key={activeSnippet?.id ?? "empty"}
+            activeSnippet={activeSnippet}
+          />
 
           {/* The Shelf */}
           <div>

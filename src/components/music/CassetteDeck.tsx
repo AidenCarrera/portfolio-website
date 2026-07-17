@@ -1,5 +1,4 @@
 import type { MusicSnippet } from "@/types";
-import { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Pause, Square } from "lucide-react";
 import { useTapePlayer } from "@/hooks/useTapePlayer";
 import CassetteVisual from "./CassetteVisual";
@@ -15,8 +14,6 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     duration,
     volume,
     setVolume,
-    isDraggingTime,
-    setIsDraggingTime,
     audioRef,
     controls,
     togglePlay,
@@ -26,120 +23,6 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     handleLoadedMetadata,
     handleEnded,
   } = useTapePlayer(activeSnippet);
-
-  // UI state for volume knob dragging
-  const [isDraggingVolume, setIsDraggingVolume] = useState(false);
-  const [dragStartY, setDragStartY] = useState(0);
-  const [dragStartVolume, setDragStartVolume] = useState(0);
-  const progressBarRef = useRef<HTMLDivElement>(null);
-
-  // Volume Knob Logic (Vertical Drag & Keyboard support)
-  const handleVolumeMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDraggingVolume(true);
-    setDragStartY(e.clientY);
-    setDragStartVolume(volume);
-  };
-
-  const handleVolumeKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowUp" || e.key === "ArrowRight") {
-      e.preventDefault();
-      setVolume((v) => Math.min(1, v + 0.05));
-    } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
-      e.preventDefault();
-      setVolume((v) => Math.max(0, v - 0.05));
-    }
-  };
-
-  useEffect(() => {
-    const handleVolumeMouseMove = (e: MouseEvent) => {
-      const deltaY = dragStartY - e.clientY;
-      const volumeChange = deltaY / 100;
-      const newVolume = Math.min(
-        1,
-        Math.max(0, dragStartVolume + volumeChange),
-      );
-      setVolume(newVolume);
-    };
-    const up = () => setIsDraggingVolume(false);
-
-    if (isDraggingVolume) {
-      window.addEventListener("mousemove", handleVolumeMouseMove);
-      window.addEventListener("mouseup", up);
-      document.body.style.userSelect = "none";
-      document.body.style.cursor = "ns-resize";
-    }
-    return () => {
-      window.removeEventListener("mousemove", handleVolumeMouseMove);
-      window.removeEventListener("mouseup", up);
-      document.body.style.userSelect = "";
-      document.body.style.cursor = "";
-    };
-  }, [dragStartVolume, dragStartY, isDraggingVolume, setVolume]);
-
-  // Handle Spacebar
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === "Space" && activeSnippet) {
-        e.preventDefault();
-        togglePlay();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeSnippet, togglePlay]);
-
-  // Scrubbing logic
-  const calculateTime = useCallback(
-    (e: React.MouseEvent | MouseEvent) => {
-      if (!progressBarRef.current || !duration) return 0;
-      const rect = progressBarRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const percentage = Math.min(Math.max(x / rect.width, 0), 1);
-      return percentage * duration;
-    },
-    [duration],
-  );
-
-  const handleTimeMouseDown = (e: React.MouseEvent) => {
-    if (!activeSnippet) return;
-    setIsDraggingTime(true);
-    seek(calculateTime(e), false);
-  };
-
-  const handleTimeKeyDown = (e: React.KeyboardEvent) => {
-    if (!activeSnippet || !duration) return;
-    if (e.key === "ArrowUp" || e.key === "ArrowRight") {
-      e.preventDefault();
-      seek(Math.min(duration, currentTime + 5), true);
-    } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
-      e.preventDefault();
-      seek(Math.max(0, currentTime - 5), true);
-    }
-  };
-
-  useEffect(() => {
-    const move = (e: MouseEvent) =>
-      isDraggingTime && seek(calculateTime(e), false);
-    const up = (e: MouseEvent) => {
-      if (isDraggingTime) {
-        setIsDraggingTime(false);
-        seek(calculateTime(e), true);
-      }
-    };
-    if (isDraggingTime) {
-      window.addEventListener("mousemove", move);
-      window.addEventListener("mouseup", up);
-      document.body.style.userSelect = "none";
-      document.body.style.cursor = "col-resize";
-    }
-    return () => {
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("mouseup", up);
-      document.body.style.userSelect = "";
-      document.body.style.cursor = "";
-    };
-  }, [isDraggingTime, calculateTime, seek, setIsDraggingTime]);
 
   const knobRotation = volume * 270 - 135;
   const formatTime = (time: number) => {
@@ -195,31 +78,33 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                   Playback
                 </div>
                 <div className="text-lg font-bold tracking-wider">
-                  {formatTime(currentTime)} / {formatTime(duration || 0)}
+                  {formatTime(currentTime)} / {formatTime(duration)}
                 </div>
               </div>
               <div
-                ref={progressBarRef}
-                role="slider"
-                aria-label="Playback position"
-                aria-valuemin={0}
-                aria-valuemax={Math.round(duration || 0)}
-                aria-valuenow={Math.round(currentTime)}
-                aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration || 0)}`}
-                tabIndex={activeSnippet ? 0 : -1}
-                onKeyDown={handleTimeKeyDown}
-                className={`w-full bg-slate-800 h-2 rounded-full relative group focus:outline-none ${activeSnippet ? "cursor-pointer focus-visible:ring-2 focus-visible:ring-brand" : ""}`}
-                onMouseDown={handleTimeMouseDown}
+                className={`w-full bg-slate-800 h-2 rounded-full relative group focus-within:ring-2 focus-within:ring-brand ${activeSnippet ? "cursor-pointer" : ""}`}
               >
                 <div
-                  className={`h-full bg-brand shadow-[0_0_10px_rgba(51,230,204,0.8)] relative ${isDraggingTime ? "transition-none" : "transition-all duration-100"}`}
+                  className="h-full bg-brand shadow-[0_0_10px_rgba(51,230,204,0.8)] relative"
                   style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
                 >
                   <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50 blur-[1px]" />
                 </div>
                 <div
-                  className={`absolute top-1/2 w-3 h-3 bg-white rounded-full shadow-lg border-2 border-brand -translate-x-1/2 -translate-y-1/2 transition-opacity duration-200 pointer-events-none ${isDraggingTime ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                  className="absolute top-1/2 w-3 h-3 bg-white rounded-full shadow-lg border-2 border-brand -translate-x-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-200 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100"
                   style={{ left: `${(currentTime / (duration || 1)) * 100}%` }}
+                />
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 0}
+                  step={0.1}
+                  value={Math.min(currentTime, duration || 0)}
+                  onChange={(event) => seek(Number(event.currentTarget.value))}
+                  disabled={!activeSnippet || duration <= 0}
+                  aria-label="Playback position"
+                  aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
+                  className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0 disabled:cursor-default"
                 />
               </div>
             </div>
@@ -229,18 +114,7 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                 <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest mb-1">
                   Vol
                 </div>
-                <div
-                  role="slider"
-                  aria-label="Volume"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={Math.round(volume * 100)}
-                  aria-valuetext={`${Math.round(volume * 100)}%`}
-                  tabIndex={0}
-                  onKeyDown={handleVolumeKeyDown}
-                  className="relative w-12 h-12 flex items-center justify-center cursor-ns-resize group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-full"
-                  onMouseDown={handleVolumeMouseDown}
-                >
+                <div className="relative w-12 h-12 flex items-center justify-center cursor-ns-resize group focus-within:ring-2 focus-within:ring-brand rounded-full">
                   {Array.from({ length: 11 }).map((_, i) => (
                     <div
                       key={i}
@@ -252,11 +126,24 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                     />
                   ))}
                   <div
-                    className="w-9 h-9 rounded-full bg-linear-to-br from-slate-300 to-slate-500 shadow-lg border border-slate-600 relative transition-transform duration-75 ease-out group-hover:brightness-110"
+                    className="w-9 h-9 rounded-full bg-linear-to-br from-slate-300 to-slate-500 shadow-lg border border-slate-600 relative transition-transform duration-75 ease-out group-hover:brightness-110 pointer-events-none"
                     style={{ transform: `rotate(${knobRotation}deg)` }}
                   >
                     <div className="absolute top-1 left-1/2 -translate-x-1/2 w-0.5 h-2 bg-slate-800 rounded-full" />
                   </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={volume}
+                    onChange={(event) =>
+                      setVolume(Number(event.currentTarget.value))
+                    }
+                    aria-label="Volume"
+                    aria-valuetext={`${Math.round(volume * 100)}%`}
+                    className="absolute inset-0 z-10 h-full w-full cursor-ns-resize opacity-0 [direction:rtl] [writing-mode:vertical-lr]"
+                  />
                 </div>
               </div>
 
