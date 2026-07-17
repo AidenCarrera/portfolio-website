@@ -1,4 +1,3 @@
-import { MusicSnippet } from "@/types";
 import { snippetsData } from "@/lib/snippetsData";
 import { Music as MusicIcon } from "lucide-react";
 import type { Metadata } from "next";
@@ -17,7 +16,6 @@ export const metadata: Metadata = {
 
 // Server component — data is fetched on the server at request/build time
 export default async function Music() {
-  const snippets: MusicSnippet[] = snippetsData;
   const tracks = await getSpotifyTracks();
 
   return (
@@ -38,7 +36,7 @@ export default async function Music() {
           </p>
         </div>
 
-        <UpcomingSnippetsSection snippets={snippets} />
+        <UpcomingSnippetsSection snippets={snippetsData} />
         <ReleasedMusicSection tracks={tracks} />
         <GearSection gear={gearData} />
       </div>

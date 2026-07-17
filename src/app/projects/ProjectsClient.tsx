@@ -82,11 +82,7 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
           </div>
 
           {/* Render Sorted/Filtered Repo Grid instantly without entrance animations */}
-          <RepoGrid
-            repos={sortedRepos}
-            loading={false}
-            animateEntrance={false}
-          />
+          <RepoGrid repos={sortedRepos} />
         </>
       ) : (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">

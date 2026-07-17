@@ -1,7 +1,6 @@
 import { Code2, ExternalLink } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { getGithubRepos } from "@/lib/github";
-import { cn } from "@/lib/utils";
 import ProjectsClient from "./ProjectsClient";
 import type { Metadata } from "next";
 
@@ -42,9 +41,7 @@ export default async function ProjectsPage() {
             href="https://github.com/aidencarrera"
             target="_blank"
             rel="noopener noreferrer"
-            className={cn(
-              "inline-flex items-center space-x-2 text-brand hover:text-brand-light transition-colors",
-            )}
+            className="inline-flex items-center space-x-2 text-brand hover:text-brand-light transition-colors"
           >
             <SiGithub size={20} />
             <span className="font-medium">View more on GitHub</span>

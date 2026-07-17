@@ -1,42 +1,8 @@
 import { Mail } from "lucide-react";
-import { SiGithub, SiSpotify, SiInstagram, SiYoutube } from "react-icons/si";
-import { FaLinkedin } from "react-icons/fa6";
 import Link from "next/link";
+import { socialLinks } from "@/lib/socialLinks";
 
 export default function Footer() {
-  const socialLinks = [
-    {
-      icon: SiGithub,
-      url: "https://github.com/aidencarrera",
-      label: "GitHub",
-      color: "hover:text-purple-400",
-    },
-    {
-      icon: FaLinkedin,
-      url: "https://linkedin.com/in/aiden-carrera",
-      label: "LinkedIn",
-      color: "hover:text-blue-400",
-    },
-    {
-      icon: SiSpotify,
-      url: "https://open.spotify.com/artist/1LgE8yhi5cPt1uBQPzaRAe",
-      label: "Spotify",
-      color: "hover:text-green-400",
-    },
-    {
-      icon: SiInstagram,
-      url: "https://instagram.com/aiden.carrera",
-      label: "Instagram",
-      color: "hover:text-pink-400",
-    },
-    {
-      icon: SiYoutube,
-      url: "https://youtube.com/@aidencarrera",
-      label: "YouTube",
-      color: "hover:text-red-400",
-    },
-  ];
-
   return (
     <footer className="bg-slate-900 border-t border-slate-800 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

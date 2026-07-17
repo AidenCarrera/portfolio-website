@@ -6,13 +6,9 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion } from "motion/react";
 
-interface NavigationProps {
-  currentPage?: string; // Kept for backward compatibility, usePathname is used instead
-}
-
 const MotionLink = motion.create(Link);
 
-export default function Navigation({ currentPage }: NavigationProps) {
+export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 

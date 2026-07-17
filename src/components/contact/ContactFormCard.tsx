@@ -8,7 +8,7 @@ interface FormState {
 }
 
 async function contactAction(
-  prevState: FormState,
+  _prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
   try {

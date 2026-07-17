@@ -1,13 +1,11 @@
 // lib/github.ts
 
 export interface GithubRepo {
-  id: number;
   name: string;
   description: string | null;
   html_url: string;
   homepage: string | null;
   topics: string[];
-  owner: string; // GitHub username of the owner
   isCollab: boolean; // explicitly mark if it's a contributed/collaborated repo
   createdAt: string; // ISO timestamp for sorting by newest
   priority: number; // manually curated priority rank
@@ -15,7 +13,6 @@ export interface GithubRepo {
 }
 
 interface GraphQLRepoNode {
-  databaseId: number;
   name: string;
   description?: string | null;
   url: string;
@@ -66,7 +63,6 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
           orderBy: {field: CREATED_AT, direction: DESC}
         ) {
           nodes {
-            databaseId
             name
             description
             url
@@ -85,7 +81,6 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
           includeUserRepositories: false
         ) {
           nodes {
-            databaseId
             name
             description
             url
@@ -161,13 +156,11 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
       ].includes(node.name);
 
       return {
-        id: node.databaseId,
         name: repoName,
         description: description,
         html_url: node.url,
         homepage: node.homepageUrl || null,
         topics: topics,
-        owner: node.owner.login,
         isCollab:
           isContributed ||
           !isOwner ||

@@ -15,12 +15,11 @@ Visitors can explore my projects, listen to my released and upcoming music, and 
 - Project portfolio with descriptions, tech stack, and links to demos/repositories
 - Dynamic navigation menu with smooth scrolling
 - Contact form to send messages via email
-- Responsive layout for desktop and mobile
 - Interactive analog cassette deck player for listening to upcoming music snippets
 - Spotify released music player integrations
 - Project grid with dynamic, instant topic filtering and manually curated sorting controls
 - Audio gear & software showcase section grouped by hardware, software, instruments, and plugins
-- Contact form card utilizing Next.js Server Actions and Resend integrations
+- Contact form using a Next.js API route and Resend integration
 - WCAG AA/AAA accessibility compliance (skip links, keyboard slider seeking, accessible forms, focus rings)
 - Automated sitemap (`sitemap.ts`) and SEO optimizations conforming to Next.js 16 and Vercel standards
 
@@ -56,7 +55,7 @@ pnpm dev
 
 - Add more C++ VST/AU audio plugin interactive previews directly in-browser
 - Add a performances section (live gigs, ensemble schedule, recording sessions)
-- Integrate Spotify API directly for real-time track updates
+- Improve Spotify track deduplication and release ordering
 
 ## Learn More
 

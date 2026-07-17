@@ -1,8 +1,3 @@
-// Utility: Class name merger (Tailwind helper)
-export function cn(...classes: (string | false | null | undefined)[]): string {
-  return classes.filter(Boolean).join(" ");
-}
-
 // Map tech tags to their proper casing/naming
 export function formatTagName(tag: string): string {
   const mapping: Record<string, string> = {

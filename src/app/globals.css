@@ -19,19 +19,6 @@ body {
   @apply bg-background text-foreground font-sans;
 }
 
-/* === Subtle Animated Dark Gradient === */
-@keyframes subtle-gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 50% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
 /* === Keyframes for circular gradient movement === */
 @keyframes subtle-radial {
   0% {

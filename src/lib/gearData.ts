@@ -47,7 +47,6 @@ export const gearData: GearItem[] = [
     name: "Apollo Twin X USB",
     category: "Hardware",
     description: "Main interface with solid converters and Unison preamps.",
-    image_url: "",
   },
   {
     id: "hw-2",

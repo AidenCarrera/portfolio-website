@@ -1,47 +1,13 @@
-"use client";
-
 import { Disc3 } from "lucide-react";
-import { MusicTrack } from "@/types";
-import { useState, useEffect } from "react";
+import type { MusicTrack } from "@/types";
 
 interface ReleasedMusicSectionProps {
-  tracks?: MusicTrack[];
+  tracks: MusicTrack[];
 }
 
 export default function ReleasedMusicSection({
-  tracks: initialTracks,
+  tracks,
 }: ReleasedMusicSectionProps) {
-  const [tracks, setTracks] = useState<MusicTrack[]>(initialTracks || []);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (initialTracks && initialTracks.length > 0) {
-      setTracks(initialTracks);
-      setLoading(false);
-    } else {
-      const fetchTracks = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          const res = await fetch("/api/spotify-tracks");
-          if (!res.ok) throw new Error("Failed to fetch released tracks");
-          const data = await res.json();
-          setTracks(data);
-        } catch (err) {
-          console.error("Error fetching tracks:", err);
-          setError(
-            "Unable to load released tracks at the moment. Please try again later.",
-          );
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchTracks();
-    }
-  }, [initialTracks]);
-
   return (
     <section className="mb-20">
       <div className="flex items-center space-x-3 mb-8">
@@ -49,23 +15,7 @@ export default function ReleasedMusicSection({
         <h2 className="text-3xl font-bold text-white">Released Music</h2>
       </div>
 
-      {loading && (
-        <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
-          <Disc3
-            size={48}
-            className="text-slate-600 mx-auto mb-4 animate-spin"
-          />
-          <p className="text-slate-400">Loading tracks...</p>
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-800/30 rounded-xl p-12 text-center border border-red-700">
-          <p className="text-red-400">{error}</p>
-        </div>
-      )}
-
-      {!loading && !error && tracks.length > 0 && (
+      {tracks.length > 0 ? (
         <div className="grid md:grid-cols-2 gap-6">
           {tracks.map((track) => (
             <div
@@ -84,6 +34,13 @@ export default function ReleasedMusicSection({
               />
             </div>
           ))}
+        </div>
+      ) : (
+        <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
+          <Disc3 size={48} className="text-slate-600 mx-auto mb-4" />
+          <p className="text-slate-400">
+            Released tracks are unavailable right now. Please check back later.
+          </p>
         </div>
       )}
     </section>

@@ -7,7 +7,6 @@ const ARTIST_ID = "1LgE8yhi5cPt1uBQPzaRAe";
 interface SpotifyAlbum {
   id: string;
   name: string;
-  release_date: string;
 }
 
 interface SpotifyTrack {
@@ -74,7 +73,6 @@ export async function getSpotifyTracks(): Promise<MusicTrack[]> {
         id: track.id,
         title: track.name,
         spotify_embed_url: `https://open.spotify.com/embed/track/${track.id}`,
-        release_date: album.release_date,
       }));
     });
 

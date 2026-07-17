@@ -1,8 +1,8 @@
-import { MusicSnippet } from "@/types";
+import type { MusicSnippet } from "@/types";
 import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Square } from "lucide-react";
-import { motion } from "motion/react";
 import { useTapePlayer } from "@/hooks/useTapePlayer";
+import CassetteVisual from "./CassetteVisual";
 
 interface CassetteDeckProps {
   activeSnippet: MusicSnippet | null;
@@ -171,44 +171,11 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
           <div className="bg-slate-800 rounded-xl p-4 mb-8 border-4 border-slate-700 shadow-inner relative overflow-hidden h-72 flex items-center justify-center">
             <div className="absolute inset-0 bg-linear-to-tr from-white/5 via-transparent to-transparent pointer-events-none z-20" />
             {activeSnippet ? (
-              <div className="relative w-full max-w-sm aspect-[1.6] bg-slate-800 border-2 border-slate-700 rounded-lg shadow-xl flex flex-col p-2 transform transition-all">
-                <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none" />
-                <div className="flex justify-between px-1 mb-1">
-                  <div className="w-2 h-2 rounded-full bg-slate-700 border border-slate-600" />
-                  <div className="w-2 h-2 rounded-full bg-slate-700 border border-slate-600" />
-                </div>
-                <div className="flex-1 bg-slate-200 rounded mx-1 relative overflow-hidden shadow-sm border border-slate-300">
-                  <div className="absolute top-0 left-0 w-full h-3 bg-brand" />
-                  <div className="h-full flex items-center justify-center pt-2">
-                    <span className="font-mono text-slate-900 font-bold text-sm sm:text-lg uppercase truncate px-4 text-center">
-                      {activeSnippet.title}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-0 left-0 w-full h-3 bg-brand/80" />
-                </div>
-                <div className="mt-1 h-16 relative mx-2">
-                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-slate-700 rounded-b-lg transform perspective-dramatic rotate-x-12 border-t border-slate-600" />
-                  <div className="absolute bottom-2 left-4 right-4 h-8 bg-slate-900 rounded-full border-2 border-slate-600 flex items-center justify-between px-2 shadow-inner">
-                    <motion.div
-                      animate={controls}
-                      className="w-8 h-8 rounded-full border-2 border-slate-500 bg-white relative"
-                    >
-                      <div className="absolute inset-0 border-2 border-slate-800 rounded-full border-dashed opacity-50" />
-                    </motion.div>
-                    <div className="flex-1 mx-2 h-4 bg-black/60 rounded-sm border border-slate-700" />
-                    <motion.div
-                      animate={controls}
-                      className="w-8 h-8 rounded-full border-2 border-slate-500 bg-white relative"
-                    >
-                      <div className="absolute inset-0 border-2 border-slate-800 rounded-full border-dashed opacity-50" />
-                    </motion.div>
-                  </div>
-                </div>
-                <div className="flex justify-between px-1 mt-1">
-                  <div className="w-2 h-2 rounded-full bg-slate-700 border border-slate-600" />
-                  <div className="w-2 h-2 rounded-full bg-slate-700 border border-slate-600" />
-                </div>
-              </div>
+              <CassetteVisual
+                title={activeSnippet.title}
+                variant="deck"
+                reelAnimation={controls}
+              />
             ) : (
               <div className="text-slate-600 font-mono text-sm uppercase tracking-widest">
                 No Cassette Loaded
