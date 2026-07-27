@@ -8,7 +8,7 @@ export default function AboutCard() {
             Hey, I&apos;m Aiden. I&apos;m a Computer Science student in the OSU Honors College building software across audio, artificial intelligence, web applications, and games.
           </p>
           <p>
-            I work primarily with C++, TypeScript, Python, Java, JUCE, React, Next.js, and OpenGL, focusing on audio programming, graphics, and AI. Most of my projects are open source and available to explore.
+            I work primarily with C++, TypeScript, Python, Java, JUCE, React, Next.js, and OpenGL, focusing on audio programming, graphics, and AI. My projects&apos; source code is available on GitHub.
           </p>
           <p>
             I&apos;m also a performer, composer, and producer. I perform with the OSU Jazz Band, Resistance Indoor Percussion, and other ensembles, and I write, record, mix, and master my own music.

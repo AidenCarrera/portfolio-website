@@ -6,9 +6,20 @@ export default function Footer() {
   return (
     <footer className="bg-slate-900/90 backdrop-blur-sm border-t border-slate-800 py-3 sm:py-4 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400 text-sm">
-        <p className="text-slate-500 text-xs sm:text-sm">
-          © {new Date().getFullYear()} Aiden Carrera. All rights reserved.
-        </p>
+        <div className="flex items-center gap-3 text-xs sm:text-sm">
+          <p className="text-slate-500">
+            &copy; {new Date().getFullYear()} Aiden Carrera. All rights reserved.
+          </p>
+          <span className="text-slate-700" aria-hidden="true">
+            /
+          </span>
+          <Link
+            href="/privacy"
+            className="text-slate-500 transition-colors hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded"
+          >
+            Privacy
+          </Link>
+        </div>
         <div className="flex items-center space-x-5">
           {socialLinks.map((link) => (
             <a
