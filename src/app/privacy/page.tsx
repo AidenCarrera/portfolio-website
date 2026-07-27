@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CONTACT_EMAIL } from "@/lib/contact";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -60,10 +61,10 @@ export default function PrivacyPolicy() {
             <p className="leading-7">
               For privacy questions or requests, email{" "}
               <a
-                href="mailto:aiden.carrera05@gmail.com"
+                href={`mailto:${CONTACT_EMAIL}`}
                 className="rounded text-brand underline decoration-brand/40 underline-offset-4 transition-colors hover:text-brand-light focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               >
-                aiden.carrera05@gmail.com
+                {CONTACT_EMAIL}
               </a>
               .
             </p>

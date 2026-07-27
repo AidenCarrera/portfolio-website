@@ -8,7 +8,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400 text-sm">
         <div className="flex items-center gap-3 text-xs sm:text-sm">
           <p className="text-slate-500">
-            &copy; {new Date().getFullYear()} Aiden Carrera. All rights reserved.
+            &copy; {new Date().getFullYear()} Aiden Carrera. All rights
+            reserved.
           </p>
           <span className="text-slate-700" aria-hidden="true">
             /

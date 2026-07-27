@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { RepoGrid, CategoryFilter } from "@/components/projects";
 import { GithubRepo } from "@/lib/github";
+import { normalizeTag } from "@/lib/utils";
 
 interface ProjectsClientProps {
   initialRepos: GithubRepo[];
@@ -13,9 +14,6 @@ type SortOption = "featured" | "newest" | "name";
 export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortOption>("featured");
-
-  const normalizeTag = (tag: string) =>
-    tag.toLowerCase().trim().replace(/-/g, " ");
 
   const categories = [
     "all",

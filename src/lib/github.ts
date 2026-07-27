@@ -23,6 +23,9 @@ interface GraphQLRepoNode {
   createdAt: string;
 }
 
+const DEFAULT_PRIORITY = 999;
+
+// Keyed by GitHub repository name, which is what every lookup below uses.
 const PROJECT_PRIORITY: Record<string, number> = {
   "stillwater-pulse": 1,
   "olo-eq": 2,
@@ -38,10 +41,51 @@ const PROJECT_PRIORITY: Record<string, number> = {
   ProjectMaVe: 12,
 };
 
+const FEATURED_REPOS = new Set(["stillwater-pulse", "olo-eq", "solfege-piano"]);
+
+// Repos whose GitHub identity differs from how they are presented here.
+const REPO_OVERRIDES: Record<
+  string,
+  { name: string; description: string; topics: string[] }
+> = {
+  SeniorCapstone: {
+    name: "cyberlock-senior-capstone",
+    description:
+      "A full-stack, multiplayer cyberpunk Tabletop RPG featuring real-time combat, persistent character progression, and dynamic storytelling powered by AI-driven NPCs.",
+    topics: [
+      "chromadb",
+      "fastapi",
+      "nodejs",
+      "react",
+      "socketio",
+      "typescript",
+      "python",
+      "game",
+    ],
+  },
+  ProjectMaVe: {
+    name: "fitsync",
+    description:
+      "A web application built with ASP.NET Core and MariaDB that tracks fitness metrics and utilizes Google AI Studio to generate personalized workouts based on user progress.",
+    topics: ["ai", "aspnet", "docker", "mariadb", "csharp", "gemini-api"],
+  },
+};
+
 // Static fallback preserves project content when GitHub is unavailable.
-const FALLBACK_GITHUB_REPOS: GithubRepo[] = [
+// Description and topics are omitted where REPO_OVERRIDES supplies them.
+interface FallbackSeed {
+  repoName: string;
+  html_url: string;
+  homepage: string | null;
+  isCollab: boolean;
+  createdAt: string;
+  description?: string;
+  topics?: string[];
+}
+
+const FALLBACK_SEEDS: FallbackSeed[] = [
   {
-    name: "stillwater-pulse",
+    repoName: "stillwater-pulse",
     description:
       "🏆 Winner – OSU Hackathon 2025 Best Theme & Best Use of ElevenLabs AI | Stillwater Pulse gathers Instagram content to help users discover events in Stillwater, enhanced with an AI chatbot and TTS.",
     html_url: "https://github.com/AidenCarrera/stillwater-pulse",
@@ -58,11 +102,9 @@ const FALLBACK_GITHUB_REPOS: GithubRepo[] = [
     ],
     isCollab: true,
     createdAt: "2025-11-01T20:18:21Z",
-    priority: 1,
-    isFeatured: true,
   },
   {
-    name: "olo-eq",
+    repoName: "olo-eq",
     description:
       "A JUCE-based audio plugin implementing a parametric EQ with low-cut, high-cut, and peak filters, supporting VST3, AU, and standalone formats.",
     html_url: "https://github.com/AidenCarrera/olo-eq",
@@ -70,11 +112,9 @@ const FALLBACK_GITHUB_REPOS: GithubRepo[] = [
     topics: ["cpp", "juce", "audio", "music", "vst3", "dsp"],
     isCollab: false,
     createdAt: "2025-10-21T20:42:55Z",
-    priority: 2,
-    isFeatured: true,
   },
   {
-    name: "solfege-piano",
+    repoName: "solfege-piano",
     description:
       "Playable piano in your web browser built with Howler.js, featuring real-time solfège playback.",
     html_url: "https://github.com/AidenCarrera/solfege-piano",
@@ -91,11 +131,9 @@ const FALLBACK_GITHUB_REPOS: GithubRepo[] = [
     ],
     isCollab: false,
     createdAt: "2025-10-14T22:04:26Z",
-    priority: 3,
-    isFeatured: true,
   },
   {
-    name: "opengl-audio-visualizer",
+    repoName: "opengl-audio-visualizer",
     description:
       "OpenGL 4.5 audio visualizer with FFT-based frequency analysis and reactive 3D graphics. Built in C++ with GLFW and ImGui for a computer graphics course.",
     html_url: "https://github.com/AidenCarrera/opengl-audio-visualizer",
@@ -103,11 +141,9 @@ const FALLBACK_GITHUB_REPOS: GithubRepo[] = [
     topics: ["audio", "cmake", "dsp", "fft", "music", "opengl", "cpp"],
     isCollab: false,
     createdAt: "2026-05-07T02:05:25Z",
-    priority: 4,
-    isFeatured: false,
   },
   {
-    name: "spyfall-clone",
+    repoName: "spyfall-clone",
     description:
       "Spyfall-style social deduction game built with Next.js, with multiplayer lobbies, role assignment, and a clean mobile-friendly UI.",
     html_url: "https://github.com/AidenCarrera/spyfall-clone",
@@ -123,11 +159,9 @@ const FALLBACK_GITHUB_REPOS: GithubRepo[] = [
     ],
     isCollab: false,
     createdAt: "2025-11-28T07:08:19Z",
-    priority: 5,
-    isFeatured: false,
   },
   {
-    name: "ai-learning",
+    repoName: "ai-learning",
     description:
       "OpenDeck is a website that generates flashcards, quizzes, and tests using AI.",
     html_url: "https://github.com/AidenCarrera/ai-learning",
@@ -144,68 +178,9 @@ const FALLBACK_GITHUB_REPOS: GithubRepo[] = [
     ],
     isCollab: false,
     createdAt: "2025-10-07T19:08:56Z",
-    priority: 6,
-    isFeatured: false,
   },
   {
-    name: "portfolio-website",
-    description:
-      "My personal portfolio website, featuring my projects, original music, and contact information.",
-    html_url: "https://github.com/AidenCarrera/portfolio-website",
-    homepage: "https://aidencarrera.vercel.app/",
-    topics: ["audio", "music", "nextjs", "tailwindcss", "typescript", "react"],
-    isCollab: false,
-    createdAt: "2025-10-30T05:25:44Z",
-    priority: 8,
-    isFeatured: false,
-  },
-  {
-    name: "cyberlock-senior-capstone",
-    description:
-      "A full-stack, multiplayer cyberpunk Tabletop RPG featuring real-time combat, persistent character progression, and dynamic storytelling powered by AI-driven NPCs.",
-    html_url: "https://github.com/SeanS-git/SeniorCapstone",
-    homepage: null,
-    topics: [
-      "chromadb",
-      "fastapi",
-      "nodejs",
-      "react",
-      "socketio",
-      "typescript",
-      "python",
-      "game",
-    ],
-    isCollab: true,
-    createdAt: "2026-01-20T20:18:32Z",
-    priority: 9,
-    isFeatured: false,
-  },
-  {
-    name: "paperclip-collector",
-    description:
-      "Nibs’ Paperclip Collector is a Java game about a raccoon collecting paperclips around a cluttered office desk, built from scratch with a focus on gameplay and game logic.",
-    html_url: "https://github.com/AidenCarrera/paperclip-collector",
-    homepage: null,
-    topics: ["jackson", "java", "json", "maven", "game"],
-    isCollab: false,
-    createdAt: "2025-10-23T07:17:12Z",
-    priority: 10,
-    isFeatured: false,
-  },
-  {
-    name: "fitsync",
-    description:
-      "A web application built with ASP.NET Core and MariaDB that tracks fitness metrics and utilizes Google AI Studio to generate personalized workouts based on user progress.",
-    html_url: "https://github.com/JManB055/ProjectMaVe",
-    homepage: null,
-    topics: ["ai", "aspnet", "docker", "mariadb", "csharp", "gemini-api"],
-    isCollab: true,
-    createdAt: "2025-09-19T14:06:50Z",
-    priority: 12,
-    isFeatured: false,
-  },
-  {
-    name: "random-webs",
+    repoName: "random-webs",
     description:
       "A large collection of small, interactive, and experimental websites showcasing unique web interactions.",
     html_url: "https://github.com/AidenCarrera/random-webs",
@@ -213,16 +188,59 @@ const FALLBACK_GITHUB_REPOS: GithubRepo[] = [
     topics: ["audio", "nextjs", "react", "tailwindcss", "tonejs", "typescript"],
     isCollab: false,
     createdAt: "2025-12-11T08:21:12Z",
-    priority: 7,
-    isFeatured: false,
+  },
+  {
+    repoName: "portfolio-website",
+    description:
+      "My personal portfolio website, featuring my projects, original music, and contact information.",
+    html_url: "https://github.com/AidenCarrera/portfolio-website",
+    homepage: "https://aidencarrera.vercel.app/",
+    topics: ["audio", "music", "nextjs", "tailwindcss", "typescript", "react"],
+    isCollab: false,
+    createdAt: "2025-10-30T05:25:44Z",
+  },
+  {
+    repoName: "SeniorCapstone",
+    html_url: "https://github.com/SeanS-git/SeniorCapstone",
+    homepage: null,
+    isCollab: true,
+    createdAt: "2026-01-20T20:18:32Z",
+  },
+  {
+    repoName: "paperclip-collector",
+    description:
+      "Nibs’ Paperclip Collector is a Java game about a raccoon collecting paperclips around a cluttered office desk, built from scratch with a focus on gameplay and game logic.",
+    html_url: "https://github.com/AidenCarrera/paperclip-collector",
+    homepage: null,
+    topics: ["jackson", "java", "json", "maven", "game"],
+    isCollab: false,
+    createdAt: "2025-10-23T07:17:12Z",
+  },
+  {
+    repoName: "ProjectMaVe",
+    html_url: "https://github.com/JManB055/ProjectMaVe",
+    homepage: null,
+    isCollab: true,
+    createdAt: "2025-09-19T14:06:50Z",
   },
 ];
 
 function getFallbackGithubRepos(): GithubRepo[] {
-  return FALLBACK_GITHUB_REPOS.map((repo) => ({
-    ...repo,
-    topics: [...repo.topics],
-  }));
+  return FALLBACK_SEEDS.map((seed) => {
+    const override = REPO_OVERRIDES[seed.repoName];
+
+    return {
+      name: override?.name ?? seed.repoName,
+      description: override?.description ?? seed.description ?? "",
+      html_url: seed.html_url,
+      homepage: seed.homepage,
+      topics: [...(override?.topics ?? seed.topics ?? [])],
+      isCollab: seed.isCollab,
+      createdAt: seed.createdAt,
+      priority: PROJECT_PRIORITY[seed.repoName] ?? DEFAULT_PRIORITY,
+      isFeatured: FEATURED_REPOS.has(seed.repoName),
+    };
+  });
 }
 
 export async function getGithubRepos(): Promise<GithubRepo[]> {
@@ -238,9 +256,9 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
     {
       user(login: "${username}") {
         repositories(
-          first: 100, 
-          privacy: PUBLIC, 
-          ownerAffiliations: [OWNER, COLLABORATOR], 
+          first: 100,
+          privacy: PUBLIC,
+          ownerAffiliations: [OWNER, COLLABORATOR],
           orderBy: {field: CREATED_AT, direction: DESC}
         ) {
           nodes {
@@ -303,51 +321,23 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
       isContributed: boolean,
     ): GithubRepo => {
       const isOwner = node.owner.login.toLowerCase() === username.toLowerCase();
-      let repoName = node.name;
-      let description = node.description ?? "";
-      let topics = node.repositoryTopics.nodes.map((t) => t.topic.name);
-
-      if (node.name === "SeniorCapstone") {
-        repoName = "cyberlock-senior-capstone";
-        description =
-          "A full-stack, multiplayer cyberpunk Tabletop RPG featuring real-time combat, persistent character progression, and dynamic storytelling powered by AI-driven NPCs.";
-        topics = [
-          "chromadb",
-          "fastapi",
-          "nodejs",
-          "react",
-          "socketio",
-          "typescript",
-          "python",
-          "game",
-        ];
-      } else if (node.name === "ProjectMaVe") {
-        repoName = "fitsync";
-        description =
-          "A web application built with ASP.NET Core and MariaDB that tracks fitness metrics and utilizes Google AI Studio to generate personalized workouts based on user progress.";
-        topics = ["ai", "aspnet", "docker", "mariadb", "csharp", "gemini-api"];
-      }
-
-      const priority = PROJECT_PRIORITY[node.name] ?? 999;
-      const isFeatured = [
-        "stillwater-pulse",
-        "olo-eq",
-        "solfege-piano",
-      ].includes(node.name);
+      const override = REPO_OVERRIDES[node.name];
 
       return {
-        name: repoName,
-        description: description,
+        name: override?.name ?? node.name,
+        description: override?.description ?? node.description ?? "",
         html_url: node.url,
         homepage: node.homepageUrl || null,
-        topics: topics,
+        topics:
+          override?.topics ??
+          node.repositoryTopics.nodes.map((t) => t.topic.name),
         isCollab:
           isContributed ||
           !isOwner ||
           (node.collaborators?.totalCount ?? 0) > 1,
         createdAt: node.createdAt,
-        priority,
-        isFeatured,
+        priority: PROJECT_PRIORITY[node.name] ?? DEFAULT_PRIORITY,
+        isFeatured: FEATURED_REPOS.has(node.name),
       };
     };
 

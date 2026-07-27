@@ -2,14 +2,13 @@
 
 import { Mail, Copy, Check } from "lucide-react";
 import { useState } from "react";
-
-const email = "aiden.carrera05@gmail.com";
+import { CONTACT_EMAIL } from "@/lib/contact";
 
 export default function DirectContactCard() {
   const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
-    navigator.clipboard.writeText(email);
+    navigator.clipboard.writeText(CONTACT_EMAIL);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -21,7 +20,9 @@ export default function DirectContactCard() {
       <div className="flex items-center justify-between p-4 rounded-lg bg-slate-700/50 border border-slate-600">
         <div className="flex items-center space-x-3">
           <Mail className="text-brand" size={20} />
-          <span className="text-slate-300 font-mono text-sm">{email}</span>
+          <span className="text-slate-300 font-mono text-sm">
+            {CONTACT_EMAIL}
+          </span>
         </div>
         <button
           onClick={copyEmail}
@@ -41,7 +42,7 @@ export default function DirectContactCard() {
       </div>
 
       <a
-        href={`mailto:${email}`}
+        href={`mailto:${CONTACT_EMAIL}`}
         className="block w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-6 rounded-lg text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
       >
         Send Email Directly

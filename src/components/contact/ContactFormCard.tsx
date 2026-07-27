@@ -2,6 +2,7 @@
 
 import { useActionState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
+import { CONTACT_LIMITS } from "@/lib/contact";
 
 interface FormState {
   status: "idle" | "success" | "error";
@@ -60,7 +61,7 @@ export default function ContactFormCard() {
               id="name"
               name="name"
               required
-              maxLength={100}
+              maxLength={CONTACT_LIMITS.name}
               className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
               placeholder="Your name"
             />
@@ -78,7 +79,7 @@ export default function ContactFormCard() {
               id="email"
               name="email"
               required
-              maxLength={254}
+              maxLength={CONTACT_LIMITS.email}
               className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
               placeholder="your.email@example.com"
             />
@@ -95,7 +96,7 @@ export default function ContactFormCard() {
               id="message"
               name="message"
               required
-              maxLength={1000}
+              maxLength={CONTACT_LIMITS.message}
               rows={5}
               className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all resize-none"
               placeholder="Tell me about your project or idea..."

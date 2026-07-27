@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { CONTACT_EMAIL, CONTACT_LIMITS } from "@/lib/contact";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const WINDOW_MS = 60_000;
 const MAX_SUBMISSIONS_PER_WINDOW = 3;
-const MAX_NAME_LENGTH = 100;
-const MAX_EMAIL_LENGTH = 254;
-const MAX_MESSAGE_LENGTH = 1000;
 
 const HTML_ENTITIES: Record<string, string> = {
   "&": "&amp;",
@@ -64,7 +62,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body: unknown = await req.json();
+    // A body that will not parse is the caller's mistake, not a server fault.
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid JSON body." },
+        { status: 400 },
+      );
+    }
 
     if (!body || typeof body !== "object") {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -88,9 +95,9 @@ export async function POST(req: NextRequest) {
     }
 
     if (
-      name.length > MAX_NAME_LENGTH ||
-      email.length > MAX_EMAIL_LENGTH ||
-      message.length > MAX_MESSAGE_LENGTH
+      name.length > CONTACT_LIMITS.name ||
+      email.length > CONTACT_LIMITS.email ||
+      message.length > CONTACT_LIMITS.message
     ) {
       return NextResponse.json(
         { error: "One or more fields exceed the allowed length." },
@@ -113,7 +120,7 @@ export async function POST(req: NextRequest) {
 
     const { data, error } = await resend.emails.send({
       from: "Portfolio Contact <onboarding@resend.dev>",
-      to: "aiden.carrera05@gmail.com",
+      to: CONTACT_EMAIL,
       subject: `New Message from ${subjectName}`,
       replyTo: email,
       text: `New Portfolio Submission\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,

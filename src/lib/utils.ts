@@ -1,3 +1,8 @@
+// Collapses topic spellings so filtering and display agree on one form.
+export function normalizeTag(tag: string): string {
+  return tag.toLowerCase().trim().replace(/-/g, " ");
+}
+
 export function formatTagName(tag: string): string {
   const mapping: Record<string, string> = {
     nextjs: "Next.js",
@@ -49,7 +54,7 @@ export function formatTagName(tag: string): string {
     cmake: "CMake",
   };
 
-  const lower = tag.toLowerCase().trim().replace(/-/g, " ");
+  const lower = normalizeTag(tag);
   if (mapping[lower]) {
     return mapping[lower];
   }
