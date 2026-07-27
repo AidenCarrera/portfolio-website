@@ -13,16 +13,16 @@ export default function HomeClient() {
   } as const;
 
   return (
-    <div className="min-h-screen bg-linear-to-br bg-animated-dark">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-        <div className="text-center space-y-8">
+    <div className="flex-1 flex flex-col justify-center bg-linear-to-br bg-animated-dark pt-2 sm:pt-4 pb-6 sm:pb-8 min-h-[calc(100vh-4rem-3.5rem)]">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 flex flex-col justify-center">
+        <div className="text-center space-y-6">
           <motion.div
-            className="relative inline-block"
+            className="relative inline-block -mt-2"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ ...springTransition, delay: 0 }}
           >
-            <div className="w-32 h-32 mx-auto mb-6 rounded-full shadow-lg overflow-hidden bg-slate-900 flex items-center justify-center border border-brand/20">
+            <div className="w-32 h-32 mx-auto mb-3 rounded-full shadow-lg overflow-hidden bg-slate-900 flex items-center justify-center border border-brand/20">
               <Image
                 src="/developer-logo.svg"
                 alt="Aiden Carrera - Audio Developer Logo"
@@ -54,12 +54,12 @@ export default function HomeClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...springTransition, delay: 0.3 }}
           >
-            Creating innovative applications and immersive music.
+            I build creative software and make original music.
           </motion.p>
         </div>
 
         <motion.div
-          className="mt-24 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          className="mt-16 sm:mt-20 md:mt-24 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full items-stretch"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...springTransition, delay: 0.45 }}
