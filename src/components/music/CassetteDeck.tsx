@@ -7,6 +7,14 @@ interface CassetteDeckProps {
   activeSnippet: MusicSnippet | null;
 }
 
+// Vertical travel needed to sweep the knob across its full range.
+const VOLUME_DRAG_RANGE_PX = 480;
+const VOLUME_WHEEL_STEP = 0.02;
+// Applied while Shift is held, for fine adjustment.
+const VOLUME_FINE_FACTOR = 0.2;
+
+const clampVolume = (value: number) => Math.min(1, Math.max(0, value));
+
 export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
   const {
     isPlaying,
@@ -21,7 +29,8 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     seek,
     handleTimeUpdate,
     handleLoadedMetadata,
-    handleEnded,
+    handlePlaybackStarted,
+    handlePlaybackStopped,
   } = useTapePlayer(activeSnippet);
 
   const knobRotation = volume * 270 - 135;
@@ -29,6 +38,45 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     const mins = Math.floor(time / 60);
     const secs = Math.floor(time % 60);
     return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleKnobPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    target.setPointerCapture(e.pointerId);
+    // Accumulating per move rather than from a fixed anchor lets Shift be
+    // pressed or released mid-drag without the knob jumping.
+    let lastY = e.clientY;
+
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      const travel = (lastY - moveEvent.clientY) / VOLUME_DRAG_RANGE_PX;
+      lastY = moveEvent.clientY;
+      const step = moveEvent.shiftKey ? travel * VOLUME_FINE_FACTOR : travel;
+      setVolume((prev) => clampVolume(prev + step));
+    };
+
+    const handlePointerUp = (upEvent: PointerEvent) => {
+      try {
+        target.releasePointerCapture(upEvent.pointerId);
+      } catch {
+        // pointer capture already released
+      }
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+  };
+
+  const handleKnobWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    // Holding Shift makes browsers report the scroll on deltaX instead.
+    const scroll = e.deltaY !== 0 ? e.deltaY : e.deltaX;
+    if (scroll === 0) return;
+
+    const step = e.shiftKey
+      ? VOLUME_WHEEL_STEP * VOLUME_FINE_FACTOR
+      : VOLUME_WHEEL_STEP;
+    setVolume((prev) => clampVolume(prev + (scroll > 0 ? -step : step)));
   };
 
   return (
@@ -114,7 +162,11 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                 <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest mb-1">
                   Vol
                 </div>
-                <div className="relative w-12 h-12 flex items-center justify-center cursor-ns-resize group focus-within:ring-2 focus-within:ring-brand rounded-full">
+                <div
+                  onPointerDown={handleKnobPointerDown}
+                  onWheel={handleKnobWheel}
+                  className="relative w-12 h-12 flex items-center justify-center cursor-ns-resize group focus-within:ring-2 focus-within:ring-brand rounded-full select-none"
+                >
                   {Array.from({ length: 11 }).map((_, i) => (
                     <div
                       key={i}
@@ -142,7 +194,7 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                     }
                     aria-label="Volume"
                     aria-valuetext={`${Math.round(volume * 100)}%`}
-                    className="absolute inset-0 z-10 h-full w-full cursor-ns-resize opacity-0 [direction:rtl] [writing-mode:vertical-lr]"
+                    className="absolute inset-0 z-10 h-full w-full cursor-ns-resize opacity-0 pointer-events-none"
                   />
                 </div>
               </div>
@@ -176,7 +228,9 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
-        onEnded={handleEnded}
+        onPlay={handlePlaybackStarted}
+        onPause={handlePlaybackStopped}
+        onEnded={handlePlaybackStopped}
         className="hidden"
       />
     </div>

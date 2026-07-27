@@ -23,8 +23,6 @@ export default function CassetteVisual({
           : "absolute inset-0 bg-slate-800 border-2 border-slate-700 rounded-lg p-2 flex flex-col shadow-inner"
       }
     >
-      <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none" />
-
       <div className="flex justify-between px-1 mb-1">
         <div className="w-2 h-2 rounded-full bg-slate-700 shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] border border-slate-600" />
         <div className="w-2 h-2 rounded-full bg-slate-700 shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] border border-slate-600" />

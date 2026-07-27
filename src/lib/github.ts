@@ -30,7 +30,7 @@ const PROJECT_PRIORITY: Record<string, number> = {
   "opengl-audio-visualizer": 4,
   "spyfall-clone": 5,
   "ai-learning": 6,
-  "random-web": 7,
+  "random-webs": 7,
   "portfolio-website": 8,
   SeniorCapstone: 9,
   "paperclip-collector": 10,
@@ -213,7 +213,7 @@ const FALLBACK_GITHUB_REPOS: GithubRepo[] = [
     topics: ["audio", "nextjs", "react", "tailwindcss", "tonejs", "typescript"],
     isCollab: false,
     createdAt: "2025-12-11T08:21:12Z",
-    priority: 999,
+    priority: 7,
     isFeatured: false,
   },
 ];

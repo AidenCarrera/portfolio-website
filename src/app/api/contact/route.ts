@@ -26,9 +26,17 @@ const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
+
+  // Sweeping on every call bounds the map to IPs active in the current window.
+  for (const [trackedIp, tracked] of rateLimitMap) {
+    if (now > tracked.resetAt) {
+      rateLimitMap.delete(trackedIp);
+    }
+  }
+
   const entry = rateLimitMap.get(ip);
 
-  if (!entry || now > entry.resetAt) {
+  if (!entry) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + WINDOW_MS });
     return true;
   }
@@ -41,8 +49,21 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
+function getClientIp(req: NextRequest): string {
+  const forwarded = req.headers.get("x-forwarded-for");
+  return forwarded ? forwarded.split(",")[0].trim() : "unknown";
+}
+
 export async function POST(req: NextRequest) {
   try {
+    // Gate before parsing so malformed payloads cannot bypass the limiter.
+    if (!checkRateLimit(getClientIp(req))) {
+      return NextResponse.json(
+        { error: "Too many submissions. Please wait before trying again." },
+        { status: 429 },
+      );
+    }
+
     const body: unknown = await req.json();
 
     if (!body || typeof body !== "object") {
@@ -82,16 +103,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "Invalid email address." },
         { status: 400 },
-      );
-    }
-
-    const forwarded = req.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-
-    if (!checkRateLimit(ip)) {
-      return NextResponse.json(
-        { error: "Too many submissions. Please wait before trying again." },
-        { status: 429 },
       );
     }
 
