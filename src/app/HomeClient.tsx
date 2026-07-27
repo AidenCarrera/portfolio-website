@@ -65,7 +65,7 @@ export default function HomeClient() {
           transition={{ ...springTransition, delay: 0.45 }}
         >
           <AboutCard />
-          <HomeNavLinks delay={0.55} />
+          <HomeNavLinks />
         </motion.div>
       </div>
     </div>

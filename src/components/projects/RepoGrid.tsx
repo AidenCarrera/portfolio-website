@@ -1,5 +1,5 @@
 import RepoCard from "./RepoCard";
-import type { GithubRepo } from "@/lib/github";
+import type { GithubRepo } from "@/types";
 
 interface RepoGridProps {
   repos: GithubRepo[];

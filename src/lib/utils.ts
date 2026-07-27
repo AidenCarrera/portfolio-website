@@ -69,8 +69,10 @@ export function formatTagName(tag: string): string {
     .join(" ");
 }
 
-export const SITE_URL =
+// Normalized without a trailing slash so consumers can append paths directly.
+export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000");
+    : "http://localhost:3000")
+).replace(/\/+$/, "");

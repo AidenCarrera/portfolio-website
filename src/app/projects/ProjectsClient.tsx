@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { RepoGrid, CategoryFilter } from "@/components/projects";
-import { GithubRepo } from "@/lib/github";
+import RepoGrid from "@/components/projects/RepoGrid";
+import CategoryFilter from "@/components/projects/CategoryFilter";
+import type { GithubRepo } from "@/types";
 import { normalizeTag } from "@/lib/utils";
 
 interface ProjectsClientProps {

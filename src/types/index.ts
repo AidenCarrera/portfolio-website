@@ -1,3 +1,15 @@
+export interface GithubRepo {
+  name: string;
+  description: string | null;
+  html_url: string;
+  homepage: string | null;
+  topics: string[];
+  isCollab: boolean;
+  createdAt: string;
+  priority: number;
+  isFeatured: boolean;
+}
+
 export interface MusicTrack {
   id: string;
   title: string;
@@ -11,7 +23,6 @@ export interface MusicSnippet {
 }
 
 export interface GearItem {
-  id: string;
   name: string;
   category: string;
   description?: string;

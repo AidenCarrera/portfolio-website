@@ -1,5 +1,3 @@
-"use client";
-
 import { formatTagName } from "@/lib/utils";
 
 interface CategoryFilterProps {

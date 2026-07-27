@@ -1,6 +1,6 @@
 import { ExternalLink, Folder } from "lucide-react";
 import { SiGithub } from "react-icons/si";
-import type { GithubRepo } from "@/lib/github";
+import type { GithubRepo } from "@/types";
 import { formatTagName } from "@/lib/utils";
 
 interface RepoCardProps {
@@ -74,12 +74,10 @@ export default function RepoCard({ repo }: RepoCardProps) {
             key={tech}
             className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-slate-700 text-slate-300"
           >
-            <span>{formatTagName(tech)}</span>
+            {formatTagName(tech)}
           </span>
         ))}
       </div>
-
-      <div className="grow" />
     </div>
   );
 }

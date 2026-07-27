@@ -1,9 +1,8 @@
 import { socialLinks } from "@/lib/socialLinks";
 import { SITE_URL } from "@/lib/utils";
 
-const siteUrl = SITE_URL.replace(/\/+$/, "");
-const personId = `${siteUrl}/#person`;
-const websiteId = `${siteUrl}/#website`;
+const personId = `${SITE_URL}/#person`;
+const websiteId = `${SITE_URL}/#website`;
 
 export const globalStructuredData = {
   "@context": "https://schema.org",
@@ -12,8 +11,8 @@ export const globalStructuredData = {
       "@type": "Person",
       "@id": personId,
       name: "Aiden Carrera",
-      url: siteUrl,
-      image: `${siteUrl}/developer-logo.svg`,
+      url: SITE_URL,
+      image: `${SITE_URL}/developer-logo.svg`,
       jobTitle: "Software Engineer, Audio Programmer, and Music Producer",
       description:
         "Software engineer, audio programmer, musician, and music producer.",
@@ -22,7 +21,7 @@ export const globalStructuredData = {
     {
       "@type": "WebSite",
       "@id": websiteId,
-      url: siteUrl,
+      url: SITE_URL,
       name: "Aiden Carrera Portfolio",
       description:
         "Software engineering, audio programming, and music production portfolio of Aiden Carrera.",
@@ -37,8 +36,8 @@ export const globalStructuredData = {
 export const profilePageStructuredData = {
   "@context": "https://schema.org",
   "@type": "ProfilePage",
-  "@id": `${siteUrl}/#profile-page`,
-  url: siteUrl,
+  "@id": `${SITE_URL}/#profile-page`,
+  url: SITE_URL,
   name: "Aiden Carrera Portfolio",
   description:
     "Software engineering, audio programming, and music production portfolio of Aiden Carrera.",

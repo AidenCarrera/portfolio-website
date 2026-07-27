@@ -1,14 +1,4 @@
-export interface GithubRepo {
-  name: string;
-  description: string | null;
-  html_url: string;
-  homepage: string | null;
-  topics: string[];
-  isCollab: boolean;
-  createdAt: string;
-  priority: number;
-  isFeatured: boolean;
-}
+import type { GithubRepo } from "@/types";
 
 interface GraphQLRepoNode {
   name: string;
@@ -28,12 +18,12 @@ const DEFAULT_PRIORITY = 999;
 // Keyed by GitHub repository name, which is what every lookup below uses.
 const PROJECT_PRIORITY: Record<string, number> = {
   "stillwater-pulse": 1,
-  "olo-eq": 2,
+  "random-webs": 2,
   "solfege-piano": 3,
-  "opengl-audio-visualizer": 4,
-  "spyfall-clone": 5,
-  "ai-learning": 6,
-  "random-webs": 7,
+  "olo-eq": 4,
+  "opengl-audio-visualizer": 5,
+  "spyfall-clone": 6,
+  "ai-learning": 7,
   "portfolio-website": 8,
   SeniorCapstone: 9,
   "paperclip-collector": 10,
@@ -41,7 +31,7 @@ const PROJECT_PRIORITY: Record<string, number> = {
   ProjectMaVe: 12,
 };
 
-const FEATURED_REPOS = new Set(["stillwater-pulse", "olo-eq", "solfege-piano"]);
+const FEATURED_REPOS = new Set(["stillwater-pulse", "random-webs", "solfege-piano"]);
 
 // Repos whose GitHub identity differs from how they are presented here.
 const REPO_OVERRIDES: Record<
@@ -87,7 +77,7 @@ const FALLBACK_SEEDS: FallbackSeed[] = [
   {
     repoName: "stillwater-pulse",
     description:
-      "🏆 Winner – OSU Hackathon 2025 Best Theme & Best Use of ElevenLabs AI | Stillwater Pulse gathers Instagram content to help users discover events in Stillwater, enhanced with an AI chatbot and TTS.",
+      "🏆 Winner - OSU Hackathon 2025 Best Theme & Best Use of ElevenLabs AI | Stillwater Pulse gathers Instagram content to help users discover events in Stillwater, enhanced with an AI chatbot and TTS.",
     html_url: "https://github.com/AidenCarrera/stillwater-pulse",
     homepage: "https://stillwaterpulse.vercel.app",
     topics: [

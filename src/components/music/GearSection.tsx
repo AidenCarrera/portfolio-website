@@ -1,5 +1,5 @@
 import { Wrench, Music, Mic2, Speaker, Laptop } from "lucide-react";
-import { GearItem } from "@/types";
+import type { GearItem } from "@/types";
 
 interface GearSectionProps {
   gear: GearItem[];
@@ -52,7 +52,7 @@ export default function GearSection({ gear }: GearSectionProps) {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {items.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.name}
                   className="bg-slate-800/30 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-brand/50 hover:bg-slate-800/50 transition-all group"
                 >
                   <div className="flex items-start justify-between mb-3">

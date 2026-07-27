@@ -1,16 +1,18 @@
 "use client";
 
 import { Music } from "lucide-react";
-import { MusicSnippet } from "@/types";
+import type { MusicSnippet } from "@/types";
 import { useState } from "react";
 import CassetteDeck from "./CassetteDeck";
 import Cassette from "./Cassette";
 
-interface Props {
+interface UpcomingSnippetsSectionProps {
   snippets: MusicSnippet[];
 }
 
-export default function UpcomingSnippetsSection({ snippets }: Props) {
+export default function UpcomingSnippetsSection({
+  snippets,
+}: UpcomingSnippetsSectionProps) {
   const [activeSnippet, setActiveSnippet] = useState<MusicSnippet | null>(
     snippets[0] ?? null,
   );

@@ -1,30 +1,30 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/utils";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: new URL("/", SITE_URL).toString(),
+      url: `${SITE_URL}/`,
       changeFrequency: "monthly",
       priority: 1,
     },
     {
-      url: new URL("/projects", SITE_URL).toString(),
+      url: `${SITE_URL}/projects`,
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
-      url: new URL("/music", SITE_URL).toString(),
+      url: `${SITE_URL}/music`,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: new URL("/contact", SITE_URL).toString(),
+      url: `${SITE_URL}/contact`,
       changeFrequency: "yearly",
       priority: 0.5,
     },
     {
-      url: new URL("/privacy", SITE_URL).toString(),
+      url: `${SITE_URL}/privacy`,
       changeFrequency: "yearly",
       priority: 0.3,
     },

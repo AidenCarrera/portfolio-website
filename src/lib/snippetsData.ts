@@ -1,4 +1,4 @@
-import { MusicSnippet } from "@/types";
+import type { MusicSnippet } from "@/types";
 
 export const snippetsData: MusicSnippet[] = [
   {

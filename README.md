@@ -1,66 +1,65 @@
-# Aiden Carrera Portfolio – Next.js Project
+# Aiden Carrera Portfolio
 
-A personal portfolio website built with **Next.js**, **React**, and **Tailwind CSS** that showcases my projects, music, and programming work.
-This project combines responsive design, interactive components, and dynamic routing to create a clean, modern, and functional portfolio.
-
-## Purpose
-
-The goal of this project is to provide a professional and interactive online presence that highlights my skills as a computer science student, musician, and audio programmer.
-Visitors can explore my projects, listen to my released and upcoming music, and contact me easily.
+My personal portfolio for software development and music.
+It showcases my projects, released and upcoming music, contact information,
+and the tools I use as a musician and audio programmer.
 
 ## Features
 
-- Responsive layout for desktop and mobile
-- Showcase of music projects with embedded audio players
-- Project portfolio with descriptions, tech stack, and links to demos/repositories
-- Dynamic navigation menu with smooth scrolling
-- Contact form to send messages via email
-- Interactive analog cassette deck player for listening to upcoming music snippets
-- Spotify released music player integrations
-- Project grid with dynamic, instant topic filtering and manually curated sorting controls
+- Project showcase with topic filtering and GitHub data
+- Cassette tape player for listening to upcoming music snippets
+- Spotify integrations for listening to released music
 - Audio gear & software showcase section grouped by hardware, software, instruments, and plugins
-- Contact form using a Next.js API route and Resend integration
-- WCAG AA/AAA accessibility compliance (skip links, keyboard slider seeking, accessible forms, focus rings)
-- Automated sitemap (`sitemap.ts`) and SEO optimizations conforming to Next.js 16 and Vercel standards
+- Contact form using a Next.js API route with Resend delivery, input validation, and per-IP rate limiting
+- WCAG-informed accessibility practices, including skip links, keyboard-accessible audio controls, accessible forms, and visible focus states
+- Automated sitemap and SEO metadata for search engines
 
-## Tech Stack
+## Stack
 
-- **Next.js 16** – Frontend React framework with Turbopack
-- **React 19** – UI library utilizing advanced hooks and Server Actions
-- **Tailwind CSS v4** – Utility-first CSS styling
-- **Motion** – Fluid animations and spring transitions
-- **TypeScript** – Static type checking
+- Next.js 16 and React 19
+- TypeScript 6
+- Tailwind CSS 4
+- Motion
+- Resend
+- Vercel
 
 ## Installation and setup
 
-To clone and run this application locally, make sure you have Git, Node.js, and **pnpm** installed. Then:
+To run the site locally, make sure you have Git, Node.js, and pnpm installed.
 
 ```bash
-# Clone this repository
 git clone https://github.com/AidenCarrera/portfolio-website.git
-
-# Navigate into the folder
 cd portfolio-website
-
-# Install dependencies using pnpm
 pnpm install
-
-# Run the local development server
+cp .env.example .env.local
 pnpm dev
-
-# Open your browser at http://localhost:3000 to view the website
 ```
 
-## Future Improvements
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-- Add more C++ VST/AU audio plugin interactive previews directly in-browser
-- Add a performances section (live gigs, ensemble schedule, recording sessions)
-- Improve Spotify track deduplication and release ordering
+## Environment configuration
 
-## Learn More
+Copy [`.env.example`](./.env.example) to `.env.local` and add the credentials needed for the integrations you want to use.
 
-To learn more about the technologies used, check out the following resources:
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Public site origin used for canonical URLs and metadata |
+| `RESEND_API_KEY` | Sends contact-form submissions through Resend |
+| `GITHUB_PAT` | Loads current project data from the GitHub GraphQL API |
+| `SPOTIFY_CLIENT_ID` | Authenticates requests for released music data |
+| `SPOTIFY_CLIENT_SECRET` | Authenticates requests for released music data |
 
-- [Next.js Documentation](https://nextjs.org/docs) – features and API guide
-- [React Documentation](https://reactjs.org/docs/getting-started.html) – building interactive components
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs) – utility-first styling framework
+`RESEND_API_KEY` is required for contact-form delivery. GitHub and Spotify use static fallback data when their credentials are unavailable. The contact endpoint currently applies a fixed in-memory limit of three submissions per IP per minute, so there is no separate rate-limit environment variable.
+
+## Quality checks
+
+```bash
+# Type checking
+pnpm typecheck
+
+# Linting
+pnpm lint
+
+# Production build
+pnpm build
+```
