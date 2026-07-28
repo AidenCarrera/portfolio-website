@@ -13,7 +13,7 @@ export default function HomeClient() {
   } as const;
 
   return (
-    <div className="flex-1 flex flex-col justify-center bg-linear-to-br bg-animated-dark pt-2 sm:pt-4 pb-6 sm:pb-8 min-h-[calc(100vh-4rem-3.5rem)]">
+    <div className="flex-1 flex flex-col justify-center bg-linear-to-br bg-animated-dark pt-20 sm:pt-24 pb-6 sm:pb-8 min-h-[calc(100vh-4rem-3.5rem)]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 flex flex-col justify-center">
         <div className="text-center space-y-6">
           <motion.div

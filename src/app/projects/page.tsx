@@ -28,7 +28,7 @@ export default async function ProjectsPage() {
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
             My open-source GitHub repos: interactive web apps, full-stack
-            applications, audio tools, and games - including collaborative team
+            applications, audio tools, and games, including collaborative team
             projects.
           </p>
         </div>
