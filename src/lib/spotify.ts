@@ -14,6 +14,10 @@ interface SpotifyTrack {
   name: string;
 }
 
+// Spotify's client-credentials tokens are valid for 3600s. Rotating the cache
+// key on a shorter window guarantees a token is at most this old when served.
+const TOKEN_WINDOW_MS = 45 * 60 * 1000;
+
 async function getSpotifyAccessToken(): Promise<string> {
   if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) {
     throw new Error(
@@ -21,7 +25,14 @@ async function getSpotifyAccessToken(): Promise<string> {
     );
   }
 
-  const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+  // Spotify ignores this parameter; it exists purely to change Next's cache
+  // key. Caching the token for its own lifetime meant Next's
+  // stale-while-revalidate could serve an already-expired token, 401ing every
+  // downstream call. A key that rolls over every window is always a genuine
+  // miss, so the token is refreshed with plenty of validity left.
+  const window = Math.floor(Date.now() / TOKEN_WINDOW_MS);
+
+  const tokenRes = await fetch(`https://accounts.spotify.com/api/token?w=${window}`, {
     method: "POST",
     headers: {
       Authorization:
@@ -35,7 +46,11 @@ async function getSpotifyAccessToken(): Promise<string> {
     next: { revalidate: 3600 },
   });
 
-  if (!tokenRes.ok) throw new Error("Failed to fetch Spotify access token");
+  if (!tokenRes.ok) {
+    throw new Error(
+      `Failed to fetch Spotify access token (${tokenRes.status} ${tokenRes.statusText})`,
+    );
+  }
   const tokenData = await tokenRes.json();
   return tokenData.access_token;
 }
@@ -56,7 +71,11 @@ export async function getSpotifyTracks(): Promise<MusicTrack[]> {
       },
     );
 
-    if (!albumsRes.ok) throw new Error("Failed to fetch albums from Spotify");
+    if (!albumsRes.ok) {
+      throw new Error(
+        `Failed to fetch albums from Spotify (${albumsRes.status} ${albumsRes.statusText}): ${await albumsRes.text()}`,
+      );
+    }
     const albumsData: { items: SpotifyAlbum[] } = await albumsRes.json();
 
     const trackPromises = albumsData.items.map(async (album) => {
@@ -68,8 +87,11 @@ export async function getSpotifyTracks(): Promise<MusicTrack[]> {
         },
       );
 
-      if (!tracksRes.ok)
-        throw new Error(`Failed to fetch tracks for album ${album.name}`);
+      if (!tracksRes.ok) {
+        throw new Error(
+          `Failed to fetch tracks for album ${album.name} (${tracksRes.status} ${tracksRes.statusText})`,
+        );
+      }
 
       const tracksData: { items: SpotifyTrack[] } = await tracksRes.json();
 
@@ -80,8 +102,17 @@ export async function getSpotifyTracks(): Promise<MusicTrack[]> {
       }));
     });
 
-    const allTracks = (await Promise.all(trackPromises)).flat();
-    return allTracks;
+    // allSettled so one unavailable album doesn't discard every other track.
+    const results = await Promise.allSettled(trackPromises);
+    for (const result of results) {
+      if (result.status === "rejected") {
+        console.error("Spotify API Helper Error:", result.reason);
+      }
+    }
+
+    return results
+      .filter((result) => result.status === "fulfilled")
+      .flatMap((result) => result.value);
   } catch (err) {
     console.error("Spotify API Helper Error:", err);
     return [];
