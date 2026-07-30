@@ -2,21 +2,7 @@ import type { MusicTrack } from "@/types";
 
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const ARTIST_ID = "1LgE8yhi5cPt1uBQPzaRAe";
-
-// Static fallback preserves released music when Spotify is unavailable.
-const FALLBACK_SPOTIFY_TRACKS: MusicTrack[] = [
-  {
-    id: "14UiomCSXMRsMVINVZmK4O",
-    title: "Rain From 93",
-    spotify_embed_url:
-      "https://open.spotify.com/embed/track/14UiomCSXMRsMVINVZmK4O",
-  },
-];
-
-function getFallbackSpotifyTracks(): MusicTrack[] {
-  return FALLBACK_SPOTIFY_TRACKS.map((track) => ({ ...track }));
-}
+const SPOTIFY_ARTIST_ID = process.env.SPOTIFY_ARTIST_ID?.trim();
 
 interface SpotifyAlbum {
   id: string;
@@ -55,11 +41,15 @@ async function getSpotifyAccessToken(): Promise<string> {
 }
 
 export async function getSpotifyTracks(): Promise<MusicTrack[]> {
+  if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET || !SPOTIFY_ARTIST_ID) {
+    return [];
+  }
+
   try {
     const accessToken = await getSpotifyAccessToken();
 
     const albumsRes = await fetch(
-      `https://api.spotify.com/v1/artists/${ARTIST_ID}/albums?include_groups=album,single&market=US&limit=50`,
+      `https://api.spotify.com/v1/artists/${encodeURIComponent(SPOTIFY_ARTIST_ID)}/albums?include_groups=album,single&market=US&limit=50`,
       {
         headers: { Authorization: `Bearer ${accessToken}` },
         next: { revalidate: 3600 },
@@ -91,9 +81,9 @@ export async function getSpotifyTracks(): Promise<MusicTrack[]> {
     });
 
     const allTracks = (await Promise.all(trackPromises)).flat();
-    return allTracks.length > 0 ? allTracks : getFallbackSpotifyTracks();
+    return allTracks;
   } catch (err) {
     console.error("Spotify API Helper Error:", err);
-    return getFallbackSpotifyTracks();
+    return [];
   }
 }

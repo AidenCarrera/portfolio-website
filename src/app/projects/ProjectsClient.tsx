@@ -3,48 +3,65 @@
 import { useState } from "react";
 import RepoGrid from "@/components/projects/RepoGrid";
 import CategoryFilter from "@/components/projects/CategoryFilter";
-import type { GithubRepo } from "@/types";
+import type { PortfolioProject } from "@/lib/projects";
 import { normalizeTag } from "@/lib/utils";
 
 interface ProjectsClientProps {
-  initialRepos: GithubRepo[];
+  initialProjects: PortfolioProject[];
+  defaultSort: SortOption;
 }
 
 type SortOption = "featured" | "newest" | "name";
 
-export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
+export default function ProjectsClient({
+  initialProjects,
+  defaultSort,
+}: ProjectsClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<SortOption>("featured");
+  const [sortBy, setSortBy] = useState<SortOption>(defaultSort);
 
   const categories = [
     "all",
     ...Array.from(
       new Set(
-        initialRepos.flatMap((r) => r.topics.map((t) => normalizeTag(t))),
+        initialProjects.flatMap((project) =>
+          project.presentation.tags.map((topic) => normalizeTag(topic)),
+        ),
       ),
     ).sort(),
   ];
 
-  const filteredRepos =
+  const filteredProjects =
     selectedCategory === "all"
-      ? initialRepos
-      : initialRepos.filter((r) =>
-          r.topics.map((t) => normalizeTag(t)).includes(selectedCategory),
+      ? initialProjects
+      : initialProjects.filter((project) =>
+          project.presentation.tags
+            .map((topic) => normalizeTag(topic))
+            .includes(selectedCategory),
         );
 
-  const sortedRepos = [...filteredRepos].sort((a, b) => {
+  const sortedProjects = [...filteredProjects].sort((a, b) => {
     if (sortBy === "featured") {
-      return a.priority - b.priority;
+      if (a.presentation.featured !== b.presentation.featured) {
+        return a.presentation.featured ? -1 : 1;
+      }
+      if (a.presentation.displayOrder !== b.presentation.displayOrder) {
+        return a.presentation.displayOrder - b.presentation.displayOrder;
+      }
+      return a.presentation.repoName.localeCompare(b.presentation.repoName);
     }
     if (sortBy === "newest") {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return (
+        new Date(b.github.createdAt).getTime() -
+        new Date(a.github.createdAt).getTime()
+      );
     }
-    return a.name.localeCompare(b.name);
+    return a.presentation.repoName.localeCompare(b.presentation.repoName);
   });
 
   return (
     <>
-      {initialRepos.length > 0 ? (
+      {initialProjects.length > 0 ? (
         <>
           <CategoryFilter
             categories={categories}
@@ -76,7 +93,7 @@ export default function ProjectsClient({ initialRepos }: ProjectsClientProps) {
             </div>
           </div>
 
-          <RepoGrid repos={sortedRepos} />
+          <RepoGrid projects={sortedProjects} />
         </>
       ) : (
         <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">

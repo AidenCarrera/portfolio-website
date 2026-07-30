@@ -7,27 +7,46 @@ const BASE_LINK_CLASS =
 const SECONDARY_LINK_CLASS =
   "bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-brand";
 
-// `download` marks the one entry that is a static asset rather than a route.
-const navLinks = [
-  {
-    href: "/projects",
-    label: "View Projects",
-    variant:
-      "bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark",
-  },
-  {
-    href: "/Aiden_Carrera_Resume.pdf",
-    label: "Download Resume",
-    variant:
-      "bg-blue-600 hover:bg-blue-500 border border-blue-700 hover:border-blue-500",
-    download: true,
-    ariaLabel: "Download Resume (PDF)",
-  },
-  { href: "/music", label: "Explore My Music", variant: SECONDARY_LINK_CLASS },
-  { href: "/contact", label: "Get In Touch", variant: SECONDARY_LINK_CLASS },
-];
+interface HomeNavLinksProps {
+  resumeUrl?: string;
+}
 
-export default function HomeNavLinks() {
+interface HomeNavLink {
+  href: string;
+  label: string;
+  variant: string;
+  download?: boolean;
+  ariaLabel?: string;
+}
+
+export default function HomeNavLinks({ resumeUrl }: HomeNavLinksProps) {
+  const navLinks: HomeNavLink[] = [
+    {
+      href: "/projects",
+      label: "View Projects",
+      variant:
+        "bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark",
+    },
+    ...(resumeUrl
+      ? [
+          {
+            href: resumeUrl,
+            label: "Download Resume",
+            variant:
+              "bg-blue-600 hover:bg-blue-500 border border-blue-700 hover:border-blue-500",
+            download: true,
+            ariaLabel: "Download Resume (PDF)",
+          },
+        ]
+      : []),
+    {
+      href: "/music",
+      label: "Explore My Music",
+      variant: SECONDARY_LINK_CLASS,
+    },
+    { href: "/contact", label: "Get In Touch", variant: SECONDARY_LINK_CLASS },
+  ];
+
   return (
     <motion.div
       className="space-y-4"

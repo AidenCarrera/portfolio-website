@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
-import { CONTACT_EMAIL } from "@/lib/contact";
+import { getWebsiteProfile } from "@/lib/profile";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Privacy policy for the Aiden Carrera portfolio website.",
-  alternates: {
-    canonical: "/privacy",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const profile = await getWebsiteProfile();
 
-export default function PrivacyPolicy() {
+  return {
+    title: "Privacy Policy",
+    description: `Privacy policy for the ${profile.name} portfolio website.`,
+    alternates: {
+      canonical: "/privacy",
+    },
+  };
+}
+
+export default async function PrivacyPolicy() {
+  const profile = await getWebsiteProfile();
+
   return (
     <div className="flex flex-1 bg-slate-900 px-4 pt-24 pb-16 sm:px-6 sm:pt-28 lg:px-8">
       <article className="mx-auto w-full max-w-3xl">
@@ -61,10 +67,10 @@ export default function PrivacyPolicy() {
             <p className="leading-7">
               For privacy questions or requests, email{" "}
               <a
-                href={`mailto:${CONTACT_EMAIL}`}
+                href={`mailto:${profile.email}`}
                 className="rounded text-brand underline decoration-brand/40 underline-offset-4 transition-colors hover:text-brand-light focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               >
-                {CONTACT_EMAIL}
+                {profile.email}
               </a>
               .
             </p>

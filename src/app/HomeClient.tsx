@@ -4,13 +4,24 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import AboutCard from "@/components/home/AboutCard";
 import HomeNavLinks from "@/components/home/HomeNavLinks";
+import type { WebsiteProfile } from "@/lib/profile";
 
-export default function HomeClient() {
+interface HomeClientProps {
+  profile: WebsiteProfile;
+}
+
+export default function HomeClient({ profile }: HomeClientProps) {
   const springTransition = {
     type: "spring",
     stiffness: 45,
     damping: 16,
   } as const;
+  const landingLines = profile.landingText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const highlightedLanding = landingLines.at(-1) || profile.landingText;
+  const leadingLanding = landingLines.slice(0, -1);
 
   return (
     <div className="flex-1 flex flex-col justify-center bg-linear-to-br bg-animated-dark pt-2 sm:pt-4 pb-6 sm:pb-8 min-h-[calc(100vh-4rem-3.5rem)]">
@@ -25,7 +36,7 @@ export default function HomeClient() {
             <div className="w-32 h-32 mx-auto mb-3 rounded-full shadow-lg overflow-hidden bg-slate-900 flex items-center justify-center border border-brand/20">
               <Image
                 src="/developer-logo.svg"
-                alt="Aiden Carrera - Audio Developer Logo"
+                alt={`${profile.name} - Audio Developer Logo`}
                 width={128}
                 height={128}
                 className="w-full h-full object-contain"
@@ -41,10 +52,13 @@ export default function HomeClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...springTransition, delay: 0.15 }}
           >
-            Musician. Producer.
-            <br />
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand to-brand-dark">
-              Developer.
+            {leadingLanding.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+            <span className="block text-transparent bg-clip-text bg-linear-to-r from-brand to-brand-dark">
+              {highlightedLanding}
             </span>
           </motion.h1>
 
@@ -54,7 +68,7 @@ export default function HomeClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...springTransition, delay: 0.3 }}
           >
-            I build creative software and make original music.
+            {profile.sloganText}
           </motion.p>
         </div>
 
@@ -64,8 +78,8 @@ export default function HomeClient() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...springTransition, delay: 0.45 }}
         >
-          <AboutCard />
-          <HomeNavLinks />
+          <AboutCard aboutMe={profile.aboutMe} />
+          <HomeNavLinks resumeUrl={profile.resumeUrl} />
         </motion.div>
       </div>
     </div>

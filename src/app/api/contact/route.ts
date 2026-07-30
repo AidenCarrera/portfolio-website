@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { CONTACT_EMAIL, CONTACT_LIMITS } from "@/lib/contact";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { CONTACT_LIMITS } from "@/lib/contact";
+import { getWebsiteProfile } from "@/lib/profile";
 
 const WINDOW_MS = 60_000;
 const MAX_SUBMISSIONS_PER_WINDOW = 3;
@@ -54,6 +53,16 @@ function getClientIp(req: NextRequest): string {
 
 export async function POST(req: NextRequest) {
   try {
+    const resendApiKey = process.env.RESEND_API_KEY?.trim();
+    const resendFromEmail = process.env.RESEND_FROM_EMAIL?.trim();
+
+    if (!resendApiKey || !resendFromEmail) {
+      return NextResponse.json(
+        { error: "Contact form delivery is not configured." },
+        { status: 503 },
+      );
+    }
+
     // Gate before parsing so malformed payloads cannot bypass the limiter.
     if (!checkRateLimit(getClientIp(req))) {
       return NextResponse.json(
@@ -117,10 +126,19 @@ export async function POST(req: NextRequest) {
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message).replace(/\r?\n/g, "<br>");
     const subjectName = name.replace(/[\r\n]+/g, " ");
+    const profile = await getWebsiteProfile();
 
+    if (!profile.email) {
+      return NextResponse.json(
+        { error: "Contact form recipient is not configured." },
+        { status: 503 },
+      );
+    }
+
+    const resend = new Resend(resendApiKey);
     const { data, error } = await resend.emails.send({
-      from: "Portfolio Contact <onboarding@resend.dev>",
-      to: CONTACT_EMAIL,
+      from: resendFromEmail,
+      to: profile.email,
       subject: `New Message from ${subjectName}`,
       replyTo: email,
       text: `New Portfolio Submission\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,

@@ -1,15 +1,15 @@
 import RepoCard from "./RepoCard";
-import type { GithubRepo } from "@/types";
+import type { PortfolioProject } from "@/lib/projects";
 
 interface RepoGridProps {
-  repos: GithubRepo[];
+  projects: PortfolioProject[];
 }
 
-export default function RepoGrid({ repos }: RepoGridProps) {
+export default function RepoGrid({ projects }: RepoGridProps) {
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {repos.map((repo) => (
-        <RepoCard key={repo.html_url} repo={repo} />
+      {projects.map((project) => (
+        <RepoCard key={project.github.html_url} project={project} />
       ))}
     </div>
   );

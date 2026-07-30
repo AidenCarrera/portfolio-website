@@ -1,35 +1,52 @@
 import { FaLinkedin } from "react-icons/fa6";
 import { SiGithub, SiInstagram, SiSpotify, SiYoutube } from "react-icons/si";
+import type { IconType } from "react-icons";
+import { getGitHubProfileUrl } from "@/lib/github";
 
-export const socialLinks = [
+interface SocialLink {
+  icon: IconType;
+  url: string;
+  label: string;
+  color: string;
+}
+
+const spotifyArtistId = process.env.SPOTIFY_ARTIST_ID?.trim();
+
+const configuredSocialLinks: Array<SocialLink | null> = [
   {
     icon: SiGithub,
-    url: "https://github.com/aidencarrera",
+    url: getGitHubProfileUrl() ?? "",
     label: "GitHub",
     color: "hover:text-purple-400",
   },
   {
     icon: FaLinkedin,
-    url: "https://linkedin.com/in/aiden-carrera",
+    url: process.env.LINKEDIN_URL?.trim() ?? "",
     label: "LinkedIn",
     color: "hover:text-blue-400",
   },
   {
     icon: SiSpotify,
-    url: "https://open.spotify.com/artist/1LgE8yhi5cPt1uBQPzaRAe",
+    url: spotifyArtistId
+      ? `https://open.spotify.com/artist/${encodeURIComponent(spotifyArtistId)}`
+      : "",
     label: "Spotify",
     color: "hover:text-green-400",
   },
   {
     icon: SiInstagram,
-    url: "https://instagram.com/aiden.carrera",
+    url: process.env.INSTAGRAM_URL?.trim() ?? "",
     label: "Instagram",
     color: "hover:text-pink-400",
   },
   {
     icon: SiYoutube,
-    url: "https://youtube.com/@aidencarrera",
+    url: process.env.YOUTUBE_URL?.trim() ?? "",
     label: "YouTube",
     color: "hover:text-red-400",
   },
-] as const;
+];
+
+export const socialLinks = configuredSocialLinks.filter(
+  (link): link is SocialLink => Boolean(link?.url),
+);

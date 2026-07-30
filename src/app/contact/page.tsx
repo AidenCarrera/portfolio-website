@@ -2,18 +2,24 @@ import ContactFormCard from "@/components/contact/ContactFormCard";
 import DirectContactCard from "@/components/contact/DirectContactCard";
 import ConnectCard from "@/components/contact/ConnectCard";
 import { Mail } from "lucide-react";
+import { getWebsiteProfile } from "@/lib/profile";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description:
-    "Get in touch with Aiden Carrera for software development and music production inquiries.",
-  alternates: {
-    canonical: "/contact",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const profile = await getWebsiteProfile();
 
-export default function Contact() {
+  return {
+    title: "Contact",
+    description: `Get in touch with ${profile.name} for software development and music production inquiries.`,
+    alternates: {
+      canonical: "/contact",
+    },
+  };
+}
+
+export default async function Contact() {
+  const profile = await getWebsiteProfile();
+
   return (
     <div className="min-h-screen bg-slate-900 pt-24 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,14 +31,14 @@ export default function Contact() {
             Get In Touch
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Have a project in mind or want to collaborate? Let&apos;s connect!
+            Interested in working together or discussing an opportunity? Let&apos;s connect!
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           <ContactFormCard />
           <div className="space-y-8">
-            <DirectContactCard />
+            <DirectContactCard email={profile.email} />
             <ConnectCard />
           </div>
         </div>

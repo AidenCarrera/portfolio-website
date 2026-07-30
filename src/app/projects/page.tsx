@@ -1,6 +1,7 @@
 import { Code2, ExternalLink } from "lucide-react";
 import { SiGithub } from "react-icons/si";
-import { getGithubRepos } from "@/lib/github";
+import { getGitHubProfileUrl } from "@/lib/github";
+import { getPortfolioProjects } from "@/lib/projects";
 import ProjectsClient from "./ProjectsClient";
 import type { Metadata } from "next";
 
@@ -14,7 +15,11 @@ export const metadata: Metadata = {
 };
 
 export default async function ProjectsPage() {
-  const repos = await getGithubRepos();
+  const projects = await getPortfolioProjects();
+  const githubProfileUrl = getGitHubProfileUrl();
+  const defaultSort = projects.some((project) => project.content)
+    ? "featured"
+    : "newest";
 
   return (
     <div className="min-h-screen bg-slate-900 pt-24 pb-20">
@@ -27,26 +32,30 @@ export default async function ProjectsPage() {
             Projects
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            My open-source GitHub repos: interactive web apps, full-stack
-            applications, audio tools, and games - including collaborative team
-            projects.
+            My open-source GitHub repos: interactive web apps, full-stack applications,
+            audio tools, and games - including collaborative team projects.
           </p>
         </div>
 
-        <ProjectsClient initialRepos={repos} />
+        <ProjectsClient
+          initialProjects={projects}
+          defaultSort={defaultSort}
+        />
 
-        <div className="mt-16 text-center">
-          <a
-            href="https://github.com/aidencarrera"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center space-x-2 text-brand hover:text-brand-light transition-colors"
-          >
-            <SiGithub size={20} />
-            <span className="font-medium">View more on GitHub</span>
-            <ExternalLink size={16} />
-          </a>
-        </div>
+        {githubProfileUrl && (
+          <div className="mt-16 text-center">
+            <a
+              href={githubProfileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-2 text-brand hover:text-brand-light transition-colors"
+            >
+              <SiGithub size={20} />
+              <span className="font-medium">View more on GitHub</span>
+              <ExternalLink size={16} />
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

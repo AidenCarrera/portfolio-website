@@ -17,6 +17,10 @@
 
 # Production
 /build/
+/dist/
+
+# Sanity
+/.sanity/
 
 # Environment Variables
 .env*

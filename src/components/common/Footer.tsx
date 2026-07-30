@@ -2,14 +2,17 @@ import { Mail } from "lucide-react";
 import Link from "next/link";
 import { socialLinks } from "@/lib/socialLinks";
 
-export default function Footer() {
+interface FooterProps {
+  name: string;
+}
+
+export default function Footer({ name }: FooterProps) {
   return (
     <footer className="bg-slate-900/90 backdrop-blur-sm border-t border-slate-800 py-3 sm:py-4 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400 text-sm">
         <div className="flex items-center gap-3 text-xs sm:text-sm">
           <p className="text-slate-500">
-            &copy; {new Date().getFullYear()} Aiden Carrera. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} {name}. All rights reserved.
           </p>
           <span className="text-slate-700" aria-hidden="true">
             /

@@ -1,24 +1,35 @@
-import { snippetsData } from "@/lib/snippetsData";
 import { Music as MusicIcon } from "lucide-react";
 import type { Metadata } from "next";
 
 import ReleasedMusicSection from "@/components/music/ReleasedMusicSection";
 import UpcomingSnippetsSection from "@/components/music/UpcomingSnippetsSection";
 import GearSection from "@/components/music/GearSection";
-import { gearData } from "@/lib/gearData";
 import { getSpotifyTracks } from "@/lib/spotify";
+import { getSanityGearItems, getSanityMusic } from "@/sanity/data";
+import type { MusicSnippet } from "@/types";
 
 export const metadata: Metadata = {
   title: "Music",
   description:
-    "Explore my released Spotify tracks, upcoming music snippets, and production gear.",
+    "Explore my upcoming music snippets, released Spotify tracks, and production gear.",
   alternates: {
     canonical: "/music",
   },
 };
 
 export default async function Music() {
-  const tracks = await getSpotifyTracks();
+  const [tracks, sanityMusic, gearItems] = await Promise.all([
+    getSpotifyTracks(),
+    getSanityMusic(),
+    getSanityGearItems(),
+  ]);
+  const snippets: MusicSnippet[] = sanityMusic
+    .filter((item) => item.audio?.asset?.url)
+    .map((item) => ({
+      id: item._id,
+      title: item.name,
+      audio_url: item.audio.asset.url,
+    }));
 
   return (
     <div className="min-h-screen bg-slate-900 pt-24 pb-20">
@@ -31,15 +42,14 @@ export default async function Music() {
             Music
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Explore my released tracks from Spotify, upcoming snippets, and the
-            gear behind them. I write, produce, mix, and master all of my music
-            myself.
+            Explore my upcoming snippets, released tracks from Spotify, and the gear
+            behind them. I write, produce, mix, and master all of my music myself.
           </p>
         </div>
 
-        <UpcomingSnippetsSection snippets={snippetsData} />
+        <UpcomingSnippetsSection snippets={snippets} />
         <ReleasedMusicSection tracks={tracks} />
-        <GearSection gear={gearData} />
+        <GearSection gear={gearItems} />
       </div>
     </div>
   );

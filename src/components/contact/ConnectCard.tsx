@@ -1,6 +1,10 @@
 import { socialLinks } from "@/lib/socialLinks";
 
 export default function ConnectCard() {
+  if (socialLinks.length === 0) {
+    return null;
+  }
+
   return (
     <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700">
       <h2 className="text-2xl font-bold text-white mb-6">Connect</h2>

@@ -8,7 +8,11 @@ import { motion } from "motion/react";
 
 const MotionLink = motion.create(Link);
 
-export default function Navigation() {
+interface NavigationProps {
+  name: string;
+}
+
+export default function Navigation({ name }: NavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -41,7 +45,7 @@ export default function Navigation() {
             whileHover={hoverLift}
             className="text-xl font-bold text-white hover:text-brand transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg px-2 py-1"
           >
-            Aiden Carrera
+            {name}
           </MotionLink>
 
           <div className="hidden md:flex space-x-8">

@@ -21,9 +21,3 @@ export interface MusicSnippet {
   title: string;
   audio_url: string;
 }
-
-export interface GearItem {
-  name: string;
-  category: string;
-  description?: string;
-}

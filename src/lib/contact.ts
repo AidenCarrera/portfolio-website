@@ -1,5 +1,3 @@
-export const CONTACT_EMAIL = "aiden.carrera05@gmail.com";
-
 // Enforced by the API route and mirrored onto the form inputs so the two
 // cannot drift apart.
 export const CONTACT_LIMITS = {
