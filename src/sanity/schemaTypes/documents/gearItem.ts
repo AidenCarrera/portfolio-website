@@ -41,6 +41,35 @@ export const gearItem = defineType({
       type: "string",
     }),
     defineField({
+      name: "image",
+      title: "Image",
+      type: "image",
+      description:
+        "Optional photo of the gear shown on its card. Alternative text is required when an image is added.",
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Alternative text",
+          type: "string",
+          validation: (rule) => rule.required(),
+        }),
+        defineField({
+          name: "caption",
+          title: "Caption",
+          type: "string",
+        }),
+      ],
+    }),
+    defineField({
+      name: "featured",
+      title: "Featured",
+      type: "boolean",
+      description:
+        "Give this item extra emphasis. Featured instruments, hardware, and software fill a wider slot in the grid; featured plugins are highlighted in the list.",
+      initialValue: false,
+    }),
+    defineField({
       name: "sortOrder",
       title: "Sort order",
       type: "number",
@@ -65,11 +94,14 @@ export const gearItem = defineType({
       type: "type",
       category: "category",
       manufacturer: "manufacturer",
+      featured: "featured",
+      media: "image",
     },
-    prepare({ title, type, category, manufacturer }) {
+    prepare({ title, type, category, manufacturer, featured, media }) {
       return {
-        title,
+        title: featured ? `★ ${title}` : title,
         subtitle: [manufacturer, category, type].filter(Boolean).join(" · "),
+        media,
       };
     },
   },

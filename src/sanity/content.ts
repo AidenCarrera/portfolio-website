@@ -67,7 +67,9 @@ const gearItemsQuery = defineQuery(`*[_type == "gearItem"] |
     _id,
     name,
     type,
-    category
+    category,
+    "featured": coalesce(featured, false),
+    image ${imageProjection}
   }`);
 
 export function getSanityProjects(): Promise<SanityProject[]> {

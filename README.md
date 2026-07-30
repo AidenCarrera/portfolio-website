@@ -100,7 +100,7 @@ The other Sanity schemas are:
 
 - **Profile** - a singleton document containing my name, email, About Me content, landing copy, slogan, and resume PDF. It feeds the homepage, navigation, footer, metadata, and contact details.
 - **Music** - audio snippets with a name and audio file, displayed in creation order. No snippet audio files live in the repository.
-- **Gear Item** - gear entries with a type, optional category, and sort order. Plugins are grouped by category.
+- **Gear Item** - gear entries with a type, optional category, optional image, and sort order. Plugins are grouped by category.
 
 Sanity integration code lives in `src/sanity`:
 

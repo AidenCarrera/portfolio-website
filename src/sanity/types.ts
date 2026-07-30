@@ -67,4 +67,6 @@ export interface SanityGearItem {
   name: string;
   type: GearItemType;
   category?: string;
+  featured: boolean;
+  image?: SanityImage;
 }
