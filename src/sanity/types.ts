@@ -12,7 +12,6 @@ export interface SanityImage {
         height: number;
         aspectRatio: number;
       };
-      lqip?: string;
     };
   };
 }
@@ -40,8 +39,6 @@ export interface SanityMusic {
     asset: {
       _id: string;
       url: string;
-      originalFilename?: string;
-      mimeType?: string;
     };
   };
 }
@@ -70,6 +67,4 @@ export interface SanityGearItem {
   name: string;
   type: GearItemType;
   category?: string;
-  manufacturer?: string;
-  sortOrder: number;
 }

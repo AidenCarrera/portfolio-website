@@ -1,9 +1,11 @@
 import { cache } from "react";
 import { getGithubRepos } from "@/lib/github";
-import { getSanityProjects } from "@/sanity/data";
+import { getSanityProjects } from "@/sanity/content";
 import type { SanityProject } from "@/sanity/types";
 import type { GithubRepo } from "@/types";
 
+// Repositories without a curated display order sort after the curated ones.
+const DEFAULT_DISPLAY_ORDER = 999;
 const SAFE_PROJECT_DESCRIPTION = "No description";
 
 export interface PortfolioProject {
@@ -20,24 +22,8 @@ export interface PortfolioProject {
   };
 }
 
-function firstNonEmpty(
-  ...values: Array<string | null | undefined>
-): string | undefined {
-  return values.find((value) => value?.trim())?.trim();
-}
-
-function getPresentationTags(
-  tagsOverwrite: string[] | undefined,
-  githubTopics: string[],
-): string[] {
-  const configuredTags = tagsOverwrite
-    ?.map((tag) => tag.trim())
-    .filter(Boolean);
-
-  return configuredTags?.length ? configuredTags : githubTopics;
-}
-
-export function getGithubRepositoryIdentity(repositoryUrl: string): string {
+// Sanity documents key off the owner/repository identity in the GitHub URL.
+function getGithubRepositoryIdentity(repositoryUrl: string): string {
   try {
     const pathParts = new URL(repositoryUrl).pathname
       .split("/")
@@ -58,11 +44,14 @@ export function getProjectSlug(repo: GithubRepo): string {
   return repo.name.trim().toLowerCase();
 }
 
-export function mergeGithubRepoWithSanity(
+function mergeGithubRepoWithSanity(
   github: GithubRepo,
   content: SanityProject | null,
 ): PortfolioProject {
-  const displayOrder = content?.displayOrder ?? github.priority;
+  const displayOrder = content?.displayOrder ?? DEFAULT_DISPLAY_ORDER;
+  const tagsOverwrite = content?.tagsOverwrite
+    ?.map((tag) => tag.trim())
+    .filter(Boolean);
 
   return {
     github,
@@ -72,12 +61,12 @@ export function mergeGithubRepoWithSanity(
     presentation: {
       featured: displayOrder >= 1 && displayOrder <= 3,
       displayOrder,
-      repoName:
-        firstNonEmpty(content?.repoNameOverwrite, github.name) ?? github.name,
+      repoName: content?.repoNameOverwrite?.trim() || github.name,
       cardDescription:
-        firstNonEmpty(content?.cardDescription, github.description) ??
+        content?.cardDescription?.trim() ||
+        github.description?.trim() ||
         SAFE_PROJECT_DESCRIPTION,
-      tags: getPresentationTags(content?.tagsOverwrite, github.topics),
+      tags: tagsOverwrite?.length ? tagsOverwrite : github.topics,
     },
   };
 }
@@ -88,17 +77,21 @@ export const getPortfolioProjects = cache(
       getGithubRepos(),
       getSanityProjects(),
     ]);
-    const contentByRepository = new Map<string, SanityProject>();
-
-    for (const content of sanityProjects) {
-      const key = content.githubRepository.trim().toLowerCase();
-      contentByRepository.set(key, content);
-    }
+    const contentByRepository = new Map(
+      sanityProjects.map((content) => [
+        content.githubRepository.trim().toLowerCase(),
+        content,
+      ]),
+    );
 
     return githubRepos.map((github) => {
-      const repository = getGithubRepositoryIdentity(github.html_url);
-      const content = contentByRepository.get(repository.toLowerCase()) ?? null;
-      return mergeGithubRepoWithSanity(github, content);
+      const repository = getGithubRepositoryIdentity(
+        github.html_url,
+      ).toLowerCase();
+      return mergeGithubRepoWithSanity(
+        github,
+        contentByRepository.get(repository) ?? null,
+      );
     });
   },
 );
@@ -108,13 +101,6 @@ export const getProjectBySlug = cache(
     const normalizedSlug = slug.trim().toLowerCase();
     const projects = await getPortfolioProjects();
 
-    return (
-      projects.find((project) => project.slug === normalizedSlug) ??
-      projects.find((project) => {
-        const repositoryName = project.githubRepository.split("/").at(-1);
-        return repositoryName?.toLowerCase() === normalizedSlug;
-      }) ??
-      null
-    );
+    return projects.find((project) => project.slug === normalizedSlug) ?? null;
   },
 );

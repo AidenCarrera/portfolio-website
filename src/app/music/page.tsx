@@ -5,7 +5,7 @@ import ReleasedMusicSection from "@/components/music/ReleasedMusicSection";
 import UpcomingSnippetsSection from "@/components/music/UpcomingSnippetsSection";
 import GearSection from "@/components/music/GearSection";
 import { getSpotifyTracks } from "@/lib/spotify";
-import { getSanityGearItems, getSanityMusic } from "@/sanity/data";
+import { getSanityGearItems, getSanityMusic } from "@/sanity/content";
 import type { MusicSnippet } from "@/types";
 
 export const metadata: Metadata = {

@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getWebsiteProfile } from "@/lib/profile";
+
+const LINK_CLASS =
+  "rounded text-brand underline decoration-brand/40 underline-offset-4 transition-colors hover:text-brand-light focus:outline-none focus-visible:ring-2 focus-visible:ring-brand";
 
 export async function generateMetadata(): Promise<Metadata> {
   const profile = await getWebsiteProfile();
@@ -65,13 +69,22 @@ export default async function PrivacyPolicy() {
           <section>
             <h2 className="mb-3 text-xl font-semibold text-white">Contact</h2>
             <p className="leading-7">
-              For privacy questions or requests, email{" "}
-              <a
-                href={`mailto:${profile.email}`}
-                className="rounded text-brand underline decoration-brand/40 underline-offset-4 transition-colors hover:text-brand-light focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-              >
-                {profile.email}
-              </a>
+              For privacy questions or requests,{" "}
+              {profile.email ? (
+                <>
+                  email{" "}
+                  <a href={`mailto:${profile.email}`} className={LINK_CLASS}>
+                    {profile.email}
+                  </a>
+                </>
+              ) : (
+                <>
+                  use the{" "}
+                  <Link href="/contact" className={LINK_CLASS}>
+                    contact page
+                  </Link>
+                </>
+              )}
               .
             </p>
           </section>

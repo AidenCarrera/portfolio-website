@@ -38,7 +38,7 @@ export default async function Contact() {
         <div className="grid md:grid-cols-2 gap-8">
           <ContactFormCard />
           <div className="space-y-8">
-            <DirectContactCard email={profile.email} />
+            {profile.email && <DirectContactCard email={profile.email} />}
             <ConnectCard />
           </div>
         </div>

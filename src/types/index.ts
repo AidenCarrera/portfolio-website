@@ -6,8 +6,6 @@ export interface GithubRepo {
   topics: string[];
   isCollab: boolean;
   createdAt: string;
-  priority: number;
-  isFeatured: boolean;
 }
 
 export interface MusicTrack {

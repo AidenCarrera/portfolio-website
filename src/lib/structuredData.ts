@@ -13,7 +13,7 @@ export function getGlobalStructuredData(profile: WebsiteProfile) {
         "@type": "Person",
         "@id": personId,
         name: profile.name,
-        email: profile.email,
+        ...(profile.email ? { email: profile.email } : {}),
         url: SITE_URL,
         image: `${SITE_URL}/developer-logo.svg`,
         jobTitle: "Software Engineer, Audio Programmer, and Music Producer",

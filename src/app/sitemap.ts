@@ -37,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${SITE_URL}/projects/${getProjectSlug(repo)}`,
     lastModified: new Date(repo.createdAt),
     changeFrequency: "monthly",
-    priority: repo.isFeatured ? 0.8 : 0.6,
+    priority: 0.6,
   }));
 
   return [...staticRoutes, ...projectRoutes];

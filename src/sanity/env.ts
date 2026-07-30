@@ -1,24 +1,23 @@
-function requireEnvironmentVariable(
-  value: string | undefined,
-  name: string,
-): string {
-  const configuredValue = value?.trim();
+export const apiVersion = "2026-07-29";
 
-  if (!configuredValue) {
+export const projectId = process.env.SANITY_STUDIO_PROJECT_ID?.trim() ?? "";
+export const dataset = process.env.SANITY_STUDIO_DATASET?.trim() ?? "";
+
+// Sanity only enriches the site, so the website stays up on its in-repo
+// defaults when the project is unconfigured or deliberately switched off.
+export const isSanityEnabled =
+  Boolean(projectId && dataset) && process.env.SANITY_DISABLED !== "true";
+
+// The Studio cannot run without a real project, so its config fails loudly.
+export function requireSanityProject(): {
+  projectId: string;
+  dataset: string;
+} {
+  if (!projectId || !dataset) {
     throw new Error(
-      `Missing required environment variable: ${name}. Copy .env.example to .env.local and connect your own Sanity project.`,
+      "Missing SANITY_STUDIO_PROJECT_ID or SANITY_STUDIO_DATASET. Copy .env.example to .env.local and connect your own Sanity project.",
     );
   }
 
-  return configuredValue;
+  return { projectId, dataset };
 }
-
-export const apiVersion = "2026-07-29";
-export const projectId = requireEnvironmentVariable(
-  process.env.SANITY_STUDIO_PROJECT_ID,
-  "SANITY_STUDIO_PROJECT_ID",
-);
-export const dataset = requireEnvironmentVariable(
-  process.env.SANITY_STUDIO_DATASET,
-  "SANITY_STUDIO_DATASET",
-);

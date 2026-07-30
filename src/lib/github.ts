@@ -23,8 +23,6 @@ interface GitHubGraphQLResponse {
   errors?: unknown;
 }
 
-const DEFAULT_PRIORITY = 999;
-
 export function getGitHubProfileUrl(): string | null {
   const username = process.env.GITHUB_USERNAME?.trim();
   return username
@@ -129,8 +127,6 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
           !isOwner ||
           (node.collaborators?.totalCount ?? 0) > 1,
         createdAt: node.createdAt,
-        priority: DEFAULT_PRIORITY,
-        isFeatured: false,
       };
     };
 

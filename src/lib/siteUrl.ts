@@ -3,8 +3,12 @@ import "server-only";
 const LOCAL_SITE_URL = "http://localhost:3000";
 
 function getSiteUrl(): string {
-  const configuredUrl = process.env.SITE_URL?.trim();
-  const value = configuredUrl || LOCAL_SITE_URL;
+  // Vercel provides the production hostname so canonical URLs still work when SITE_URL is unset.
+  const vercelDomain = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  const value =
+    process.env.SITE_URL?.trim() ||
+    (vercelDomain && `https://${vercelDomain}`) ||
+    LOCAL_SITE_URL;
 
   let url: URL;
   try {

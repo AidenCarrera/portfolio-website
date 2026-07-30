@@ -1,9 +1,10 @@
 import { cache } from "react";
-import { getSanityProfile } from "@/sanity/data";
+import { getSanityProfile } from "@/sanity/content";
 
 export interface WebsiteProfile {
   name: string;
-  email: string;
+  // Absent until a Sanity Profile or CONTACT_EMAIL supplies one.
+  email?: string;
   resumeUrl?: string;
   aboutMe: string;
   landingText: string;
@@ -12,7 +13,7 @@ export interface WebsiteProfile {
 
 export const DEFAULT_PROFILE: WebsiteProfile = {
   name: "Aiden Carrera",
-  email: process.env.CONTACT_EMAIL?.trim() ?? "aiden.carrera05@gmail.com",
+  email: process.env.CONTACT_EMAIL?.trim() || undefined,
   aboutMe: `Hey, I'm Aiden. I'm a Computer Science student in the OSU Honors College building software across audio, artificial intelligence, web applications, and games.
 
 I work primarily with C++, TypeScript, Python, Java, JUCE, React, Next.js, and OpenGL, focusing on audio programming, graphics, and AI. My projects' source code is available on GitHub.
@@ -44,7 +45,7 @@ export const getWebsiteProfile = cache(async (): Promise<WebsiteProfile> => {
 
   return {
     name: profile.name || DEFAULT_PROFILE.name,
-    email: profile.email || DEFAULT_PROFILE.email,
+    email: profile.email?.trim() || DEFAULT_PROFILE.email,
     resumeUrl: getResumeDownloadUrl(
       profile.resume?.asset?.url,
       profile.resume?.asset?.originalFilename,
