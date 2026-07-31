@@ -66,7 +66,7 @@ export const gearItem = defineType({
       title: "Featured",
       type: "boolean",
       description:
-        "Give this item extra emphasis. Featured instruments, hardware, and software fill a wider slot in the grid; featured plugins are highlighted in the list.",
+        "Give this item extra emphasis with a highlighted accent, both on gear cards and in the plugin lists.",
       initialValue: false,
     }),
     defineField({
