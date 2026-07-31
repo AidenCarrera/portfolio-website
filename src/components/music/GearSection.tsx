@@ -52,9 +52,12 @@ function GearCard({
   layout: "rail" | "grid";
 }) {
   const image = item.image;
+  // Deleted or unresolved asset references come back as null from the deref.
+  const imageUrl = image?.asset?.url;
+  const lqip = image?.asset?.metadata?.lqip;
 
   return (
-    <article
+    <li
       className={`group overflow-hidden rounded-xl border bg-slate-800/50 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-brand/5 ${
         layout === "rail" ? "w-56 shrink-0 snap-start sm:w-64" : "h-full"
       } ${
@@ -63,17 +66,24 @@ function GearCard({
           : "border-slate-700 hover:border-brand/50"
       }`}
     >
-      {image?.asset.url && (
+      {imageUrl && (
         <div className="relative aspect-square bg-slate-900">
           <Image
-            src={image.asset.url}
-            alt={image.alt}
+            src={imageUrl}
+            // Alt text is required by the schema, but older documents may
+            // predate that rule; an empty string marks the photo decorative
+            // rather than dropping the attribute, since the name sits below it.
+            alt={image?.alt ?? ""}
             fill
+            // Rail cards are w-56/sm:w-64; grid cards cap at the 17rem track
+            // and only fall back to the viewport width below ~320px.
             sizes={
               layout === "rail"
                 ? "(min-width: 640px) 256px, 224px"
-                : "min(272px, 100vw)"
+                : "(min-width: 320px) 272px, 100vw"
             }
+            placeholder={lqip ? "blur" : "empty"}
+            blurDataURL={lqip}
             className="object-cover"
           />
         </div>
@@ -83,7 +93,7 @@ function GearCard({
           {item.name}
         </h4>
       </div>
-    </article>
+    </li>
   );
 }
 
@@ -95,7 +105,7 @@ function GearCarousel({
   items: SanityGearItem[];
   label: string;
 }) {
-  const railRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLUListElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(true);
 
@@ -119,7 +129,13 @@ function GearCarousel({
   const scrollByPage = (direction: 1 | -1) => {
     const rail = railRef.current;
     if (!rail) return;
-    rail.scrollBy({ left: direction * rail.clientWidth * 0.8, behavior: "smooth" });
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    rail.scrollBy({
+      left: direction * rail.clientWidth * 0.8,
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
   };
 
   return (
@@ -132,18 +148,22 @@ function GearCarousel({
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-linear-to-l from-slate-900 to-transparent" />
       )}
 
-      <div
+      {/*
+        A focusable scroll container needs an accessible name so keyboard and
+        screen reader users know what they have landed on; the list role also
+        conveys how many items are in the rail.
+      */}
+      <ul
         ref={railRef}
         onScroll={updateBounds}
         tabIndex={0}
-        role="group"
         aria-label={`${label} — scroll horizontally to browse`}
-        className="scrollbar-none flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+        className="scrollbar-none flex snap-x snap-mandatory gap-6 overflow-x-auto overscroll-x-contain pb-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
       >
         {items.map((item) => (
           <GearCard key={item._id} item={item} layout="rail" />
         ))}
-      </div>
+      </ul>
 
       {/* Pointer affordance for desktop; touch users swipe the rail directly. */}
       <button
@@ -184,9 +204,9 @@ function PluginList({ items }: { items: SanityGearItem[] }) {
       {Array.from(groups.entries()).map(([category, categoryItems]) => (
         <div key={category}>
           <h4 className="mb-3 text-sm font-medium text-slate-300">{category}</h4>
-          <div className="flex flex-wrap gap-2">
+          <ul className="flex flex-wrap gap-2">
             {categoryItems.map((item) => (
-              <span
+              <li
                 key={item._id}
                 className={`rounded-full border px-3 py-1 text-xs font-medium ${
                   item.featured
@@ -195,9 +215,9 @@ function PluginList({ items }: { items: SanityGearItem[] }) {
                 }`}
               >
                 {item.name}
-              </span>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       ))}
     </div>
@@ -276,11 +296,11 @@ export default function GearSection({ gear }: GearSectionProps) {
                   // 17rem cap keeps cards near the rail's card width instead
                   // of stretching, and the min() guard stops the floor from
                   // overflowing narrow viewports.
-                  <div className="grid justify-center gap-6 grid-cols-[repeat(auto-fill,minmax(min(16rem,100%),17rem))]">
+                  <ul className="grid justify-center gap-6 grid-cols-[repeat(auto-fill,minmax(min(16rem,100%),17rem))]">
                     {items.map((item) => (
                       <GearCard key={item._id} item={item} layout="grid" />
                     ))}
-                  </div>
+                  </ul>
                 )}
               </div>
             ))}

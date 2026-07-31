@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "cdn.sanity.io",
+        // Image assets all live under /images; files (audio, resume) are
+        // served directly and never go through the image optimizer.
+        pathname: "/images/**",
       },
     ],
   },

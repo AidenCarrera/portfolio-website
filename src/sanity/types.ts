@@ -12,6 +12,8 @@ export interface SanityImage {
         height: number;
         aspectRatio: number;
       };
+      /** Base64 data URI Sanity generates per asset; used as a blur placeholder. */
+      lqip?: string;
     };
   };
 }
