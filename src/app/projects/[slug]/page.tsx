@@ -5,25 +5,20 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import { PortableText } from "next-sanity";
 import { SiGithub } from "react-icons/si";
 import ImageLightbox from "@/components/common/ImageLightbox";
-import { getGithubRepos } from "@/lib/github";
-import { getProjectBySlug, getProjectSlug } from "@/lib/projects";
+import { getProjectBySlug, getRoutableProjects } from "@/lib/projects";
 import { formatTagName } from "@/lib/utils";
 import type { Metadata } from "next";
-
-interface ProjectDetailPageProps {
-  params: Promise<{ slug: string }>;
-}
 
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  const repos = await getGithubRepos();
-  return repos.map((repo) => ({ slug: getProjectSlug(repo) }));
+  const projects = await getRoutableProjects();
+  return projects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({
   params,
-}: ProjectDetailPageProps): Promise<Metadata> {
+}: PageProps<"/projects/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
 
@@ -42,7 +37,7 @@ export async function generateMetadata({
 
 export default async function ProjectDetailPage({
   params,
-}: ProjectDetailPageProps) {
+}: PageProps<"/projects/[slug]">) {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
 
@@ -51,7 +46,14 @@ export default async function ProjectDetailPage({
   }
 
   const { github, content, presentation } = project;
-  const heroDimensions = content?.heroImage?.asset.metadata?.dimensions;
+  // Deleted or unresolved asset references come back as null from the deref,
+  // so an image document can outlive the file it points at.
+  const heroImage = content?.heroImage;
+  const heroUrl = heroImage?.asset?.url;
+  const heroDimensions = heroImage?.asset?.metadata?.dimensions;
+  const heroLqip = heroImage?.asset?.metadata?.lqip;
+  const galleryImages =
+    content?.gallery?.filter((image) => image.asset?.url) ?? [];
   const createdDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "numeric",
@@ -157,25 +159,33 @@ export default async function ProjectDetailPage({
           </div>
         </header>
 
-        {content?.heroImage?.asset.url && (
+        {heroImage && heroUrl && (
           <figure className="mb-12 overflow-hidden rounded-2xl border border-slate-700 bg-slate-800">
             <ImageLightbox
-              image={content.heroImage}
+              image={heroImage}
               label={`View a larger image of ${presentation.repoName}`}
               className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
             >
               <Image
-                src={content.heroImage.asset.url}
-                alt={content.heroImage.alt}
+                src={heroUrl}
+                // Alt text is required by the schema, but older documents may
+                // predate that rule; an empty string marks the image decorative
+                // rather than dropping the attribute, since the heading and
+                // description above already name the project.
+                alt={heroImage.alt ?? ""}
                 width={heroDimensions?.width ?? 1600}
                 height={heroDimensions?.height ?? 900}
+                // The article caps at max-w-5xl (64rem) less its lg padding.
+                sizes="(min-width: 1024px) 960px, 100vw"
+                placeholder={heroLqip ? "blur" : "empty"}
+                blurDataURL={heroLqip}
                 className="h-auto w-full object-cover"
                 priority
               />
             </ImageLightbox>
-            {content.heroImage.caption && (
+            {heroImage.caption && (
               <figcaption className="px-5 py-3 text-sm text-slate-400">
-                {content.heroImage.caption}
+                {heroImage.caption}
               </figcaption>
             )}
           </figure>
@@ -187,8 +197,10 @@ export default async function ProjectDetailPage({
               Highlights
             </h2>
             <ul className="space-y-3 text-slate-300">
-              {content.highlights.map((highlight) => (
-                <li key={highlight} className="flex gap-3">
+              {/* Highlights are free text and can repeat, so position is the
+                  only stable key; the list is never reordered client side. */}
+              {content.highlights.map((highlight, index) => (
+                <li key={index} className="flex gap-3">
                   <span aria-hidden="true" className="text-brand">
                     •
                   </span>
@@ -205,41 +217,48 @@ export default async function ProjectDetailPage({
           </section>
         )}
 
-        {content?.gallery && content.gallery.length > 0 && (
+        {galleryImages.length > 0 && (
           <section className="mb-12">
             <h2 className="mb-6 text-2xl font-semibold text-white">Gallery</h2>
-            <div className="grid gap-6 sm:grid-cols-2">
-              {content.gallery.map((image, index) => {
-                const dimensions = image.asset.metadata?.dimensions;
+            <ul className="grid gap-6 sm:grid-cols-2">
+              {galleryImages.map((image, index) => {
+                const dimensions = image.asset?.metadata?.dimensions;
+                const lqip = image.asset?.metadata?.lqip;
                 return (
-                  <figure
-                    key={image.asset._id}
-                    className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800"
-                  >
-                    <ImageLightbox
-                      image={image}
-                      label={`View a larger image of ${
-                        image.alt?.trim() || `gallery image ${index + 1}`
-                      }`}
-                      className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
-                    >
-                      <Image
-                        src={image.asset.url}
-                        alt={image.alt}
-                        width={dimensions?.width ?? 1200}
-                        height={dimensions?.height ?? 800}
-                        className="h-auto w-full object-cover"
-                      />
-                    </ImageLightbox>
-                    {image.caption && (
-                      <figcaption className="px-4 py-3 text-sm text-slate-400">
-                        {image.caption}
-                      </figcaption>
-                    )}
-                  </figure>
+                  // _key is the array member's own identity, so it survives the
+                  // same asset being used twice in one gallery.
+                  <li key={image._key ?? index}>
+                    <figure className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800">
+                      <ImageLightbox
+                        image={image}
+                        label={`View a larger image of ${
+                          image.alt?.trim() || `gallery image ${index + 1}`
+                        }`}
+                        className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+                      >
+                        <Image
+                          src={image.asset.url}
+                          alt={image.alt ?? ""}
+                          width={dimensions?.width ?? 1200}
+                          height={dimensions?.height ?? 800}
+                          // Two columns from sm up, inside the same max-w-5xl
+                          // article, less the 1.5rem grid gap.
+                          sizes="(min-width: 1024px) 468px, (min-width: 640px) 50vw, 100vw"
+                          placeholder={lqip ? "blur" : "empty"}
+                          blurDataURL={lqip}
+                          className="h-auto w-full object-cover"
+                        />
+                      </ImageLightbox>
+                      {image.caption && (
+                        <figcaption className="px-4 py-3 text-sm text-slate-400">
+                          {image.caption}
+                        </figcaption>
+                      )}
+                    </figure>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           </section>
         )}
 
@@ -247,16 +266,16 @@ export default async function ProjectDetailPage({
           <h2 className="mb-4 font-mono text-xs uppercase tracking-wider text-slate-500">
             GitHub topics
           </h2>
-          <div className="flex flex-wrap gap-2">
+          <ul className="flex flex-wrap gap-2">
             {presentation.tags.map((topic) => (
-              <span
+              <li
                 key={topic}
                 className="rounded-full bg-slate-800 px-3 py-1 text-xs font-medium text-slate-300"
               >
                 {formatTagName(topic)}
-              </span>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
       </article>
     </div>

@@ -8,6 +8,7 @@ import type {
 } from "@/sanity/types";
 
 const imageProjection = `{
+  _key,
   alt,
   caption,
   asset->{

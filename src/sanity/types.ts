@@ -1,6 +1,8 @@
 import type { PortableTextBlock } from "sanity";
 
 export interface SanityImage {
+  /** Present only on images inside an array; the stable React key for them. */
+  _key?: string;
   alt: string;
   caption?: string;
   asset: {

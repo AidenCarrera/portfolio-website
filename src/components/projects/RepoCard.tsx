@@ -12,7 +12,7 @@ export default function RepoCard({ project }: RepoCardProps) {
   const { github, presentation, slug } = project;
 
   return (
-    <article className="relative h-full bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 hover:border-brand/50 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-brand/5 focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/60 transition-all group flex flex-col">
+    <li className="relative h-full bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 hover:border-brand/50 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-brand/5 focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/60 transition-all group flex flex-col">
       <Link
         href={`/projects/${slug}`}
         className="absolute inset-0 z-10 rounded-xl focus:outline-none"
@@ -81,16 +81,16 @@ export default function RepoCard({ project }: RepoCardProps) {
         {presentation.cardDescription}
       </p>
 
-      <div className="pointer-events-none flex flex-wrap gap-2">
+      <ul className="pointer-events-none flex flex-wrap gap-2">
         {presentation.tags.map((tech) => (
-          <span
+          <li
             key={tech}
             className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-slate-700 text-slate-300"
           >
             {formatTagName(tech)}
-          </span>
+          </li>
         ))}
-      </div>
-    </article>
+      </ul>
+    </li>
   );
 }

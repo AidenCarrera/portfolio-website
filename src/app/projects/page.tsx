@@ -5,6 +5,11 @@ import { getPortfolioProjects } from "@/lib/projects";
 import ProjectsClient from "./ProjectsClient";
 import type { Metadata } from "next";
 
+// Matches the detail route. Stated here rather than inherited from the GitHub
+// fetch so the page still refreshes when that fetch is skipped entirely (no
+// credentials configured) and only Sanity's hourly cache is in play.
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: "Projects",
   description:

@@ -40,7 +40,7 @@ function getGithubRepositoryIdentity(repositoryUrl: string): string {
   return "";
 }
 
-export function getProjectSlug(repo: GithubRepo): string {
+function getProjectSlug(repo: GithubRepo): string {
   return repo.name.trim().toLowerCase();
 }
 
@@ -102,5 +102,27 @@ export const getProjectBySlug = cache(
     const projects = await getPortfolioProjects();
 
     return projects.find((project) => project.slug === normalizedSlug) ?? null;
+  },
+);
+
+/**
+ * Repository names are unique per owner, not globally, so two listed repos can
+ * collapse to the same slug. `getProjectBySlug` answers with the first match,
+ * so route generation and the sitemap have to enumerate each slug exactly once
+ * — duplicate `generateStaticParams` entries fail the build, and duplicate
+ * sitemap URLs are invalid.
+ */
+export const getRoutableProjects = cache(
+  async (): Promise<PortfolioProject[]> => {
+    const projects = await getPortfolioProjects();
+    const firstBySlug = new Map<string, PortfolioProject>();
+
+    for (const project of projects) {
+      if (!firstBySlug.has(project.slug)) {
+        firstBySlug.set(project.slug, project);
+      }
+    }
+
+    return Array.from(firstBySlug.values());
   },
 );

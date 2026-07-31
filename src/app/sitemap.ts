@@ -1,10 +1,9 @@
 import type { MetadataRoute } from "next";
-import { getGithubRepos } from "@/lib/github";
-import { getProjectSlug } from "@/lib/projects";
+import { getRoutableProjects } from "@/lib/projects";
 import { SITE_URL } from "@/lib/siteUrl";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const repos = await getGithubRepos();
+  const projects = await getRoutableProjects();
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${SITE_URL}/`,
@@ -33,9 +32,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const projectRoutes: MetadataRoute.Sitemap = repos.map((repo) => ({
-    url: `${SITE_URL}/projects/${getProjectSlug(repo)}`,
-    lastModified: new Date(repo.createdAt),
+  const projectRoutes: MetadataRoute.Sitemap = projects.map((project) => ({
+    url: `${SITE_URL}/projects/${project.slug}`,
+    lastModified: new Date(project.github.createdAt),
     changeFrequency: "monthly",
     priority: 0.6,
   }));
