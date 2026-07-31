@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { PortableText } from "next-sanity";
 import { SiGithub } from "react-icons/si";
+import ImageLightbox from "@/components/common/ImageLightbox";
 import { getGithubRepos } from "@/lib/github";
 import { getProjectBySlug, getProjectSlug } from "@/lib/projects";
 import { formatTagName } from "@/lib/utils";
@@ -158,14 +159,20 @@ export default async function ProjectDetailPage({
 
         {content?.heroImage?.asset.url && (
           <figure className="mb-12 overflow-hidden rounded-2xl border border-slate-700 bg-slate-800">
-            <Image
-              src={content.heroImage.asset.url}
-              alt={content.heroImage.alt}
-              width={heroDimensions?.width ?? 1600}
-              height={heroDimensions?.height ?? 900}
-              className="h-auto w-full object-cover"
-              priority
-            />
+            <ImageLightbox
+              image={content.heroImage}
+              label={`View a larger image of ${presentation.repoName}`}
+              className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+            >
+              <Image
+                src={content.heroImage.asset.url}
+                alt={content.heroImage.alt}
+                width={heroDimensions?.width ?? 1600}
+                height={heroDimensions?.height ?? 900}
+                className="h-auto w-full object-cover"
+                priority
+              />
+            </ImageLightbox>
             {content.heroImage.caption && (
               <figcaption className="px-5 py-3 text-sm text-slate-400">
                 {content.heroImage.caption}
@@ -202,20 +209,28 @@ export default async function ProjectDetailPage({
           <section className="mb-12">
             <h2 className="mb-6 text-2xl font-semibold text-white">Gallery</h2>
             <div className="grid gap-6 sm:grid-cols-2">
-              {content.gallery.map((image) => {
+              {content.gallery.map((image, index) => {
                 const dimensions = image.asset.metadata?.dimensions;
                 return (
                   <figure
                     key={image.asset._id}
                     className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800"
                   >
-                    <Image
-                      src={image.asset.url}
-                      alt={image.alt}
-                      width={dimensions?.width ?? 1200}
-                      height={dimensions?.height ?? 800}
-                      className="h-auto w-full object-cover"
-                    />
+                    <ImageLightbox
+                      image={image}
+                      label={`View a larger image of ${
+                        image.alt?.trim() || `gallery image ${index + 1}`
+                      }`}
+                      className="block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+                    >
+                      <Image
+                        src={image.asset.url}
+                        alt={image.alt}
+                        width={dimensions?.width ?? 1200}
+                        height={dimensions?.height ?? 800}
+                        className="h-auto w-full object-cover"
+                      />
+                    </ImageLightbox>
                     {image.caption && (
                       <figcaption className="px-4 py-3 text-sm text-slate-400">
                         {image.caption}

@@ -10,9 +10,9 @@ import {
   Laptop,
   ChevronLeft,
   ChevronRight,
-  X,
 } from "lucide-react";
 import CategoryFilter from "@/components/projects/CategoryFilter";
+import ImageLightbox from "@/components/common/ImageLightbox";
 import type { GearItemType, SanityGearItem } from "@/sanity/types";
 
 interface GearSectionProps {
@@ -48,11 +48,9 @@ const PLUGIN_TYPES = new Set<GearItemType>([
 function GearCard({
   item,
   layout,
-  onView,
 }: {
   item: SanityGearItem;
   layout: "rail" | "grid";
-  onView: (item: SanityGearItem) => void;
 }) {
   const image = item.image;
   // Deleted or unresolved asset references come back as null from the deref.
@@ -69,11 +67,11 @@ function GearCard({
           : "border-slate-700 hover:border-brand/50"
       }`}
     >
-      {imageUrl && (
-        <button
-          type="button"
-          onClick={() => onView(item)}
-          aria-label={`View a larger image of ${item.name}`}
+      {image && imageUrl && (
+        <ImageLightbox
+          image={image}
+          title={item.name}
+          label={`View a larger image of ${item.name}`}
           className="relative block aspect-square w-full bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
         >
           <Image
@@ -94,7 +92,7 @@ function GearCard({
             blurDataURL={lqip}
             className="object-cover"
           />
-        </button>
+        </ImageLightbox>
       )}
       <div className="p-4">
         <h4 className="font-semibold text-white transition-colors group-hover:text-brand">
@@ -105,92 +103,13 @@ function GearCard({
   );
 }
 
-/**
- * Full-size viewer for a gear photo. The native modal dialog supplies the
- * focus trap, the Escape handling and the top-layer stacking, so none of that
- * has to be reimplemented here.
- */
-function GearLightbox({
-  item,
-  onClose,
-}: {
-  item: SanityGearItem | null;
-  onClose: () => void;
-}) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (item && !dialog.open) {
-      dialog.showModal();
-    } else if (!item && dialog.open) {
-      dialog.close();
-    }
-  }, [item]);
-
-  const image = item?.image;
-  const imageUrl = image?.asset?.url;
-  const dimensions = image?.asset?.metadata?.dimensions;
-  const lqip = image?.asset?.metadata?.lqip;
-
-  return (
-    <dialog
-      ref={dialogRef}
-      // Fires for Escape and for close() alike, so the dialog can never end up
-      // shut while the section still thinks an item is open.
-      onClose={onClose}
-      onClick={(event) => {
-        // Clicks on the backdrop and on the dialog's own padding both report
-        // the dialog as their target; clicks on the figure do not.
-        if (event.target === event.currentTarget) onClose();
-      }}
-      aria-label={item ? `${item.name}, full size image` : undefined}
-      // Preflight zeroes the margin the user agent uses to centre a dialog.
-      className="m-auto max-h-dvh max-w-[100vw] bg-transparent p-4 backdrop:bg-slate-950/85"
-    >
-      {item && imageUrl && (
-        <figure className="relative overflow-hidden rounded-2xl border border-slate-700 bg-slate-900">
-          <Image
-            src={imageUrl}
-            alt={image?.alt ?? ""}
-            width={dimensions?.width ?? 1200}
-            height={dimensions?.height ?? 1200}
-            sizes="(min-width: 1024px) 900px, 100vw"
-            placeholder={lqip ? "blur" : "empty"}
-            blurDataURL={lqip}
-            // Capped so the caption stays on screen on short viewports.
-            className="h-auto max-h-[calc(100dvh-10rem)] w-auto max-w-full object-contain"
-          />
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close image viewer"
-            className="absolute top-3 right-3 rounded-lg border border-slate-700/50 bg-slate-900/80 p-2 text-slate-300 backdrop-blur-sm transition-colors hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-          >
-            <X size={18} />
-          </button>
-          <figcaption className="px-5 py-3 text-sm">
-            <span className="font-semibold text-white">{item.name}</span>
-            {image?.caption && (
-              <span className="ml-2 text-slate-400">{image.caption}</span>
-            )}
-          </figcaption>
-        </figure>
-      )}
-    </dialog>
-  );
-}
-
 /** Horizontally swipeable rail of image-led gear cards. */
 function GearCarousel({
   items,
   label,
-  onView,
 }: {
   items: SanityGearItem[];
   label: string;
-  onView: (item: SanityGearItem) => void;
 }) {
   const railRef = useRef<HTMLUListElement>(null);
   const [atStart, setAtStart] = useState(true);
@@ -254,7 +173,7 @@ function GearCarousel({
         className="scrollbar-none -mt-2 flex snap-x snap-mandatory gap-6 overflow-x-auto overscroll-x-contain pt-2 pb-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
       >
         {items.map((item) => (
-          <GearCard key={item._id} item={item} layout="rail" onView={onView} />
+          <GearCard key={item._id} item={item} layout="rail" />
         ))}
       </ul>
 
@@ -319,7 +238,6 @@ function PluginList({ items }: { items: SanityGearItem[] }) {
 
 export default function GearSection({ gear }: GearSectionProps) {
   const [activeType, setActiveType] = useState<GearItemType | "all">("all");
-  const [viewedItem, setViewedItem] = useState<SanityGearItem | null>(null);
 
   const sections = useMemo(() => {
     const itemsByType = new Map<GearItemType, SanityGearItem[]>();
@@ -382,11 +300,7 @@ export default function GearSection({ gear }: GearSectionProps) {
                 {PLUGIN_TYPES.has(type) ? (
                   <PluginList items={items} />
                 ) : activeType === "all" ? (
-                  <GearCarousel
-                    items={items}
-                    label={title}
-                    onView={setViewedItem}
-                  />
+                  <GearCarousel items={items} label={title} />
                 ) : (
                   // Column count is left to auto-fill: the 16rem floor against
                   // the page's 1216px content box lands on four per row at
@@ -396,12 +310,7 @@ export default function GearSection({ gear }: GearSectionProps) {
                   // overflowing narrow viewports.
                   <ul className="grid justify-center gap-6 grid-cols-[repeat(auto-fill,minmax(min(16rem,100%),17rem))]">
                     {items.map((item) => (
-                      <GearCard
-                        key={item._id}
-                        item={item}
-                        layout="grid"
-                        onView={setViewedItem}
-                      />
+                      <GearCard key={item._id} item={item} layout="grid" />
                     ))}
                   </ul>
                 )}
@@ -415,8 +324,6 @@ export default function GearSection({ gear }: GearSectionProps) {
           <p className="text-slate-400">Gear showcase coming soon.</p>
         </div>
       )}
-
-      <GearLightbox item={viewedItem} onClose={() => setViewedItem(null)} />
     </section>
   );
 }
