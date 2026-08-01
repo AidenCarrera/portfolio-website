@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import CategoryFilter from "@/components/projects/CategoryFilter";
 import ImageLightbox from "@/components/common/ImageLightbox";
+import { isAnimatedImage } from "@/lib/utils";
 import type { GearItemType, SanityGearItem } from "@/sanity/types";
 
 interface GearSectionProps {
@@ -86,8 +87,13 @@ function GearCard({
                 ? "(min-width: 640px) 256px, 224px"
                 : "(min-width: 320px) 272px, 100vw"
             }
+            quality={90}
             placeholder={lqip ? "blur" : "empty"}
             blurDataURL={lqip}
+            // The lightbox already bypasses the optimizer for GIFs; without the
+            // same check here the thumbnail sits frozen on its first frame
+            // until opened.
+            unoptimized={isAnimatedImage(image)}
             className="object-cover"
           />
         </ImageLightbox>

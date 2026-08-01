@@ -14,6 +14,8 @@ const imageProjection = `{
   asset->{
     _id,
     url,
+    mimeType,
+    extension,
     metadata { dimensions, lqip }
   }
 }`;

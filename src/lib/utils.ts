@@ -1,3 +1,13 @@
+import type { SanityImage } from "@/sanity/types";
+
+// Preserve GIF animation by bypassing image optimization.
+export function isAnimatedImage(image: SanityImage | undefined): boolean {
+  const asset = image?.asset;
+  return (
+    asset?.mimeType === "image/gif" || asset?.extension?.toLowerCase() === "gif"
+  );
+}
+
 // Collapses topic spellings so filtering and display agree on one form.
 export function normalizeTag(tag: string): string {
   return tag.toLowerCase().trim().replace(/-/g, " ");

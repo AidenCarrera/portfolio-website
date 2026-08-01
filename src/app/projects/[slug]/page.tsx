@@ -10,7 +10,7 @@ import {
   getProjectBySlug,
   getRoutableProjects,
 } from "@/lib/projects";
-import { formatTagName } from "@/lib/utils";
+import { formatTagName, isAnimatedImage } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const revalidate = 300;
@@ -197,8 +197,14 @@ export default async function ProjectDetailPage({
                 height={heroDimensions?.height ?? 900}
                 // The article caps at max-w-5xl (64rem) less its lg padding.
                 sizes="(min-width: 1024px) 960px, 100vw"
+                // Full-bleed screenshots at the top of the page; the default 75
+                // leaves visible ringing around UI text at this display size.
+                quality={90}
                 placeholder={heroLqip ? "blur" : "empty"}
                 blurDataURL={heroLqip}
+                // Re-encoding a GIF flattens it to its first frame, so animated
+                // heroes bypass the optimizer and stream from Sanity as-is.
+                unoptimized={isAnimatedImage(heroImage)}
                 className="h-auto w-full object-cover"
                 priority
               />
@@ -271,8 +277,12 @@ export default async function ProjectDetailPage({
                           // Two columns across the full max-w-5xl article,
                           // less its padding and the 1.5rem column gap.
                           sizes="(min-width: 1024px) 468px, 50vw"
+                          quality={90}
                           placeholder={lqip ? "blur" : "empty"}
                           blurDataURL={lqip}
+                          // Re-encoding a GIF flattens it to its first frame, so
+                          // animated shots bypass the optimizer as well.
+                          unoptimized={isAnimatedImage(image)}
                           className="h-auto w-full object-cover"
                         />
                       </ImageLightbox>

@@ -28,20 +28,12 @@ export const profile = defineType({
       },
     }),
     defineField({
-      name: "aboutMe",
-      title: "About me",
-      type: "text",
-      rows: 10,
-      description: "Separate paragraphs with a blank line.",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
       name: "landingText",
       title: "Landing text",
       type: "text",
       rows: 3,
       description:
-        "The large homepage headline. Use a new line before the final phrase to keep the highlighted style.",
+        "The large headline displayed on the homepage. Add a line break to render the second line in white.",
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -50,6 +42,14 @@ export const profile = defineType({
       type: "text",
       rows: 3,
       description: "The smaller supporting line beneath the landing headline.",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "aboutMe",
+      title: "About me",
+      type: "text",
+      rows: 10,
+      description: "Separate paragraphs with a blank line.",
       validation: (rule) => rule.required(),
     }),
   ],

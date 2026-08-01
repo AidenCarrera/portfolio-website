@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
+import { isAnimatedImage } from "@/lib/utils";
 import type { SanityImage } from "@/sanity/types";
 
 interface ImageLightboxProps {
@@ -82,10 +83,14 @@ export default function ImageLightbox({
       >
         {isOpen && (
           <figure
-            // Aspect-ratio width fills the viewer consistently—preventing narrow/wide images from looking 
+            // Aspect-ratio width fills the viewer consistently—preventing narrow/wide images from looking
             // stranded mid-screen—while 72rem/82dvh caps preserve viewport margins.
+            // The intrinsic-width cap is what keeps the viewer sharp: without it
+            // a small asset stretches to the 72rem/82dvh frame and the browser
+            // upscales past the pixels Sanity actually has. Better to show it at
+            // native size than blown up and soft.
             style={{
-              maxWidth: `min(72rem, calc((82dvh - ${captionReserve}) * ${intrinsicWidth / intrinsicHeight}))`,
+              maxWidth: `min(${intrinsicWidth}px, 72rem, calc((82dvh - ${captionReserve}) * ${intrinsicWidth / intrinsicHeight}))`,
             }}
             className="relative w-full overflow-hidden rounded-2xl border border-slate-700 bg-slate-900"
           >
@@ -94,10 +99,15 @@ export default function ImageLightbox({
               alt={image.alt ?? ""}
               width={intrinsicWidth}
               height={intrinsicHeight}
-              // No sizes: the frame never exceeds the intrinsic width, so the
-              // 1x/2x srcset Next derives from it is already the right ladder.
+              // No sizes: the frame is capped at the intrinsic width above, so
+              // the 1x/2x srcset Next derives from it is already the right
+              // ladder and a `sizes` guess could only undershoot it.
+              quality={90}
               placeholder={lqip ? "blur" : "empty"}
               blurDataURL={lqip}
+              // Keeps animated GIFs playing at full size instead of showing the
+              // flattened first frame the optimizer would return.
+              unoptimized={isAnimatedImage(image)}
               className="h-auto w-full object-contain"
             />
             <button

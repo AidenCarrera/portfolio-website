@@ -8,6 +8,10 @@ export interface SanityImage {
   asset: {
     _id: string;
     url: string;
+    /** e.g. "image/gif"; used to keep animated formats away from the optimizer. */
+    mimeType?: string;
+    /** Lowercase file extension, e.g. "gif". Backstop when mimeType is absent. */
+    extension?: string;
     metadata?: {
       dimensions?: {
         width: number;

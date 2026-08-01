@@ -53,11 +53,14 @@ export default function HomeClient({ profile }: HomeClientProps) {
             transition={{ ...springTransition, delay: 0.15 }}
           >
             {leadingLanding.map((line) => (
-              <span key={line} className="block">
+              <span
+                key={line}
+                className="block text-transparent bg-clip-text bg-linear-to-r from-brand to-brand-dark"
+              >
                 {line}
               </span>
             ))}
-            <span className="block text-transparent bg-clip-text bg-linear-to-r from-brand to-brand-dark">
+            <span className="block text-white">
               {highlightedLanding}
             </span>
           </motion.h1>

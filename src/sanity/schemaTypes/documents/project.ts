@@ -87,8 +87,8 @@ export const project = defineType({
       title: "Hero image",
       type: "image",
       description:
-        "Optional primary image for the project detail page. Alternative text is required when an image is added.",
-      options: { hotspot: true },
+        "Optional primary media for the project detail page, also used as the preview on the Projects card. Upload a still image or an animated GIF; GIFs keep playing on both. Cards without a hero image fall back to a placeholder. Alternative text is required when media is added.",
+      options: { hotspot: true, accept: "image/gif,image/png,image/jpeg,image/webp" },
       fields: [
         defineField({
           name: "alt",
