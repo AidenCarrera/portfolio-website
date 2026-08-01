@@ -1,7 +1,12 @@
-import { formatTagName } from "@/lib/utils";
+export interface CategoryOption {
+  /** Stable key compared against `selected` and reported to `onSelect`. */
+  value: string;
+  /** Display text, already formatted by the caller. */
+  label: string;
+}
 
 interface CategoryFilterProps {
-  categories: string[];
+  categories: CategoryOption[];
   selected: string;
   onSelect: (category: string) => void;
 }
@@ -18,14 +23,13 @@ export default function CategoryFilter({
       <div className="absolute top-0 bottom-0 right-0 w-8 bg-linear-to-l from-slate-900 to-transparent pointer-events-none z-10 md:hidden" />
 
       <div className="flex overflow-x-auto pb-2 gap-3 scrollbar-none md:flex-wrap md:justify-center px-4 md:px-0 snap-x snap-mandatory">
-        {categories.map((category) => {
-          const normalized = category.trim().toLowerCase();
-          const isSelected = selected === normalized;
+        {categories.map(({ value, label }) => {
+          const isSelected = selected === value;
 
           return (
             <button
-              key={normalized}
-              onClick={() => onSelect(normalized)}
+              key={value}
+              onClick={() => onSelect(value)}
               aria-pressed={isSelected}
               className={`snap-start shrink-0 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand
                 ${
@@ -35,7 +39,7 @@ export default function CategoryFilter({
                 }
               `}
             >
-              {formatTagName(category)}
+              {label}
             </button>
           );
         })}

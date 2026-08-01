@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import RepoGrid from "@/components/projects/RepoGrid";
 import CategoryFilter from "@/components/projects/CategoryFilter";
+import type { CategoryOption } from "@/components/projects/CategoryFilter";
 import type { PortfolioProject } from "@/lib/projects";
-import { normalizeTag } from "@/lib/utils";
+import { formatTagName, normalizeTag } from "@/lib/utils";
 
 interface ProjectsClientProps {
   initialProjects: PortfolioProject[];
@@ -20,16 +21,36 @@ export default function ProjectsClient({
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortOption>(defaultSort);
 
-  const categories = [
-    "all",
-    ...Array.from(
-      new Set(
-        initialProjects.flatMap((project) =>
-          project.presentation.tags.map((topic) => normalizeTag(topic)),
-        ),
-      ),
-    ).sort(),
-  ];
+  // Preserve topic casing for display; use the normalized form only for matching.
+  // If spellings differ, prefer the capitalized version (e.g. "GraphQL").
+  const categories = useMemo<CategoryOption[]>(() => {
+    const topicByCategory = new Map<string, string>();
+
+    for (const project of initialProjects) {
+      for (const topic of project.presentation.tags) {
+        const category = normalizeTag(topic);
+        if (!category) {
+          continue;
+        }
+
+        const current = topicByCategory.get(category);
+        const addsCasing =
+          current === current?.toLowerCase() && topic !== topic.toLowerCase();
+
+        if (current === undefined || addsCasing) {
+          topicByCategory.set(category, topic);
+        }
+      }
+    }
+
+    return [
+      { value: "all", label: "All" },
+      ...Array.from(topicByCategory, ([value, topic]) => ({
+        value,
+        label: formatTagName(topic),
+      })).sort((a, b) => a.label.localeCompare(b.label)),
+    ];
+  }, [initialProjects]);
 
   const filteredProjects =
     selectedCategory === "all"

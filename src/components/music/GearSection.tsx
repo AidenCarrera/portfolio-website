@@ -256,8 +256,16 @@ export default function GearSection({ gear }: GearSectionProps) {
       ? sections
       : sections.filter((section) => section.type === activeType);
 
-  const activeTitle =
-    sections.find((section) => section.type === activeType)?.title ?? "All";
+  const categories = useMemo(
+    () => [
+      { value: "all", label: "All" },
+      ...sections.map((section) => ({
+        value: section.type,
+        label: section.title,
+      })),
+    ],
+    [sections],
+  );
 
   return (
     <section>
@@ -269,11 +277,11 @@ export default function GearSection({ gear }: GearSectionProps) {
       {gear.length > 0 ? (
         <>
           <CategoryFilter
-            categories={["All", ...sections.map((section) => section.title)]}
-            selected={activeTitle.toLowerCase()}
+            categories={categories}
+            selected={activeType}
             onSelect={(selected) => {
               const match = sections.find(
-                (section) => section.title.toLowerCase() === selected,
+                (section) => section.type === selected,
               );
               setActiveType(match ? match.type : "all");
             }}
