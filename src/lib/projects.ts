@@ -120,3 +120,34 @@ export const getRoutableProjects = cache(
     return Array.from(firstBySlug.values());
   },
 );
+
+/** Routable projects in curated display order, matching the projects page's default sort. */
+export const getProjectsInDisplayOrder = cache(
+  async (): Promise<PortfolioProject[]> => {
+    const projects = await getRoutableProjects();
+
+    return [...projects].sort((a, b) => {
+      if (a.presentation.displayOrder !== b.presentation.displayOrder) {
+        return a.presentation.displayOrder - b.presentation.displayOrder;
+      }
+      return a.presentation.repoName.localeCompare(b.presentation.repoName);
+    });
+  },
+);
+
+/** Wraps around at the end so the last project still links onward. */
+export const getNextProjectInDisplayOrder = cache(
+  async (slug: string): Promise<PortfolioProject | null> => {
+    const normalizedSlug = slug.trim().toLowerCase();
+    const projects = await getProjectsInDisplayOrder();
+    const index = projects.findIndex(
+      (project) => project.slug === normalizedSlug,
+    );
+
+    if (index === -1 || projects.length < 2) {
+      return null;
+    }
+
+    return projects[(index + 1) % projects.length];
+  },
+);

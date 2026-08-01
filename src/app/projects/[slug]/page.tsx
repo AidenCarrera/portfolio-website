@@ -1,11 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { PortableText } from "next-sanity";
 import { SiGithub } from "react-icons/si";
 import ImageLightbox from "@/components/common/ImageLightbox";
-import { getProjectBySlug, getRoutableProjects } from "@/lib/projects";
+import {
+  getNextProjectInDisplayOrder,
+  getProjectBySlug,
+  getRoutableProjects,
+} from "@/lib/projects";
 import { formatTagName } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -45,6 +49,7 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
+  const nextProject = await getNextProjectInDisplayOrder(project.slug);
   const { github, content, presentation } = project;
   // Deleted or unresolved asset references come back as null from the deref,
   // so an image document can outlive the file it points at.
@@ -98,9 +103,27 @@ export default async function ProjectDetailPage({
           <h1 className="mb-5 text-4xl font-bold text-white sm:text-6xl">
             {presentation.repoName}
           </h1>
-          <p className="max-w-3xl text-lg leading-8 text-slate-300">
+          <p className="pr-6 text-lg leading-8 text-slate-300 sm:pr-8">
             {presentation.cardDescription}
           </p>
+
+          {presentation.tags.length > 0 && (
+            <>
+              <h2 className="mt-6 mb-3 font-mono text-xs uppercase tracking-wider text-slate-500">
+                GitHub topics
+              </h2>
+              <ul className="flex flex-wrap gap-2">
+                {presentation.tags.map((topic) => (
+                  <li
+                    key={topic}
+                    className="rounded-full bg-slate-800 px-3 py-1 text-xs font-medium text-slate-300"
+                  >
+                    {formatTagName(topic)}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
 
           <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4 text-sm">
             <div>
@@ -209,7 +232,7 @@ export default async function ProjectDetailPage({
         )}
 
         {content?.detailContent && content.detailContent.length > 0 && (
-          <section className="mb-12 max-w-3xl space-y-5 text-base leading-8 text-slate-300 [&_a]:text-brand [&_a]:underline [&_h2]:pt-4 [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:text-white [&_h3]:pt-3 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:text-white [&_li]:ml-5 [&_ol]:list-decimal [&_p]:text-slate-300 [&_ul]:list-disc">
+          <section className="mb-12 space-y-5 text-base leading-8 text-slate-300 [&_a]:text-brand [&_a]:underline [&_h2]:pt-4 [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:text-white [&_h3]:pt-3 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:text-white [&_li]:ml-5 [&_ol]:list-decimal [&_p]:text-slate-300 [&_ul]:list-disc">
             <PortableText value={content.detailContent} />
           </section>
         )}
@@ -217,14 +240,21 @@ export default async function ProjectDetailPage({
         {galleryImages.length > 0 && (
           <section className="mb-12">
             <h2 className="mb-6 text-2xl font-semibold text-white">Gallery</h2>
-            <ul className="grid gap-6 sm:grid-cols-2">
+            {/* Multi-column masonry: images keep their own aspect ratio and the
+                columns fill top to bottom, so tall and wide shots pack together
+                without the row-height gaps a grid would leave. These are
+                thumbnails — every one opens full size in the lightbox. */}
+            <ul className="columns-2 gap-6">
               {galleryImages.map((image, index) => {
                 const dimensions = image.asset?.metadata?.dimensions;
                 const lqip = image.asset?.metadata?.lqip;
                 return (
                   // _key is the array member's own identity, so it survives the
                   // same asset being used twice in one gallery.
-                  <li key={image._key ?? index}>
+                  <li
+                    key={image._key ?? index}
+                    className="mb-6 break-inside-avoid"
+                  >
                     <figure className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800">
                       <ImageLightbox
                         image={image}
@@ -238,9 +268,9 @@ export default async function ProjectDetailPage({
                           alt={image.alt ?? ""}
                           width={dimensions?.width ?? 1200}
                           height={dimensions?.height ?? 800}
-                          // Two columns from sm up, inside the same max-w-5xl
-                          // article, less the 1.5rem grid gap.
-                          sizes="(min-width: 1024px) 468px, (min-width: 640px) 50vw, 100vw"
+                          // Two columns across the full max-w-5xl article,
+                          // less its padding and the 1.5rem column gap.
+                          sizes="(min-width: 1024px) 468px, 50vw"
                           placeholder={lqip ? "blur" : "empty"}
                           blurDataURL={lqip}
                           className="h-auto w-full object-cover"
@@ -259,21 +289,37 @@ export default async function ProjectDetailPage({
           </section>
         )}
 
-        <section className="border-t border-slate-800 pt-8">
-          <h2 className="mb-4 font-mono text-xs uppercase tracking-wider text-slate-500">
-            GitHub topics
-          </h2>
-          <ul className="flex flex-wrap gap-2">
-            {presentation.tags.map((topic) => (
-              <li
-                key={topic}
-                className="rounded-full bg-slate-800 px-3 py-1 text-xs font-medium text-slate-300"
-              >
-                {formatTagName(topic)}
-              </li>
-            ))}
-          </ul>
-        </section>
+        <nav
+          aria-label="Project navigation"
+          className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-800 pt-8"
+        >
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 font-semibold text-white transition-colors hover:border-brand/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+          >
+            <ArrowLeft size={18} />
+            Back to projects
+          </Link>
+          {nextProject && (
+            <Link
+              href={`/projects/${nextProject.slug}`}
+              className="group inline-flex items-center gap-3 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-left transition-colors hover:border-brand/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            >
+              <span>
+                <span className="block font-mono text-xs uppercase tracking-wider text-slate-500">
+                  Next repo
+                </span>
+                <span className="block font-semibold text-white">
+                  {nextProject.presentation.repoName}
+                </span>
+              </span>
+              <ArrowRight
+                size={18}
+                className="text-slate-400 transition-colors group-hover:text-brand"
+              />
+            </Link>
+          )}
+        </nav>
       </article>
     </div>
   );
