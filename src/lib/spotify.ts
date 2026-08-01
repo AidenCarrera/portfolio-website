@@ -14,9 +14,14 @@ interface SpotifyTrack {
   name: string;
 }
 
-// Spotify's client-credentials tokens are valid for 3600s. Rotating the cache
-// key on a shorter window guarantees a token is at most this old when served.
-const TOKEN_WINDOW_MS = 45 * 60 * 1000;
+// Renew slightly early so a token is never handed out on the edge of expiry.
+const TOKEN_EXPIRY_MARGIN_MS = 60 * 1000;
+
+// Kept out of the Next data cache: that cache serves stale entries while
+// revalidating in the background, which would eventually hand out an expired
+// token and 401. An expiry-aware in-memory cache can't, and keeps the
+// credential off disk.
+let cachedToken: { value: string; expiresAt: number } | null = null;
 
 async function getSpotifyAccessToken(): Promise<string> {
   if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) {
@@ -25,11 +30,11 @@ async function getSpotifyAccessToken(): Promise<string> {
     );
   }
 
-  // Dummy `w` parameter forces Next cache-key rotation so stale-while-revalidate 
-  // fetches a fresh token before the old one expires and returns 401s.
-  const window = Math.floor(Date.now() / TOKEN_WINDOW_MS);
+  if (cachedToken && Date.now() < cachedToken.expiresAt) {
+    return cachedToken.value;
+  }
 
-  const tokenRes = await fetch(`https://accounts.spotify.com/api/token?w=${window}`, {
+  const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
       Authorization:
@@ -40,7 +45,7 @@ async function getSpotifyAccessToken(): Promise<string> {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({ grant_type: "client_credentials" }),
-    next: { revalidate: 3600 },
+    cache: "no-store",
   });
 
   if (!tokenRes.ok) {
@@ -49,7 +54,16 @@ async function getSpotifyAccessToken(): Promise<string> {
     );
   }
   const tokenData = await tokenRes.json();
-  return tokenData.access_token;
+
+  cachedToken = {
+    value: tokenData.access_token,
+    expiresAt:
+      Date.now() +
+      (tokenData.expires_in ?? 3600) * 1000 -
+      TOKEN_EXPIRY_MARGIN_MS,
+  };
+
+  return cachedToken.value;
 }
 
 export async function getSpotifyTracks(): Promise<MusicTrack[]> {
