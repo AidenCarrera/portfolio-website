@@ -40,9 +40,7 @@ export function useTapePlayer(activeSnippet: MusicSnippet | null) {
     }
   }, [volume]);
 
-  // Playback state is driven entirely by the element's events, so a tape swap
-  // that pauses and immediately replays settles on the right state regardless
-  // of the order those events land in.
+  // Event-driven state syncs correctly across rapid pause/play tape swaps.
   const handlePlaybackStarted = useCallback(() => {
     setIsPlaying(true);
     controls.start({

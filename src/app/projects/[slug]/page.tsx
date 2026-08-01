@@ -168,10 +168,7 @@ export default async function ProjectDetailPage({
             >
               <Image
                 src={heroUrl}
-                // Alt text is required by the schema, but older documents may
-                // predate that rule; an empty string marks the image decorative
-                // rather than dropping the attribute, since the heading and
-                // description above already name the project.
+                // Fall back to empty alt for legacy documents to treat image as decorative.
                 alt={heroImage.alt ?? ""}
                 width={heroDimensions?.width ?? 1600}
                 height={heroDimensions?.height ?? 900}

@@ -7,10 +7,7 @@ import type { SanityImage } from "@/sanity/types";
 
 interface ImageLightboxProps {
   image: SanityImage;
-  /**
-   * Accessible name for the trigger. It replaces the thumbnail's own alt text
-   * in the button's name, so it should describe the image, not just the action.
-   */
+  /** Accessible trigger label describing image content (replaces thumbnail alt text). */
   label: string;
   /** Bolded lead-in for the viewer's caption, above any authored caption. */
   title?: string;
@@ -20,12 +17,7 @@ interface ImageLightboxProps {
   children: ReactNode;
 }
 
-/**
- * Wraps a thumbnail in a trigger that opens the same image full size. The
- * native modal dialog supplies the focus trap, the Escape handling and the
- * top-layer stacking, so none of that has to be reimplemented here — and the
- * top layer escapes any scroll container or transform the trigger sits in.
- */
+/** Thumbnail trigger opening full-size image in a native modal dialog. */
 export default function ImageLightbox({
   image,
   label,
@@ -82,20 +74,16 @@ export default function ImageLightbox({
           if (event.target === event.currentTarget) setIsOpen(false);
         }}
         aria-label={`${viewerName}, full size image`}
-        // A definite viewport-sized box, so the frame below has a real width to
-        // resolve against. Preflight also zeroes the margin the user agent uses
-        // to centre a dialog, hence m-auto.
-        className="m-auto grid h-dvh max-h-dvh w-dvw max-w-dvw place-items-center bg-transparent p-4 backdrop:bg-slate-950/85"
+        // Sets viewport dimensions and restores native dialog centering with `m-auto`.
+        // `open:` keeps the display change behind the open state; a bare `grid`
+        // beats the UA `dialog:not([open]){display:none}`, leaving a closed
+        // 100dvw dialog in flow that overflows the page by the scrollbar width.
+        className="m-auto open:grid h-dvh max-h-dvh w-dvw max-w-dvw place-items-center bg-transparent p-4 backdrop:bg-slate-950/85"
       >
         {isOpen && (
           <figure
-            // height * ratio is the widest the frame can get before it would
-            // overflow vertically. Sizing by ratio rather than letting the
-            // image's intrinsic width drive it is what makes every aspect
-            // ratio fill the viewer to the same degree — wide sources are
-            // often small enough that their natural width left them stranded
-            // mid-screen. The 72rem and 82dvh ceilings keep the frame off the
-            // viewport edges rather than letting it go full bleed.
+            // Aspect-ratio width fills the viewer consistently—preventing narrow/wide images from looking 
+            // stranded mid-screen—while 72rem/82dvh caps preserve viewport margins.
             style={{
               maxWidth: `min(72rem, calc((82dvh - ${captionReserve}) * ${intrinsicWidth / intrinsicHeight}))`,
             }}

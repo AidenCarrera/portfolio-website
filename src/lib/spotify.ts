@@ -25,11 +25,8 @@ async function getSpotifyAccessToken(): Promise<string> {
     );
   }
 
-  // Spotify ignores this parameter; it exists purely to change Next's cache
-  // key. Caching the token for its own lifetime meant Next's
-  // stale-while-revalidate could serve an already-expired token, 401ing every
-  // downstream call. A key that rolls over every window is always a genuine
-  // miss, so the token is refreshed with plenty of validity left.
+  // Dummy `w` parameter forces Next cache-key rotation so stale-while-revalidate 
+  // fetches a fresh token before the old one expires and returns 401s.
   const window = Math.floor(Date.now() / TOKEN_WINDOW_MS);
 
   const tokenRes = await fetch(`https://accounts.spotify.com/api/token?w=${window}`, {

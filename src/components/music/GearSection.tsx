@@ -76,9 +76,7 @@ function GearCard({
         >
           <Image
             src={imageUrl}
-            // Alt text is required by the schema, but older documents may
-            // predate that rule; an empty string marks the photo decorative
-            // rather than dropping the attribute, since the name sits below it.
+            // Empty alt fallback marks legacy photos as decorative since name is shown below.
             alt={image?.alt ?? ""}
             fill
             // Rail cards are w-56/sm:w-64; grid cards cap at the 17rem track
@@ -156,20 +154,13 @@ function GearCarousel({
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-linear-to-l from-slate-900 to-transparent" />
       )}
 
-      {/*
-        A focusable scroll container needs an accessible name so keyboard and
-        screen reader users know what they have landed on; the list role also
-        conveys how many items are in the rail.
-      */}
+      {/* Accessible name and list role for keyboard/screen reader navigation. */}
       <ul
         ref={railRef}
         onScroll={updateBounds}
         tabIndex={0}
         aria-label={`${label} — scroll horizontally to browse`}
-        // overflow-x forces overflow-y to compute to auto, so the cards' hover
-        // lift and shadow are clipped at the top edge. The top padding gives
-        // them room and the matching negative margin cancels it out, leaving
-        // the rail exactly where it sat before.
+        // Counter-margin padding offsets horizontal overflow shadow clipping.
         className="scrollbar-none -mt-2 flex snap-x snap-mandatory gap-6 overflow-x-auto overscroll-x-contain pt-2 pb-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
       >
         {items.map((item) => (
@@ -292,22 +283,13 @@ export default function GearSection({ gear }: GearSectionProps) {
                   </h3>
                 </div>
 
-                {/*
-                  Rails keep the combined view scannable, but once a single
-                  type is filtered to there is room to lay every item out at
-                  once.
-                */}
+                {/* Grid view replaces rail when single category filter is active. */}
                 {PLUGIN_TYPES.has(type) ? (
                   <PluginList items={items} />
                 ) : activeType === "all" ? (
                   <GearCarousel items={items} label={title} />
                 ) : (
-                  // Column count is left to auto-fill: the 16rem floor against
-                  // the page's 1216px content box lands on four per row at
-                  // desktop widths and steps down naturally below that. The
-                  // 17rem cap keeps cards near the rail's card width instead
-                  // of stretching, and the min() guard stops the floor from
-                  // overflowing narrow viewports.
+                  // Auto-fill grid (16-17rem range) yields 4 columns on desktop, scaling cleanly down.
                   <ul className="grid justify-center gap-6 grid-cols-[repeat(auto-fill,minmax(min(16rem,100%),17rem))]">
                     {items.map((item) => (
                       <GearCard key={item._id} item={item} layout="grid" />

@@ -105,13 +105,7 @@ export const getProjectBySlug = cache(
   },
 );
 
-/**
- * Repository names are unique per owner, not globally, so two listed repos can
- * collapse to the same slug. `getProjectBySlug` answers with the first match,
- * so route generation and the sitemap have to enumerate each slug exactly once
- * — duplicate `generateStaticParams` entries fail the build, and duplicate
- * sitemap URLs are invalid.
- */
+/** Ensures unique project slugs across repositories to prevent static generation & sitemap errors. */
 export const getRoutableProjects = cache(
   async (): Promise<PortfolioProject[]> => {
     const projects = await getPortfolioProjects();
