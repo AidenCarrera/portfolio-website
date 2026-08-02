@@ -5,6 +5,7 @@ import type {
   SanityMusic,
   SanityProfile,
   SanityProject,
+  SanityResumePage,
 } from "@/sanity/types";
 
 const imageProjection = `{
@@ -55,14 +56,57 @@ const profileQuery = defineQuery(`*[_type == "profile"][0] {
   email,
   aboutMe,
   landingText,
-  sloganText,
-  resume {
+  sloganText
+}`);
+
+const resumePageQuery = defineQuery(`*[_type == "resumePage"][0] {
+  _id,
+  name,
+  eyebrow,
+  summary,
+  "contactLinks": coalesce(contactLinks[] {
+    _key,
+    label,
+    url,
+    icon
+  }, []),
+  resumeFile {
     asset->{
       _id,
       url,
       originalFilename
     }
-  }
+  },
+  education {
+    school,
+    location,
+    degree,
+    graduation,
+    gpa,
+    "coursework": coalesce(coursework, []),
+    "honors": coalesce(honors, [])
+  },
+  "projects": coalesce(projects[] {
+    _key,
+    name,
+    url,
+    description,
+    "technologies": coalesce(technologies, [])
+  }, []),
+  "experience": coalesce(experience[] {
+    _key,
+    role,
+    organization,
+    location,
+    dates,
+    "highlights": coalesce(highlights, [])
+  }, []),
+  "skills": coalesce(skills[] {
+    _key,
+    name,
+    "items": coalesce(items, [])
+  }, []),
+  seoDescription
 }`);
 
 const gearItemsQuery = defineQuery(`*[_type == "gearItem"] |
@@ -85,6 +129,10 @@ export function getSanityMusic(): Promise<SanityMusic[]> {
 
 export function getSanityProfile(): Promise<SanityProfile | null> {
   return sanityFetch<SanityProfile | null>(profileQuery, null);
+}
+
+export function getSanityResumePage(): Promise<SanityResumePage | null> {
+  return sanityFetch<SanityResumePage | null>(resumePageQuery, null);
 }
 
 export function getSanityGearItems(): Promise<SanityGearItem[]> {

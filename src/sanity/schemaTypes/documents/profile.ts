@@ -2,7 +2,7 @@ import { defineField, defineType } from "sanity";
 
 export const profile = defineType({
   name: "profile",
-  title: "Profile",
+  title: "Landing",
   type: "document",
   fields: [
     defineField({
@@ -16,16 +16,6 @@ export const profile = defineType({
       title: "Email",
       type: "string",
       validation: (rule) => rule.required().email(),
-    }),
-    defineField({
-      name: "resume",
-      title: "Resume",
-      type: "file",
-      description:
-        "Optional PDF displayed as a download link on the homepage.",
-      options: {
-        accept: "application/pdf",
-      },
     }),
     defineField({
       name: "landingText",

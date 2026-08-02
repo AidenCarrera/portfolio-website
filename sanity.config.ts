@@ -16,6 +16,10 @@ export default defineConfig({
   schema: {
     types: schemaTypes,
     templates: (templates) =>
-      templates.filter((template) => template.schemaType !== "profile"),
+      templates.filter(
+        (template) =>
+          template.schemaType !== "profile" &&
+          template.schemaType !== "resumePage",
+      ),
   },
 });

@@ -7,19 +7,13 @@ const BASE_LINK_CLASS =
 const SECONDARY_LINK_CLASS =
   "bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-brand";
 
-interface HomeNavLinksProps {
-  resumeUrl?: string;
-}
-
 interface HomeNavLink {
   href: string;
   label: string;
   variant: string;
-  download?: boolean;
-  ariaLabel?: string;
 }
 
-export default function HomeNavLinks({ resumeUrl }: HomeNavLinksProps) {
+export default function HomeNavLinks() {
   const navLinks: HomeNavLink[] = [
     {
       href: "/projects",
@@ -27,18 +21,12 @@ export default function HomeNavLinks({ resumeUrl }: HomeNavLinksProps) {
       variant:
         "bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark",
     },
-    ...(resumeUrl
-      ? [
-          {
-            href: resumeUrl,
-            label: "Download Resume",
-            variant:
-              "bg-blue-600 hover:bg-blue-500 border border-blue-700 hover:border-blue-500",
-            download: true,
-            ariaLabel: "Download Resume (PDF)",
-          },
-        ]
-      : []),
+    {
+      href: "/resume",
+      label: "View Resume",
+      variant:
+        "bg-blue-600 hover:bg-blue-500 border border-blue-700 hover:border-blue-500",
+    },
     {
       href: "/music",
       label: "Explore My Music",
@@ -54,33 +42,18 @@ export default function HomeNavLinks({ resumeUrl }: HomeNavLinksProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 45, damping: 16, delay: 0.55 }}
     >
-      {navLinks.map(({ href, label, variant, download, ariaLabel }) => {
-        const className = `${BASE_LINK_CLASS} ${variant}`;
-        const content = (
-          <>
-            <span className="text-lg">{label}</span>
-            <span className="group-hover:translate-x-1 transition-transform">
-              →
-            </span>
-          </>
-        );
-
-        return download ? (
-          <a
-            key={href}
-            href={href}
-            download
-            aria-label={ariaLabel}
-            className={className}
-          >
-            {content}
-          </a>
-        ) : (
-          <Link key={href} href={href} className={className}>
-            {content}
-          </Link>
-        );
-      })}
+      {navLinks.map(({ href, label, variant }) => (
+        <Link
+          key={href}
+          href={href}
+          className={`${BASE_LINK_CLASS} ${variant}`}
+        >
+          <span className="text-lg">{label}</span>
+          <span className="transition-transform group-hover:translate-x-1">
+            {"→"}
+          </span>
+        </Link>
+      ))}
     </motion.div>
   );
 }

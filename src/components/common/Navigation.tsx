@@ -18,6 +18,7 @@ export default function Navigation({ name }: NavigationProps) {
 
   const navItems = [
     { id: "home", label: "Home", path: "/" },
+    { id: "resume", label: "Resume", path: "/resume" },
     { id: "projects", label: "Projects", path: "/projects" },
     { id: "music", label: "Music", path: "/music" },
     { id: "contact", label: "Contact", path: "/contact" },

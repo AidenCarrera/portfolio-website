@@ -58,13 +58,73 @@ export interface SanityProfile {
   aboutMe: string;
   landingText: string;
   sloganText: string;
-  resume?: {
+}
+
+export type ResumeContactIcon =
+  | "github"
+  | "linkedin"
+  | "email"
+  | "website"
+  | "link";
+
+export interface SanityResumeContactLink {
+  _key: string;
+  label: string;
+  url: string;
+  icon: ResumeContactIcon;
+}
+
+export interface SanityResumeEducation {
+  school: string;
+  location: string;
+  degree: string;
+  graduation: string;
+  gpa: string;
+  coursework: string[];
+  honors: string[];
+}
+
+export interface SanityResumeProject {
+  _key: string;
+  name: string;
+  url: string;
+  description: string;
+  technologies: string[];
+}
+
+export interface SanityResumeExperience {
+  _key: string;
+  role: string;
+  organization: string;
+  location?: string;
+  dates: string;
+  highlights: string[];
+}
+
+export interface SanityResumeSkillCategory {
+  _key: string;
+  name: string;
+  items: string[];
+}
+
+export interface SanityResumePage {
+  _id: string;
+  name: string;
+  eyebrow: string;
+  summary: string;
+  contactLinks: SanityResumeContactLink[];
+  resumeFile?: {
     asset: {
       _id: string;
       url: string;
       originalFilename?: string;
     };
   };
+  education: SanityResumeEducation;
+  projects: SanityResumeProject[];
+  experience: SanityResumeExperience[];
+  skills: SanityResumeSkillCategory[];
+  seoDescription?: string;
 }
 
 export type GearItemType =

@@ -98,7 +98,8 @@ Display order values `1` through `3` are marked Featured automatically. The Newe
 
 The other Sanity schemas are:
 
-- **Profile** - a singleton document containing my name, email, About Me content, landing copy, slogan, and resume PDF. It feeds the homepage, navigation, footer, metadata, and contact details.
+- **Landing** - a singleton document containing my name, email, About Me content, landing copy, and slogan. It feeds the homepage, navigation, footer, metadata, and contact details.
+- **Resume** - a singleton document containing the resume page content, contact links, downloadable PDF, education, projects, experience, skills, visible labels, and SEO copy.
 - **Music** - audio snippets with a name and audio file, displayed in creation order. No snippet audio files live in the repository.
 - **Gear Item** - gear entries with a type, optional category, optional image, and sort order. Plugins are grouped by category.
 

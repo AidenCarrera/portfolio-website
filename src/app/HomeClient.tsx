@@ -82,7 +82,7 @@ export default function HomeClient({ profile }: HomeClientProps) {
           transition={{ ...springTransition, delay: 0.45 }}
         >
           <AboutCard aboutMe={profile.aboutMe} />
-          <HomeNavLinks resumeUrl={profile.resumeUrl} />
+          <HomeNavLinks />
         </motion.div>
       </div>
     </div>
