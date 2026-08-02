@@ -25,6 +25,7 @@ const projectsQuery = defineQuery(`*[_type == "project"] |
   order(coalesce(displayOrder, 999) asc, githubRepository asc) {
     _id,
     githubRepository,
+    "hiddenFromProjects": coalesce(hiddenFromProjects, false),
     displayOrder,
     repoNameOverwrite,
     cardDescription,

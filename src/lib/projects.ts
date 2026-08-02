@@ -84,15 +84,17 @@ export const getPortfolioProjects = cache(
       ]),
     );
 
-    return githubRepos.map((github) => {
-      const repository = getGithubRepositoryIdentity(
-        github.html_url,
-      ).toLowerCase();
-      return mergeGithubRepoWithSanity(
-        github,
-        contentByRepository.get(repository) ?? null,
-      );
-    });
+    return githubRepos
+      .map((github) => {
+        const repository = getGithubRepositoryIdentity(
+          github.html_url,
+        ).toLowerCase();
+        return mergeGithubRepoWithSanity(
+          github,
+          contentByRepository.get(repository) ?? null,
+        );
+      })
+      .filter((project) => !project.content?.hiddenFromProjects);
   },
 );
 

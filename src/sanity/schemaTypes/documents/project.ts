@@ -17,6 +17,14 @@ export const project = defineType({
         }),
     }),
     defineField({
+      name: "hiddenFromProjects",
+      title: "Hide from Projects",
+      type: "boolean",
+      description:
+        "Hide this repository from the Projects page, project detail routes, and sitemap while keeping its Sanity content.",
+      initialValue: false,
+    }),
+    defineField({
       name: "displayOrder",
       title: "Display order",
       type: "number",

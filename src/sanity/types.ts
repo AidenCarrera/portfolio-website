@@ -27,6 +27,7 @@ export interface SanityImage {
 export interface SanityProject {
   _id: string;
   githubRepository: string;
+  hiddenFromProjects: boolean;
   displayOrder?: number;
   repoNameOverwrite?: string;
   cardDescription?: string;
