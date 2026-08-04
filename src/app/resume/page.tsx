@@ -74,7 +74,7 @@ export default async function ResumePage() {
   return (
     <div className="min-h-screen bg-slate-900 pt-8 pb-20">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-        <header className="relative overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-800/70 p-6 shadow-2xl shadow-black/20 sm:p-10">
+        <header className="relative overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-800/50 p-6 shadow-2xl shadow-black/20 sm:p-10">
           <div className="relative">
             <div className="mb-5">
               <Badge>{resume.eyebrow}</Badge>

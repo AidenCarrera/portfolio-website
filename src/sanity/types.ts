@@ -62,6 +62,30 @@ export interface SanityProfile {
   availabilityText?: string;
 }
 
+export interface SanityAboutSkillCategory {
+  _key: string;
+  name: string;
+  items: string[];
+}
+
+export interface SanityAboutPage {
+  _id: string;
+  eyebrow: string;
+  heading: string;
+  /** Paragraphs separated by blank lines. */
+  intro: string;
+  portrait?: SanityImage;
+  locationLabel?: string;
+  graduationLabel?: string;
+  availabilityLabel?: string;
+  skillsHeading?: string;
+  skills: SanityAboutSkillCategory[];
+  galleryHeading?: string;
+  galleryIntro?: string;
+  gallery: SanityImage[];
+  seoDescription?: string;
+}
+
 export type ResumeContactIcon =
   | "github"
   | "linkedin"

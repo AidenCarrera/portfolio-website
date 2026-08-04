@@ -1,6 +1,8 @@
 import { socialLinks } from "@/lib/socialLinks";
 import { SITE_URL } from "@/lib/siteUrl";
+import { splitParagraphs } from "@/lib/about";
 import type { WebsiteProfile } from "@/lib/profile";
+import type { SanityAboutPage } from "@/sanity/types";
 
 const personId = `${SITE_URL}/#person`;
 const websiteId = `${SITE_URL}/#website`;
@@ -32,6 +34,28 @@ export function getGlobalStructuredData(profile: WebsiteProfile) {
         },
       },
     ],
+  };
+}
+
+export function getAboutPageStructuredData(
+  about: SanityAboutPage,
+  profile: WebsiteProfile,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "@id": `${SITE_URL}/about#about-page`,
+    url: `${SITE_URL}/about`,
+    name: `About | ${profile.name}`,
+    description:
+      about.seoDescription?.trim() || splitParagraphs(about.intro)[0],
+    inLanguage: "en-US",
+    isPartOf: {
+      "@id": websiteId,
+    },
+    mainEntity: {
+      "@id": personId,
+    },
   };
 }
 

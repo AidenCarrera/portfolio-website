@@ -17,19 +17,14 @@ export default function Navigation({ name }: NavigationProps) {
   const pathname = usePathname();
 
   const navItems = [
-    { id: "home", label: "Home", path: "/" },
-    { id: "resume", label: "Resume", path: "/resume" },
+    { id: "about", label: "About", path: "/about" },
     { id: "projects", label: "Projects", path: "/projects" },
+    { id: "resume", label: "Resume", path: "/resume" },
     { id: "music", label: "Music", path: "/music" },
     { id: "contact", label: "Contact", path: "/contact" },
   ];
 
-  const isActive = (path: string) => {
-    if (path === "/") {
-      return pathname === "/";
-    }
-    return pathname.startsWith(path);
-  };
+  const isActive = (path: string) => pathname.startsWith(path);
 
   const hoverLift = {
     scale: 1.05,
@@ -41,9 +36,14 @@ export default function Navigation({ name }: NavigationProps) {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          {/* The wordmark is the only route back to the landing page now that
+              Home has left the nav, so it names its destination for assistive
+              tech while keeping the visible text in its accessible name. */}
           <MotionLink
             href="/"
             whileHover={hoverLift}
+            aria-label={`${name} — home`}
+            aria-current={pathname === "/" ? "page" : undefined}
             className="text-xl font-bold text-white hover:text-brand transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg px-2 py-1"
           >
             {name}
@@ -55,6 +55,7 @@ export default function Navigation({ name }: NavigationProps) {
                 key={item.id}
                 href={item.path}
                 whileHover={hoverLift}
+                aria-current={isActive(item.path) ? "page" : undefined}
                 className={`text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded px-2 py-1 ${
                   isActive(item.path)
                     ? "text-brand"
@@ -86,6 +87,7 @@ export default function Navigation({ name }: NavigationProps) {
                 href={item.path}
                 onClick={() => setMobileMenuOpen(false)}
                 whileHover={hoverLift}
+                aria-current={isActive(item.path) ? "page" : undefined}
                 className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
                   isActive(item.path)
                     ? "text-brand bg-slate-700"

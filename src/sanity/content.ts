@@ -1,6 +1,7 @@
 import { defineQuery } from "next-sanity";
 import { sanityFetch } from "@/sanity/client";
 import type {
+  SanityAboutPage,
   SanityGearItem,
   SanityMusic,
   SanityProfile,
@@ -59,6 +60,27 @@ const profileQuery = defineQuery(`*[_type == "profile"][0] {
   landingText,
   sloganText,
   availabilityText
+}`);
+
+const aboutPageQuery = defineQuery(`*[_type == "aboutPage"][0] {
+  _id,
+  eyebrow,
+  heading,
+  intro,
+  portrait ${imageProjection},
+  locationLabel,
+  graduationLabel,
+  availabilityLabel,
+  skillsHeading,
+  "skills": coalesce(skills[] {
+    _key,
+    name,
+    "items": coalesce(items, [])
+  }, []),
+  galleryHeading,
+  galleryIntro,
+  "gallery": coalesce(gallery[] ${imageProjection}, []),
+  seoDescription
 }`);
 
 const resumePageQuery = defineQuery(`*[_type == "resumePage"][0] {
@@ -131,6 +153,10 @@ export function getSanityMusic(): Promise<SanityMusic[]> {
 
 export function getSanityProfile(): Promise<SanityProfile | null> {
   return sanityFetch<SanityProfile | null>(profileQuery, null);
+}
+
+export function getSanityAboutPage(): Promise<SanityAboutPage | null> {
+  return sanityFetch<SanityAboutPage | null>(aboutPageQuery, null);
 }
 
 export function getSanityResumePage(): Promise<SanityResumePage | null> {
