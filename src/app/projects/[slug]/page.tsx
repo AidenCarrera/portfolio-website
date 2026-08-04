@@ -71,7 +71,7 @@ export default async function ProjectDetailPage({
       : github.homepage;
 
   return (
-    <div className="min-h-screen bg-slate-900 pt-24 pb-20">
+    <div className="min-h-screen bg-slate-900 pt-8 pb-20">
       <article className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <Link
           href="/projects"
