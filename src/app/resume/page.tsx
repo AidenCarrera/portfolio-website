@@ -45,6 +45,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const sectionHeadingClass =
   "text-2xl sm:text-3xl font-bold text-white";
+const experienceLabelClass = "mt-1 font-medium text-brand-light";
 
 function ContactIcon({ icon }: { icon: ResumeContactIcon }) {
   switch (icon) {
@@ -254,7 +255,7 @@ export default async function ResumePage() {
                     <h3 className="text-lg font-bold text-white">
                       {experience.role}
                     </h3>
-                    <p className="mt-1 font-medium text-brand-light">
+                    <p className={experienceLabelClass}>
                       {experience.organization}
                     </p>
                     {experience.location && (
@@ -293,7 +294,7 @@ export default async function ResumePage() {
                   key={category._key}
                   className="grid gap-2 py-4 first:pt-0 last:pb-0 sm:grid-cols-[10rem_1fr] sm:items-baseline sm:gap-6"
                 >
-                  <h3 className="font-mono text-sm uppercase tracking-[0.18em] text-brand">
+                  <h3 className={experienceLabelClass}>
                     {category.name}
                   </h3>
                   <p className="text-sm leading-relaxed text-slate-200 lg:whitespace-nowrap">

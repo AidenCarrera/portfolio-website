@@ -11,7 +11,16 @@ interface PhotoGalleryProps {
 export default function PhotoGallery({ photos }: PhotoGalleryProps) {
   // Deleted or unresolved asset references come back as null from the deref;
   // without a URL there is nothing to render or open.
-  const visiblePhotos = photos.filter((photo) => photo.asset?.url);
+  const visiblePhotos = photos
+    .map((photo, index) => ({ photo, index }))
+    .filter(({ photo }) => photo.asset?.url)
+    .sort(
+      (a, b) =>
+        (a.photo.displayOrder ?? Number.MAX_SAFE_INTEGER) -
+          (b.photo.displayOrder ?? Number.MAX_SAFE_INTEGER) ||
+        a.index - b.index,
+    )
+    .map(({ photo }) => photo);
 
   if (visiblePhotos.length === 0) {
     return (

@@ -13,6 +13,7 @@ const imageProjection = `{
   _key,
   alt,
   caption,
+  displayOrder,
   asset->{
     _id,
     url,

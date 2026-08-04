@@ -165,6 +165,14 @@ export const aboutPage = defineType({
               type: "string",
               description: "Shown beneath the photo in the gallery.",
             }),
+            defineField({
+              name: "displayOrder",
+              title: "Display Order",
+              type: "number",
+              description:
+                "Lower numbers appear first. Photos without a number keep their existing order after numbered photos.",
+              validation: (rule) => rule.integer().min(0),
+            }),
           ],
         }),
       ],

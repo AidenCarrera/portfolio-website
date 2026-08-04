@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "motion/react";
 
 const MotionLink = motion.create(Link);
@@ -44,9 +45,17 @@ export default function Navigation({ name }: NavigationProps) {
             whileHover={hoverLift}
             aria-label={`${name} — home`}
             aria-current={pathname === "/" ? "page" : undefined}
-            className="text-xl font-bold text-white hover:text-brand transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg px-2 py-1"
+            className="flex items-center gap-2 rounded-lg px-2 py-1 text-xl font-bold text-white transition-colors hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
           >
-            {name}
+            <Image
+              src="/developer-logo.svg"
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-full border border-brand/20 bg-slate-900 object-contain"
+              priority
+            />
+            <span>{name}</span>
           </MotionLink>
 
           <div className="hidden md:flex space-x-8">

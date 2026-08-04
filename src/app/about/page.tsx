@@ -30,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const sectionHeadingClass = "text-2xl sm:text-3xl font-bold text-white";
 
 const inlineLinkClass =
-  "rounded font-semibold text-brand underline decoration-brand/40 underline-offset-4 transition-colors hover:text-brand-light hover:decoration-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand";
+  "inline-flex items-center rounded-lg border border-brand/25 bg-brand/10 px-2.5 py-1 align-middle font-semibold text-brand transition-colors hover:border-brand/50 hover:bg-brand/15 hover:text-brand-light focus:outline-none focus-visible:ring-2 focus-visible:ring-brand";
 
 export default async function About() {
   const [about, profile] = await Promise.all([
@@ -161,7 +161,7 @@ export default async function About() {
               <div className="mt-7 grid gap-6 sm:grid-cols-2">
                 {about.skills.map((category) => (
                   <div key={category._key}>
-                    <h3 className="font-mono text-sm uppercase tracking-[0.18em] text-brand">
+                    <h3 className="mt-1 font-medium text-white">
                       {category.name}
                     </h3>
                     <ul className="mt-3 flex flex-wrap gap-2">
@@ -197,18 +197,17 @@ export default async function About() {
             </section>
           )}
 
-          <section className="rounded-2xl border border-brand/20 bg-brand/5 p-6 text-center sm:p-8">
-            <p className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-200">
-              Interested in working together or checking out my builds? Take a
-              look at my{" "}
+          <section className="rounded-2xl border border-slate-700/80 bg-slate-800/50 p-6 text-center sm:p-8">
+            <p className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-300">
+              Explore my{" "}
               <Link href="/projects" className={inlineLinkClass}>
                 Projects
               </Link>{" "}
-              or reach out to me via{" "}
+              to see more of my work, or visit{" "}
               <Link href="/contact" className={inlineLinkClass}>
                 Contact
               </Link>
-              .
+              {" "}to get in touch.
             </p>
           </section>
         </div>

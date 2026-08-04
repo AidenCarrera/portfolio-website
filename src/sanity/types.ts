@@ -5,6 +5,7 @@ export interface SanityImage {
   _key?: string;
   alt: string;
   caption?: string;
+  displayOrder?: number;
   asset: {
     _id: string;
     url: string;
