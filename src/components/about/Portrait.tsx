@@ -23,7 +23,7 @@ export default function Portrait({ portrait, name }: PortraitProps) {
   const lqip = portrait?.asset?.metadata?.lqip;
 
   return (
-    <div className="mx-auto w-full max-w-sm sm:max-w-md lg:max-w-none">
+    <div className="mx-auto w-full max-w-[22rem] sm:max-w-[26rem] lg:max-w-[22rem]">
       {/* A slightly shorter portrait crop at every width, on the same corner
           radius as the cards elsewhere on the site. */}
       <div className="relative aspect-[5/7] overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl shadow-black/30">
@@ -32,8 +32,8 @@ export default function Portrait({ portrait, name }: PortraitProps) {
             src={imageUrl}
             alt={portrait.alt ?? `Portrait of ${name}`}
             fill
-            // Capped at 24rem/28rem while stacked, then the 24rem header column.
-            sizes="(min-width: 1024px) 24rem, (min-width: 640px) 28rem, 24rem"
+            // Capped slightly below the surrounding layout at each breakpoint.
+            sizes="(min-width: 1024px) 22rem, (min-width: 640px) 26rem, 22rem"
             quality={90}
             placeholder={lqip ? "blur" : "empty"}
             blurDataURL={lqip}

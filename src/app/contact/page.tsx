@@ -1,5 +1,4 @@
 import ContactFormCard from "@/components/contact/ContactFormCard";
-import DirectContactCard from "@/components/contact/DirectContactCard";
 import ConnectCard from "@/components/contact/ConnectCard";
 import { Mail } from "lucide-react";
 import { getWebsiteProfile } from "@/lib/profile";
@@ -35,12 +34,9 @@ export default async function Contact() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <ContactFormCard />
-          <div className="space-y-8">
-            {profile.email && <DirectContactCard email={profile.email} />}
-            <ConnectCard />
-          </div>
+        <div className="grid items-start gap-8 md:grid-cols-2">
+          <ContactFormCard email={profile.email} />
+          <ConnectCard />
         </div>
       </div>
     </div>

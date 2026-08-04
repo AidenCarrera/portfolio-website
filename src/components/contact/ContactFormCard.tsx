@@ -1,12 +1,21 @@
 "use client";
 
-import { useActionState, useRef, useEffect } from "react";
-import { Send } from "lucide-react";
+import { useActionState, useRef, useEffect, useState } from "react";
+import { Check, Copy, Mail, Send } from "lucide-react";
 import { CONTACT_LIMITS } from "@/lib/contact";
+
+interface ContactFormCardProps {
+  email?: string;
+}
 
 interface FormState {
   status: "idle" | "success" | "error";
 }
+
+const fieldBaseClassName =
+  "w-full rounded-lg border border-slate-600 bg-slate-700 text-white placeholder-slate-400 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-brand";
+const singleLineFieldClassName = `${fieldBaseClassName} h-[50px] px-4`;
+const multilineFieldClassName = `${fieldBaseClassName} px-4 py-3`;
 
 async function contactAction(
   _prevState: FormState,
@@ -31,11 +40,20 @@ async function contactAction(
   }
 }
 
-export default function ContactFormCard() {
+export default function ContactFormCard({ email }: ContactFormCardProps) {
   const [state, formAction, isPending] = useActionState(contactAction, {
     status: "idle",
   } as FormState);
+  const [copied, setCopied] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const copyEmail = () => {
+    if (!email) return;
+
+    navigator.clipboard.writeText(email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     if (state.status === "success") {
@@ -47,6 +65,38 @@ export default function ContactFormCard() {
     <div className="space-y-8">
       <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700">
         <h2 className="text-2xl font-bold text-white mb-6">Contact Form</h2>
+
+        {email && (
+          <div className="mb-6">
+            <h3 className="mb-2 block text-sm font-medium text-slate-300">
+              Direct Contact
+            </h3>
+            <div
+              className={`${singleLineFieldClassName} flex items-center justify-between`}
+            >
+              <div className="flex min-w-0 items-center space-x-3">
+                <Mail className="shrink-0 text-brand" size={20} />
+                <span className="truncate text-slate-300">{email}</span>
+              </div>
+              <button
+                type="button"
+                onClick={copyEmail}
+                aria-label={
+                  copied
+                    ? "Email address copied to clipboard"
+                    : "Copy email address to clipboard"
+                }
+                className="ml-3 rounded-lg p-2 transition-colors hover:bg-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              >
+                {copied ? (
+                  <Check className="text-green-400" size={20} />
+                ) : (
+                  <Copy className="text-slate-400" size={20} />
+                )}
+              </button>
+            </div>
+          </div>
+        )}
 
         <form ref={formRef} action={formAction} className="space-y-4">
           <div>
@@ -62,7 +112,7 @@ export default function ContactFormCard() {
               name="name"
               required
               maxLength={CONTACT_LIMITS.name}
-              className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
+              className={singleLineFieldClassName}
               placeholder="Your name"
             />
           </div>
@@ -80,7 +130,7 @@ export default function ContactFormCard() {
               name="email"
               required
               maxLength={CONTACT_LIMITS.email}
-              className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
+              className={singleLineFieldClassName}
               placeholder="your.email@example.com"
             />
           </div>
@@ -98,7 +148,7 @@ export default function ContactFormCard() {
               required
               maxLength={CONTACT_LIMITS.message}
               rows={5}
-              className="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all resize-none"
+              className={`${multilineFieldClassName} resize-none`}
               placeholder="Tell me about your project or idea..."
             />
           </div>
