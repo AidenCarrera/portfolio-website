@@ -8,6 +8,7 @@ export interface WebsiteProfile {
   aboutMe: string;
   landingText: string;
   sloganText: string;
+  availabilityText: string;
 }
 
 export const DEFAULT_PROFILE: WebsiteProfile = {
@@ -20,6 +21,8 @@ I work primarily with C++, TypeScript, Python, Java, JUCE, React, Next.js, and O
 I'm also a performer, composer, and producer. I perform with the OSU Jazz Band, Resistance Indoor Percussion, and other ensembles, and I write, record, mix, and master my own music.`,
   landingText: "Musician. Producer.\nDeveloper.",
   sloganText: "I build creative software and make original music.",
+  availabilityText:
+    "Based in Tulsa, Oklahoma · Open to full-time opportunities in Oklahoma and remote",
 };
 
 export const getWebsiteProfile = cache(async (): Promise<WebsiteProfile> => {
@@ -35,5 +38,7 @@ export const getWebsiteProfile = cache(async (): Promise<WebsiteProfile> => {
     aboutMe: profile.aboutMe || DEFAULT_PROFILE.aboutMe,
     landingText: profile.landingText || DEFAULT_PROFILE.landingText,
     sloganText: profile.sloganText || DEFAULT_PROFILE.sloganText,
+    availabilityText:
+      profile.availabilityText?.trim() || DEFAULT_PROFILE.availabilityText,
   };
 });

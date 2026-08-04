@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { FaLinkedin } from "react-icons/fa6";
 import { SiGithub } from "react-icons/si";
+import Badge from "@/components/common/Badge";
 import { getResumePage } from "@/lib/resume";
 import type { ResumeContactIcon } from "@/sanity/types";
 
@@ -75,8 +76,8 @@ export default async function ResumePage() {
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
         <header className="relative overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-800/70 p-6 shadow-2xl shadow-black/20 sm:p-10">
           <div className="relative">
-            <div className="mb-5 inline-flex items-center rounded-full border border-brand/25 bg-brand/10 px-3 py-1 text-sm font-semibold text-brand">
-              {resume.eyebrow}
+            <div className="mb-5">
+              <Badge>{resume.eyebrow}</Badge>
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
               {resume.name}

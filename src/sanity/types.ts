@@ -59,6 +59,7 @@ export interface SanityProfile {
   aboutMe: string;
   landingText: string;
   sloganText: string;
+  availabilityText?: string;
 }
 
 export type ResumeContactIcon =

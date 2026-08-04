@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import AboutCard from "@/components/home/AboutCard";
 import HomeNavLinks from "@/components/home/HomeNavLinks";
+import Badge from "@/components/common/Badge";
 import type { WebsiteProfile } from "@/lib/profile";
 
 interface HomeClientProps {
@@ -66,20 +67,28 @@ export default function HomeClient({ profile }: HomeClientProps) {
           </motion.h1>
 
           <motion.p
-            className="text-xl sm:text-2xl text-slate-300 max-w-3xl mx-auto"
+            className="mx-auto max-w-3xl text-xl text-slate-300 sm:text-2xl lg:max-w-none lg:whitespace-nowrap"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...springTransition, delay: 0.3 }}
           >
             {profile.sloganText}
           </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...springTransition, delay: 0.4 }}
+          >
+            <Badge>{profile.availabilityText}</Badge>
+          </motion.div>
         </div>
 
         <motion.div
           className="mt-16 sm:mt-20 md:mt-24 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full items-stretch"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ ...springTransition, delay: 0.45 }}
+          transition={{ ...springTransition, delay: 0.55 }}
         >
           <AboutCard aboutMe={profile.aboutMe} />
           <HomeNavLinks />

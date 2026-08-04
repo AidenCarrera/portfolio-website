@@ -35,6 +35,16 @@ export const profile = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "availabilityText",
+      title: "Location and availability badge",
+      type: "string",
+      description:
+        "The location and work availability shown in the badge on the homepage.",
+      initialValue:
+        "Based in Tulsa, Oklahoma · Open to full-time opportunities in Oklahoma and remote",
+      validation: (rule) => rule.required().max(160),
+    }),
+    defineField({
       name: "aboutMe",
       title: "About me",
       type: "text",

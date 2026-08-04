@@ -57,7 +57,8 @@ const profileQuery = defineQuery(`*[_type == "profile"][0] {
   email,
   aboutMe,
   landingText,
-  sloganText
+  sloganText,
+  availabilityText
 }`);
 
 const resumePageQuery = defineQuery(`*[_type == "resumePage"][0] {
