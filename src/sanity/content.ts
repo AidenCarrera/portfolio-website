@@ -13,6 +13,7 @@ const imageProjection = `{
   _key,
   alt,
   caption,
+  displayOrder,
   asset->{
     _id,
     url,
@@ -59,7 +60,16 @@ const profileQuery = defineQuery(`*[_type == "profile"][0] {
   aboutMe,
   landingText,
   sloganText,
-  availabilityText
+  availabilityText,
+  portrait ${imageProjection},
+  aboutHeading,
+  projectsHeading,
+  projectsIntro,
+  "featuredProjects": coalesce(featuredProjects[]->githubRepository, []),
+  featuredProjectCount,
+  musicHeading,
+  musicIntro,
+  contactHeading
 }`);
 
 const aboutPageQuery = defineQuery(`*[_type == "aboutPage"][0] {

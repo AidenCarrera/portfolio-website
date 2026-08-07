@@ -6,7 +6,16 @@ interface PortraitProps {
   portrait?: SanityImage;
   /** Used for the monogram shown until a portrait is uploaded. */
   name: string;
+  /** Sizes the wrapper; the frame inside it keeps the 5:7 crop either way. */
+  className?: string;
+  sizes?: string;
+  priority?: boolean;
 }
+
+const DEFAULT_CLASS_NAME = "mx-auto w-full max-w-88 sm:max-w-104 lg:max-w-88";
+// Capped slightly below the surrounding layout at each breakpoint.
+const DEFAULT_SIZES =
+  "(min-width: 1024px) 22rem, (min-width: 640px) 26rem, 22rem";
 
 function getInitials(name: string): string {
   return name
@@ -17,28 +26,33 @@ function getInitials(name: string): string {
     .join("");
 }
 
-export default function Portrait({ portrait, name }: PortraitProps) {
+export default function Portrait({
+  portrait,
+  name,
+  className = DEFAULT_CLASS_NAME,
+  sizes = DEFAULT_SIZES,
+  priority = false,
+}: PortraitProps) {
   // Deleted or unresolved asset references come back as null from the deref.
   const imageUrl = portrait?.asset?.url;
   const lqip = portrait?.asset?.metadata?.lqip;
 
   return (
-    <div className="mx-auto w-full max-w-[22rem] sm:max-w-[26rem] lg:max-w-[22rem]">
+    <div className={className}>
       {/* A slightly shorter portrait crop at every width, on the same corner
           radius as the cards elsewhere on the site. */}
-      <div className="relative aspect-[5/7] overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl shadow-black/30">
+      <div className="relative aspect-5/7 overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl shadow-black/30">
         {portrait && imageUrl ? (
           <Image
             src={imageUrl}
             alt={portrait.alt ?? `Portrait of ${name}`}
             fill
-            // Capped slightly below the surrounding layout at each breakpoint.
-            sizes="(min-width: 1024px) 22rem, (min-width: 640px) 26rem, 22rem"
+            sizes={sizes}
             quality={90}
             placeholder={lqip ? "blur" : "empty"}
             blurDataURL={lqip}
             unoptimized={isAnimatedImage(portrait)}
-            priority
+            priority={priority}
             className="object-cover"
           />
         ) : (

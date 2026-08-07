@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useRef, useEffect, useState } from "react";
-import { Check, Copy, Mail, Send } from "lucide-react";
+import { useActionState, useRef, useEffect } from "react";
+import { Send } from "lucide-react";
+import EmailCopyField from "@/components/common/EmailCopyField";
 import { CONTACT_LIMITS } from "@/lib/contact";
 
 interface ContactFormCardProps {
@@ -44,16 +45,7 @@ export default function ContactFormCard({ email }: ContactFormCardProps) {
   const [state, formAction, isPending] = useActionState(contactAction, {
     status: "idle",
   } as FormState);
-  const [copied, setCopied] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-
-  const copyEmail = () => {
-    if (!email) return;
-
-    navigator.clipboard.writeText(email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   useEffect(() => {
     if (state.status === "success") {
@@ -71,30 +63,7 @@ export default function ContactFormCard({ email }: ContactFormCardProps) {
             <h3 className="mb-2 block text-sm font-medium text-slate-300">
               Direct Contact
             </h3>
-            <div
-              className={`${singleLineFieldClassName} flex items-center justify-between`}
-            >
-              <div className="flex min-w-0 items-center space-x-3">
-                <Mail className="shrink-0 text-brand" size={20} />
-                <span className="truncate text-slate-300">{email}</span>
-              </div>
-              <button
-                type="button"
-                onClick={copyEmail}
-                aria-label={
-                  copied
-                    ? "Email address copied to clipboard"
-                    : "Copy email address to clipboard"
-                }
-                className="ml-3 rounded-lg p-2 transition-colors hover:bg-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-              >
-                {copied ? (
-                  <Check className="text-green-400" size={20} />
-                ) : (
-                  <Copy className="text-slate-400" size={20} />
-                )}
-              </button>
-            </div>
+            <EmailCopyField email={email} />
           </div>
         )}
 

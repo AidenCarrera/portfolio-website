@@ -5,6 +5,7 @@ export interface SanityImage {
   _key?: string;
   alt: string;
   caption?: string;
+  displayOrder?: number;
   asset: {
     _id: string;
     url: string;
@@ -60,6 +61,20 @@ export interface SanityProfile {
   landingText: string;
   sloganText: string;
   availabilityText?: string;
+  portrait?: SanityImage;
+  aboutHeading?: string;
+  projectsHeading?: string;
+  projectsIntro?: string;
+  /**
+   * The pinned references projected down to their `githubRepository` identity,
+   * which is what a project is keyed by everywhere outside Sanity. A reference
+   * left dangling by a deleted project derefs to null.
+   */
+  featuredProjects: (string | null)[];
+  featuredProjectCount?: number;
+  musicHeading?: string;
+  musicIntro?: string;
+  contactHeading?: string;
 }
 
 export interface SanityAboutSkillCategory {
@@ -87,11 +102,7 @@ export interface SanityAboutPage {
 }
 
 export type ResumeContactIcon =
-  | "github"
-  | "linkedin"
-  | "email"
-  | "website"
-  | "link";
+  "github" | "linkedin" | "email" | "website" | "link";
 
 export interface SanityResumeContactLink {
   _key: string;

@@ -5,11 +5,20 @@ import { SiGithub } from "react-icons/si";
 import type { PortfolioProject } from "@/lib/projects";
 import { formatTagName, isAnimatedImage } from "@/lib/utils";
 
+// Matches the three-across grid on the projects page.
+const DEFAULT_IMAGE_SIZES =
+  "(min-width: 1280px) 342px, (min-width: 1024px) calc(33vw - 5rem), (min-width: 768px) calc(50vw - 4.5rem), calc(100vw - 5rem)";
+
 interface RepoCardProps {
   project: PortfolioProject;
+  /** Override when the card is laid out in a wider grid than the projects page. */
+  imageSizes?: string;
 }
 
-export default function RepoCard({ project }: RepoCardProps) {
+export default function RepoCard({
+  project,
+  imageSizes = DEFAULT_IMAGE_SIZES,
+}: RepoCardProps) {
   const { github, content, presentation, slug } = project;
   // Deleted or unresolved asset references come back as null from the deref,
   // so a document can name a hero image that no longer has a file behind it.
@@ -75,7 +84,7 @@ export default function RepoCard({ project }: RepoCardProps) {
             // decorative; the card's overlay link already names the project.
             alt={heroImage?.alt ?? ""}
             fill
-            sizes="(min-width: 1280px) 342px, (min-width: 1024px) calc(33vw - 5rem), (min-width: 768px) calc(50vw - 4.5rem), calc(100vw - 5rem)"
+            sizes={imageSizes}
             // Heroes are usually app screenshots, so the card crop still has to
             // hold legible UI text at thumbnail scale; the default 75 does not.
             quality={90}

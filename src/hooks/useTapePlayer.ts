@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useAnimation } from "motion/react";
+import { useAnimationControls } from "motion/react";
 import type { MusicSnippet } from "@/types";
 
 // Previews are mastered hot, so the slider's full range maps to 75% of the
@@ -13,7 +13,7 @@ export function useTapePlayer(activeSnippet: MusicSnippet | null) {
   const [volume, setVolume] = useState(0.8);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const controls = useAnimation();
+  const controls = useAnimationControls();
 
   // load() pauses the element and resets the clock, so playback state comes
   // back through its events. Volume stays on the element across tape changes.

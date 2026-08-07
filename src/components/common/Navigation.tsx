@@ -1,12 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "motion/react";
 
 const MotionLink = motion.create(Link);
+
+// Far enough down that a stray pixel of scroll does not flicker the bar.
+const SCROLL_THRESHOLD = 16;
+
+function subscribeToScroll(onStoreChange: () => void) {
+  window.addEventListener("scroll", onStoreChange, { passive: true });
+  return () => window.removeEventListener("scroll", onStoreChange);
+}
+
+function getScrolled() {
+  return window.scrollY > SCROLL_THRESHOLD;
+}
+
+/** The server has no scroll position, so the bar starts out transparent. */
+function getServerScrolled() {
+  return false;
+}
 
 interface NavigationProps {
   name: string;
@@ -15,6 +33,13 @@ interface NavigationProps {
 export default function Navigation({ name }: NavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const scrolled = useSyncExternalStore(
+    subscribeToScroll,
+    getScrolled,
+    getServerScrolled,
+  );
+  // An open dropdown needs the bar behind it regardless of scroll position.
+  const opaque = scrolled || mobileMenuOpen;
 
   const navItems = [
     { id: "about", label: "About", path: "/about" },
@@ -33,20 +58,36 @@ export default function Navigation({ name }: NavigationProps) {
   } as const;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
+    <nav
+      // The border stays at full width in both states so nothing shifts by a
+      // pixel when the bar takes on its background.
+      className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-sm transition-colors duration-300 ${
+        opaque
+          ? "border-slate-800 bg-slate-900/95"
+          : "border-transparent bg-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* The wordmark is the only route back to the landing page now that
-              Home has left the nav, so it names its destination for assistive
-              tech while keeping the visible text in its accessible name. */}
+              Home has left the nav, so it names that destination outright
+              rather than leaving assistive tech with a bare name. */}
           <MotionLink
             href="/"
             whileHover={hoverLift}
             aria-label={`${name} — home`}
             aria-current={pathname === "/" ? "page" : undefined}
-            className="text-xl font-bold text-white hover:text-brand transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg px-2 py-1"
+            className="flex items-center gap-2 rounded-lg px-2 py-1 text-xl font-bold text-white transition-colors hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
           >
-            {name}
+            <Image
+              src="/developer-logo.svg"
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-full border border-brand/20 bg-slate-900 object-contain"
+              priority
+            />
+            <span>{name}</span>
           </MotionLink>
 
           <div className="hidden md:flex space-x-8">
