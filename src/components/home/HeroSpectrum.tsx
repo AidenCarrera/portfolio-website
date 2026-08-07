@@ -17,6 +17,11 @@ const PEAK_DECAY_PER_SECOND = 3;
 const MAX_FRAME_SECONDS = 1 / 20;
 const NOISE_FLOOR = 0.05;
 const POINTER_WIDTH = 0.05;
+// On top of lifting the columns it is over, the pointer lights them harder.
+// The glow is spread wider than the lift so the cursor reads as a soft
+// highlight across the wall rather than one hot column.
+const POINTER_GLOW_WIDTH = 0.085;
+const POINTER_GLOW = 0.65;
 
 interface SpectralPeak {
   centre: number;
@@ -137,7 +142,7 @@ export default function HeroSpectrum() {
       }
 
       layerContext.setTransform(dpr, 0, 0, dpr, 0, 0);
-      layerContext.fillStyle = "rgba(148, 163, 184, 0.085)";
+      layerContext.fillStyle = "rgba(148, 163, 184, 0.18)";
 
       for (let column = 0; column < columns; column += 1) {
         for (let row = 0; row < rows; row += 1) {
@@ -168,14 +173,20 @@ export default function HeroSpectrum() {
       for (let column = 0; column < columns; column += 1) {
         const position = columns > 1 ? column / (columns - 1) : 0;
         let energy = spectrum(position, seconds);
+        let glow = 0;
 
         if (pointer.strength > 0.01) {
           const distance = position - pointer.position;
+          const squared = distance * distance;
           energy +=
             pointer.strength *
             0.5 *
+            Math.exp(-squared / (2 * POINTER_WIDTH * POINTER_WIDTH));
+          glow =
+            pointer.strength *
+            POINTER_GLOW *
             Math.exp(
-              -(distance * distance) / (2 * POINTER_WIDTH * POINTER_WIDTH),
+              -squared / (2 * POINTER_GLOW_WIDTH * POINTER_GLOW_WIDTH),
             );
         }
 
@@ -183,8 +194,13 @@ export default function HeroSpectrum() {
         const x = column * CELL_X;
 
         for (let row = 0; row < lit; row += 1) {
-          // Alpha rather than fillStyle: no per-dot string allocation.
-          context.globalAlpha = 0.38 - 0.26 * (row / Math.max(lit - 1, 1));
+          // Alpha rather than fillStyle: no per-dot string allocation. The
+          // glow scales the column rather than adding a flat amount, so it
+          // keeps its base-to-top falloff instead of going solid under the
+          // cursor.
+          const alpha =
+            (0.62 - 0.41 * (row / Math.max(lit - 1, 1))) * (1 + glow);
+          context.globalAlpha = alpha > 1 ? 1 : alpha;
           context.fillRect(x, height - (row + 1) * CELL_Y, DOT_SIZE, DOT_SIZE);
         }
 
@@ -196,7 +212,7 @@ export default function HeroSpectrum() {
         const heldRow = Math.floor(held);
 
         if (heldRow > 0 && heldRow < rows) {
-          context.globalAlpha = 0.7;
+          context.globalAlpha = glow > 0.05 ? 1 : 0.95;
           context.fillRect(
             x,
             height - (heldRow + 1) * CELL_Y,

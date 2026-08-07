@@ -60,7 +60,7 @@ export default function Hero({ profile, socials }: HeroProps) {
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-linear-to-b from-transparent to-slate-900"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-[linear-gradient(to_bottom,transparent_0%,rgba(15,23,42,0.12)_25%,rgba(15,23,42,0.4)_50%,rgba(15,23,42,0.78)_75%,rgb(15,23,42)_100%)] sm:h-72"
       />
 
       <div className="relative mx-auto w-full max-w-5xl text-center lg:-translate-y-10">
