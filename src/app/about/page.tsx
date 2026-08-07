@@ -30,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const sectionHeadingClass = "text-2xl sm:text-3xl font-bold text-white";
 
 const inlineLinkClass =
-  "inline-flex items-center rounded-lg border border-brand/25 bg-brand/10 px-2.5 py-1 align-middle font-semibold text-brand transition-colors hover:border-brand/50 hover:bg-brand/15 hover:text-brand-light focus:outline-none focus-visible:ring-2 focus-visible:ring-brand";
+  "rounded-sm font-semibold text-brand underline-offset-4 transition-colors hover:text-brand-light hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand";
 
 export default async function About() {
   const [about, profile] = await Promise.all([
