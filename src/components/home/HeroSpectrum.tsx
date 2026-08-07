@@ -9,8 +9,12 @@ const CELL_X = 20;
 const CELL_Y = 14;
 const DOT_SIZE = 2.5;
 const MAX_DPR = 2;
-// Rows per frame that a held peak falls by, mirroring an analyser's peak hold.
-const PEAK_DECAY = 0.05;
+// Rows a held peak falls by, mirroring an analyser's peak hold. Per second, not
+// per frame, so the fall reads the same on a 60Hz panel and a 120Hz one.
+const PEAK_DECAY_PER_SECOND = 3;
+// Guards the first frame and any tab that was throttled in the background, so a
+// long gap cannot drop every peak to the floor at once.
+const MAX_FRAME_SECONDS = 1 / 20;
 const NOISE_FLOOR = 0.05;
 const POINTER_WIDTH = 0.05;
 
@@ -24,9 +28,8 @@ interface SpectralPeak {
   phase: number;
 }
 
-// Drifting gaussian bumps across the normalised frequency axis. Weighted toward
-// the low end so the wall has the bass-heavy tilt of real programme material
-// instead of looking like uniform noise.
+// Drifting gaussian bumps across the normalised frequency axis, weighted low so
+// the wall has the bass-heavy tilt of real programme material, not flat noise.
 const PEAKS: SpectralPeak[] = [
   {
     centre: 0.05,
@@ -150,7 +153,7 @@ export default function HeroSpectrum() {
       return layer;
     };
 
-    const draw = (seconds: number) => {
+    const draw = (seconds: number, elapsed: number) => {
       context.clearRect(0, 0, width, height);
 
       if (unlitLayer) {
@@ -185,7 +188,10 @@ export default function HeroSpectrum() {
           context.fillRect(x, height - (row + 1) * CELL_Y, DOT_SIZE, DOT_SIZE);
         }
 
-        const held = Math.max(heldPeaks[column] - PEAK_DECAY, lit);
+        const held = Math.max(
+          heldPeaks[column] - PEAK_DECAY_PER_SECOND * elapsed,
+          lit,
+        );
         heldPeaks[column] = held;
         const heldRow = Math.floor(held);
 
@@ -214,11 +220,18 @@ export default function HeroSpectrum() {
       rows = Math.ceil(height / CELL_Y) + 1;
       heldPeaks = new Float32Array(columns);
       unlitLayer = buildUnlitLayer();
-      draw(0);
+      draw(0, 0);
     };
 
+    let previousTime = 0;
+
     const renderFrame = (time: number) => {
-      draw(time / 1000);
+      const seconds = time / 1000;
+      const elapsed = previousTime
+        ? Math.min(seconds - previousTime, MAX_FRAME_SECONDS)
+        : 0;
+      previousTime = seconds;
+      draw(seconds, elapsed);
       frameId = requestAnimationFrame(renderFrame);
     };
 
@@ -232,6 +245,9 @@ export default function HeroSpectrum() {
       if (frameId) {
         cancelAnimationFrame(frameId);
         frameId = 0;
+        // The next frame after a pause resumes from a fresh clock rather than
+        // charging the whole hidden stretch to one decay step.
+        previousTime = 0;
       }
     };
 

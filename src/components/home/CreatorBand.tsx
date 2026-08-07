@@ -3,7 +3,6 @@ import { ArrowRight } from "lucide-react";
 import Reveal from "./Reveal";
 
 interface CreatorBandProps {
-  heading: string;
   intro: string;
 }
 
@@ -22,15 +21,15 @@ function barHeight(index: number): number {
   return Math.max(0.12, Math.min(1, swell * detail));
 }
 
-export default function CreatorBand({ heading, intro }: CreatorBandProps) {
+export default function CreatorBand({ intro }: CreatorBandProps) {
   return (
     <section className="mx-auto w-full max-w-6xl px-4 pb-20 pt-4 sm:px-6 sm:pb-24 lg:px-8">
       <Reveal>
         <div className="relative overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-800/40 p-6 shadow-2xl shadow-black/20 sm:p-10">
           <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-5">
-              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                {heading}
+              <h2 className="text-[1.75rem] font-bold tracking-tight text-white sm:text-[2rem]">
+                Music
               </h2>
 
               {intro && (
@@ -73,10 +72,15 @@ export default function CreatorBand({ heading, intro }: CreatorBandProps) {
                   })}
                 </div>
 
+                {/* The full-width track is what animates; the line rides its
+                    leading edge, since a transform percentage resolves against
+                    the element it is applied to. */}
                 <div
                   aria-hidden="true"
-                  className="animate-playhead pointer-events-none absolute inset-y-0 w-px bg-brand/60 shadow-[0_0_12px_rgba(0,255,204,0.6)]"
-                />
+                  className="animate-playhead pointer-events-none absolute inset-0"
+                >
+                  <div className="absolute inset-y-0 left-0 w-px bg-brand/60 shadow-[0_0_12px_rgba(0,255,204,0.6)]" />
+                </div>
               </div>
             </div>
           </div>

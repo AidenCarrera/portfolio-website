@@ -44,18 +44,10 @@ export const profile = defineType({
       type: "string",
       group: "hero",
       description:
-        "The location and work availability shown in the badge on the homepage.",
-      initialValue:
-        "Based in Tulsa, Oklahoma · Open to full-time opportunities in Oklahoma and remote",
-      validation: (rule) => rule.required().max(160),
-    }),
-    defineField({
-      name: "aboutHeading",
-      title: "About section heading",
-      type: "string",
-      group: "about",
-      initialValue: "About Me",
-      validation: (rule) => rule.max(60),
+        "The location and work availability shown in the badge on the homepage. Keep it under ~55 characters — the badge holds this on a single line, so a longer value will run off the edge on a phone.",
+      initialValue: "Based in Tulsa, OK · Open to Relocation & Remote Roles",
+      // 160 let through strings that overflow the badge on a narrow screen.
+      validation: (rule) => rule.required().max(55),
     }),
     defineField({
       name: "aboutMe",
@@ -84,14 +76,6 @@ export const profile = defineType({
           validation: (rule) => rule.required(),
         }),
       ],
-    }),
-    defineField({
-      name: "projectsHeading",
-      title: "Projects section heading",
-      type: "string",
-      group: "projects",
-      initialValue: "Featured Projects",
-      validation: (rule) => rule.max(60),
     }),
     defineField({
       name: "projectsIntro",
@@ -126,14 +110,6 @@ export const profile = defineType({
       validation: (rule) => rule.integer().min(1).max(12),
     }),
     defineField({
-      name: "musicHeading",
-      title: "Music section heading",
-      type: "string",
-      group: "music",
-      initialValue: "I also make music",
-      validation: (rule) => rule.max(60),
-    }),
-    defineField({
       name: "musicIntro",
       title: "Music section intro",
       type: "text",
@@ -141,14 +117,6 @@ export const profile = defineType({
       group: "music",
       initialValue:
         "I write, record, and produce original music. Explore my featured tracks, custom tape player, and the gear behind my sound.",
-    }),
-    defineField({
-      name: "contactHeading",
-      title: "Closing section heading",
-      type: "string",
-      group: "contact",
-      initialValue: "Let’s Connect",
-      validation: (rule) => rule.max(60),
     }),
     defineField({
       name: "email",

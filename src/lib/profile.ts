@@ -12,12 +12,8 @@ export interface WebsiteProfile {
   availabilityText: string;
   // Absent until a portrait is uploaded; the page falls back to a monogram.
   portrait?: SanityImage;
-  aboutHeading: string;
-  musicHeading: string;
   musicIntro: string;
-  contactHeading: string;
   featured: {
-    heading: string;
     intro: string;
     /** Pinned repositories as "owner/name", in the order they should appear. */
     repositories: string[];
@@ -28,25 +24,24 @@ export interface WebsiteProfile {
 export const DEFAULT_PROFILE: WebsiteProfile = {
   name: "Aiden Carrera",
   email: process.env.CONTACT_EMAIL?.trim() || undefined,
-  aboutMe: `Hey, I'm Aiden. I'm a Computer Science student in the OSU Honors College building software across audio, artificial intelligence, web applications, and games.
+  aboutMe: `Hey, I’m Aiden. I’m an honors computer science student at Oklahoma State University with a 3.9 GPA, graduating in December 2026. I build full-stack web apps, C++ audio software, AI models, and interactive tools.
 
-I work primarily with C++, TypeScript, Python, Java, JUCE, React, Next.js, and OpenGL, focusing on audio programming, graphics, and AI. My projects' source code is available on GitHub.
-
-I'm also a performer, composer, and producer. I perform with the OSU Jazz Band, Resistance Indoor Percussion, and other ensembles, and I write, record, mix, and master my own music.`,
-  landingText: "Musician. Producer.\nDeveloper.",
-  sloganText: "I build creative software and make original music.",
-  availabilityText:
-    "Based in Tulsa, Oklahoma · Open to full-time opportunities in Oklahoma and remote",
-  aboutHeading: "About Me",
-  musicHeading: "I also make music",
+I’m a performer, composer, and producer. I perform with the OSU Jazz Band and Resistance Indoor Percussion and toured nationally with The Cavaliers Drum & Bugle Corps in 2024. I also write, record, mix, and master my own music.`,
+  landingText: "Software Developer.\nMusician. Creator.",
+  sloganText:
+    "CS Honors Student at OSU building full-stack applications, audio software, and AI.",
+  availabilityText: "Based in Tulsa, OK · Open to Relocation & Remote Roles",
   musicIntro:
     "I write, record, and produce original music. Explore my featured tracks, custom tape player, and the gear behind my sound.",
-  contactHeading: "Let’s Connect",
   featured: {
-    heading: "Featured Projects",
     intro:
       "Featured projects showcasing full-stack development, AI tools, and interactive software. Click any project for more information, screenshots, and repo links.",
-    repositories: [],
+    repositories: [
+      "AidenCarrera/stillwater-pulse",
+      "AidenCarrera/random-webs",
+      "SeanS-git/SeniorCapstone",
+      "AidenCarrera/olo-eq",
+    ],
     count: 4,
   },
 };
@@ -74,15 +69,8 @@ export const getWebsiteProfile = cache(async (): Promise<WebsiteProfile> => {
       DEFAULT_PROFILE.availabilityText,
     ),
     portrait: profile.portrait,
-    aboutHeading: text(profile.aboutHeading, DEFAULT_PROFILE.aboutHeading),
-    musicHeading: text(profile.musicHeading, DEFAULT_PROFILE.musicHeading),
     musicIntro: text(profile.musicIntro, DEFAULT_PROFILE.musicIntro),
-    contactHeading: text(
-      profile.contactHeading,
-      DEFAULT_PROFILE.contactHeading,
-    ),
     featured: {
-      heading: text(profile.projectsHeading, DEFAULT_PROFILE.featured.heading),
       intro: text(profile.projectsIntro, DEFAULT_PROFILE.featured.intro),
       // Dangling references drop out rather than taking up a pinned slot.
       repositories: profile.featuredProjects

@@ -19,15 +19,14 @@ const SPRING = { type: "spring", stiffness: 45, damping: 16 } as const;
 
 export default function Hero({ profile, socials }: HeroProps) {
   const prefersReducedMotion = useReducedMotion();
-  // Every line but the last takes the brand gradient; the last stays white.
+
   const landingLines = profile.landingText
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean);
   const lines = landingLines.length > 0 ? landingLines : [profile.landingText];
 
-  // Easing this one anchor in JS rather than through a global
-  // `scroll-behavior`, which would animate route changes too.
+  // Smooth scroll handler that respects reduced motion preferences
   const scrollToOverview = (event: React.MouseEvent<HTMLAnchorElement>) => {
     const overview = document.getElementById("overview");
     if (!overview) {
@@ -41,13 +40,8 @@ export default function Hero({ profile, socials }: HeroProps) {
     });
   };
 
-  // The negative top margin cancels the 4rem the layout reserves for the fixed
-  // nav so the gradient runs behind the bar with no seam while the bar is
-  // transparent; the top padding adds that 4rem back so the content stays put.
-  // The heavier bottom pad then sits the block above true centre, since
-  // centring happens inside the padding box.
   return (
-    <section className="relative -mt-16 flex min-h-dvh flex-col justify-center overflow-hidden bg-animated-dark px-4 pb-32 pt-22 sm:px-6 sm:pb-48 sm:pt-20 lg:px-8 lg:pb-56">
+    <section className="relative -mt-16 flex min-h-dvh flex-col justify-center overflow-hidden bg-animated-dark px-4 pb-20 pt-20 sm:px-6 sm:pb-32 lg:px-8 lg:pb-40">
       <HeroSpectrum />
 
       {/* Keeps the headline off the analyser without flattening it out. */}
@@ -67,7 +61,7 @@ export default function Hero({ profile, socials }: HeroProps) {
           animate={{ opacity: 1, scale: 1 }}
           transition={SPRING}
         >
-          <div className="mx-auto mb-5 flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-brand/20 bg-slate-900 shadow-lg sm:h-32 sm:w-32">
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-brand/20 bg-slate-900 shadow-lg sm:mb-5 sm:h-32 sm:w-32">
             <Image
               src="/developer-logo.svg"
               alt={`${profile.name} - Audio Developer Logo`}
@@ -83,7 +77,8 @@ export default function Hero({ profile, socials }: HeroProps) {
         <h1 className="text-5xl font-bold leading-tight text-white sm:text-6xl md:text-7xl">
           {lines.map((line, index) => (
             <motion.span
-              key={line}
+              // Index, not the text: nothing stops the CMS from repeating a line.
+              key={index}
               className={
                 index < lines.length - 1
                   ? "block bg-linear-to-r from-brand to-brand-dark bg-clip-text text-transparent"
@@ -99,7 +94,7 @@ export default function Hero({ profile, socials }: HeroProps) {
         </h1>
 
         <motion.p
-          className="mx-auto mt-6 max-w-3xl text-lg text-slate-300 sm:text-xl md:text-2xl"
+          className="mx-auto mt-5 max-w-3xl text-lg text-slate-300 sm:mt-6 sm:text-xl md:text-2xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...SPRING, delay: 0.35 }}
@@ -108,16 +103,16 @@ export default function Hero({ profile, socials }: HeroProps) {
         </motion.p>
 
         <motion.div
-          className="mt-7"
+          className="mt-6 sm:mt-7"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...SPRING, delay: 0.45 }}
         >
-          <Badge>{profile.availabilityText}</Badge>
+          <Badge oneLine>{profile.availabilityText}</Badge>
         </motion.div>
 
         <motion.div
-          className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4"
+          className="mt-7 flex flex-col items-center justify-center gap-3 sm:mt-9 sm:flex-row sm:gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...SPRING, delay: 0.55 }}
@@ -143,7 +138,7 @@ export default function Hero({ profile, socials }: HeroProps) {
 
         {socials && (
           <motion.div
-            className="mt-7"
+            className="mt-6 sm:mt-7"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...SPRING, delay: 0.65 }}

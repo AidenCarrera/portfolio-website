@@ -112,8 +112,11 @@ export default async function RootLayout({
   const profile = await getWebsiteProfile();
 
   return (
-    <html lang="en">
+    // Chrome on Android and some extensions stamp attributes onto the root
+    // elements pre-hydration; scoped to these two, it does not reach children.
+    <html lang="en" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-slate-900 text-white`}
       >
         <JsonLd data={getGlobalStructuredData(profile)} />

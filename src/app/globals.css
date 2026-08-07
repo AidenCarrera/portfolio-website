@@ -15,14 +15,8 @@ body {
   @apply font-sans;
 }
 
-/* 
-  The landing page runs edge to edge, so a platform scrollbar would cut a grey
-  gutter through it.
-
-  Deliberately no `scroll-behavior: smooth`: it applies to route changes as
-  well as anchors, so every navigation animates its way to the top instead of
-  arriving there. The one anchor that wants easing asks for it in JS. 
-*/
+/* No `scroll-behavior: smooth` on purpose: it would animate route changes too,
+   not just anchors. The one anchor that wants easing asks for it in JS. */
 html {
   scrollbar-width: none;
 }
@@ -76,12 +70,14 @@ html::-webkit-scrollbar {
   animation: waveform 2.4s ease-in-out infinite;
 }
 
+/* Transform rather than `left`, to keep the sweep on the compositor. The
+   percentage resolves against the animated element, so apply it to the track. */
 @keyframes playhead {
   from {
-    left: 0%;
+    transform: translateX(0);
   }
   to {
-    left: 100%;
+    transform: translateX(100%);
   }
 }
 
@@ -105,10 +101,13 @@ html::-webkit-scrollbar {
   animation: scroll-cue 2.2s ease-in-out infinite;
 }
 
+/* Entrance animations are Motion's job via `MotionProvider`; these are the
+   forever-looping decorative ones, so they stop outright. */
 @media (prefers-reduced-motion: reduce) {
   .animate-waveform,
   .animate-playhead,
   .animate-scroll-cue,
+  .animate-pulse,
   .bg-animated-dark {
     animation: none;
   }

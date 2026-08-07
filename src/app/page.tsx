@@ -26,9 +26,8 @@ export default async function Home() {
     getProjectsInDisplayOrder(),
   ]);
 
-  // Pinned projects appear first in the order specified by the Landing configuration;
-  // the remaining grid populates from the curated order. If a pinned repository is
-  // missing or inaccessible from GitHub, it is automatically omitted.
+  // Pinned projects lead in the Landing document's order, then the curated
+  // order fills the rest. Pins GitHub cannot resolve drop out.
   const pinnedRepositories = profile.featured.repositories.map((repository) =>
     repository.toLowerCase(),
   );
@@ -57,18 +56,12 @@ export default async function Home() {
       <Bio
         paragraphs={splitParagraphs(profile.aboutMe)}
         name={profile.name}
-        heading={profile.aboutHeading}
         portrait={profile.portrait}
       />
-      <FeaturedProjects
-        projects={featured}
-        heading={profile.featured.heading}
-        intro={profile.featured.intro}
-      />
-      <CreatorBand heading={profile.musicHeading} intro={profile.musicIntro} />
+      <FeaturedProjects projects={featured} intro={profile.featured.intro} />
+      <CreatorBand intro={profile.musicIntro} />
       <ClosingCta
         availabilityText={profile.availabilityText}
-        heading={profile.contactHeading}
         email={profile.email}
       />
     </>

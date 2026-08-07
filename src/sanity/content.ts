@@ -62,14 +62,10 @@ const profileQuery = defineQuery(`*[_type == "profile"][0] {
   sloganText,
   availabilityText,
   portrait ${imageProjection},
-  aboutHeading,
-  projectsHeading,
   projectsIntro,
   "featuredProjects": coalesce(featuredProjects[]->githubRepository, []),
   featuredProjectCount,
-  musicHeading,
-  musicIntro,
-  contactHeading
+  musicIntro
 }`);
 
 const aboutPageQuery = defineQuery(`*[_type == "aboutPage"][0] {

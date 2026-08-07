@@ -62,19 +62,14 @@ export interface SanityProfile {
   sloganText: string;
   availabilityText?: string;
   portrait?: SanityImage;
-  aboutHeading?: string;
-  projectsHeading?: string;
   projectsIntro?: string;
   /**
-   * The pinned references projected down to their `githubRepository` identity,
-   * which is what a project is keyed by everywhere outside Sanity. A reference
-   * left dangling by a deleted project derefs to null.
+   * Pinned references projected down to `githubRepository`, how projects are
+   * keyed outside Sanity. References left dangling by a delete deref to null.
    */
   featuredProjects: (string | null)[];
   featuredProjectCount?: number;
-  musicHeading?: string;
   musicIntro?: string;
-  contactHeading?: string;
 }
 
 export interface SanityAboutSkillCategory {

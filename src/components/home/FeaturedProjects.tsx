@@ -7,7 +7,6 @@ import type { PortfolioProject } from "@/lib/projects";
 
 interface FeaturedProjectsProps {
   projects: PortfolioProject[];
-  heading: string;
   intro: string;
 }
 
@@ -18,7 +17,6 @@ const IMAGE_SIZES =
 
 export default function FeaturedProjects({
   projects,
-  heading,
   intro,
 }: FeaturedProjectsProps) {
   if (projects.length === 0) {
@@ -29,7 +27,7 @@ export default function FeaturedProjects({
     <section className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
       <Reveal>
         <SectionIntro
-          title={heading}
+          title="Featured Projects"
           action={
             <Link
               href="/projects"

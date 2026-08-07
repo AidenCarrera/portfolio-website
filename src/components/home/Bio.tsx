@@ -7,7 +7,6 @@ import Reveal from "./Reveal";
 interface BioProps {
   paragraphs: string[];
   name: string;
-  heading: string;
   portrait?: SanityImage;
 }
 
@@ -15,7 +14,7 @@ interface BioProps {
 const PORTRAIT_SIZES =
   "(min-width: 1024px) 19rem, (min-width: 640px) 15rem, 14rem";
 
-export default function Bio({ paragraphs, name, heading, portrait }: BioProps) {
+export default function Bio({ paragraphs, name, portrait }: BioProps) {
   return (
     <section
       id="overview"
@@ -38,8 +37,8 @@ export default function Bio({ paragraphs, name, heading, portrait }: BioProps) {
             {/* Capping the measure leaves a gutter before the portrait, so no
                 line can run up against it. */}
             <div className="lg:max-w-xl">
-              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                {heading}
+              <h2 className="text-[1.75rem] font-bold tracking-tight text-white sm:text-[2rem]">
+                About Me
               </h2>
 
               <div className="mt-5 space-y-4 text-lg leading-relaxed text-slate-300">
