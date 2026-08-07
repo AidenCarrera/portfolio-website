@@ -88,11 +88,15 @@ export default function Hero({ profile, socials }: HeroProps) {
             <motion.span
               // Index, not the text: nothing stops the CMS from repeating a line.
               key={index}
-              className={
+              className={`${
+                // Only the opening line earns its keep on a phone; the rest
+                // are dropped rather than shrinking the headline to fit.
+                index === 0 ? "block" : "hidden sm:block"
+              } ${
                 index < lines.length - 1
-                  ? "block bg-linear-to-r from-brand to-brand-dark bg-clip-text text-transparent"
-                  : "block text-white"
-              }
+                  ? "bg-linear-to-r from-brand to-brand-dark bg-clip-text text-transparent"
+                  : "text-white"
+              }`}
               initial={{ opacity: 0, y: -32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...SPRING, delay: 0.15 + index * 0.1 }}
@@ -103,7 +107,7 @@ export default function Hero({ profile, socials }: HeroProps) {
         </h1>
 
         <motion.p
-          className="mx-auto mt-5 max-w-3xl text-lg text-slate-300 sm:mt-6 sm:text-xl md:text-2xl"
+          className="mx-auto mt-5 max-w-3xl text-lg text-white sm:mt-6 sm:text-xl sm:text-slate-300 md:text-2xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...SPRING, delay: 0.35 }}
