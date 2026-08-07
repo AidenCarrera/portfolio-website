@@ -62,6 +62,13 @@ const profileQuery = defineQuery(`*[_type == "profile"][0] {
   sloganText,
   availabilityText,
   portrait ${imageProjection},
+  skillsIntro,
+  "skills": coalesce(skills[] {
+    _key,
+    name,
+    icon,
+    "items": coalesce(items, [])
+  }, []),
   projectsIntro,
   "featuredProjects": coalesce(featuredProjects[]->githubRepository, []),
   featuredProjectCount,
@@ -77,12 +84,6 @@ const aboutPageQuery = defineQuery(`*[_type == "aboutPage"][0] {
   locationLabel,
   graduationLabel,
   availabilityLabel,
-  skillsHeading,
-  "skills": coalesce(skills[] {
-    _key,
-    name,
-    "items": coalesce(items, [])
-  }, []),
   galleryHeading,
   galleryIntro,
   "gallery": coalesce(gallery[] ${imageProjection}, []),

@@ -30,7 +30,6 @@ export const aboutPage = defineType({
   type: "document",
   groups: [
     { name: "header", title: "Header", default: true },
-    { name: "skills", title: "Skills" },
     { name: "gallery", title: "Gallery" },
     { name: "seo", title: "SEO" },
   ],
@@ -76,54 +75,6 @@ export const aboutPage = defineType({
       title: "Availability",
       type: "string",
       group: "header",
-    }),
-    defineField({
-      name: "skillsHeading",
-      title: "Skills Section Heading",
-      type: "string",
-      group: "skills",
-      initialValue: "Skills",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "skills",
-      title: "Skill Categories",
-      type: "array",
-      group: "skills",
-      description:
-        "Each entry is one category — a name plus the skills inside it. The page renders one group of pills per category, in this order.",
-      validation: (rule) => rule.required().min(1),
-      of: [
-        defineArrayMember({
-          name: "aboutSkillCategory",
-          title: "Skill Category",
-          type: "object",
-          fields: [
-            defineField({
-              name: "name",
-              title: "Category Name",
-              type: "string",
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: "items",
-              title: "Skills",
-              type: "array",
-              of: [defineArrayMember({ type: "string" })],
-              validation: (rule) => rule.required().min(1).unique(),
-            }),
-          ],
-          preview: {
-            select: { title: "name", items: "items" },
-            prepare({ title, items }) {
-              return {
-                title,
-                subtitle: Array.isArray(items) ? items.join(", ") : undefined,
-              };
-            },
-          },
-        }),
-      ],
     }),
     defineField({
       name: "galleryHeading",

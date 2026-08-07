@@ -26,6 +26,15 @@ export default function Hero({ profile, socials }: HeroProps) {
     .filter(Boolean);
   const lines = landingLines.length > 0 ? landingLines : [profile.landingText];
 
+  // The availability badge is one word too wide for a phone, so the last word
+  // is dropped below `sm` rather than shrinking the type or wrapping the pill.
+  const availability = profile.availabilityText.trim();
+  const lastSpace = availability.lastIndexOf(" ");
+  const availabilityHead =
+    lastSpace === -1 ? availability : availability.slice(0, lastSpace);
+  const availabilityTail =
+    lastSpace === -1 ? "" : availability.slice(lastSpace + 1);
+
   // Smooth scroll handler that respects reduced motion preferences
   const scrollToOverview = (event: React.MouseEvent<HTMLAnchorElement>) => {
     const overview = document.getElementById("overview");
@@ -108,7 +117,14 @@ export default function Hero({ profile, socials }: HeroProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...SPRING, delay: 0.45 }}
         >
-          <Badge oneLine>{profile.availabilityText}</Badge>
+          <Badge>
+            <span className="whitespace-nowrap">
+              {availabilityHead}
+              {availabilityTail && (
+                <span className="hidden sm:inline"> {availabilityTail}</span>
+              )}
+            </span>
+          </Badge>
         </motion.div>
 
         <motion.div

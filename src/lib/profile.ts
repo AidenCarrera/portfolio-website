@@ -1,6 +1,14 @@
 import { cache } from "react";
 import { getSanityProfile } from "@/sanity/content";
-import type { SanityImage } from "@/sanity/types";
+import type { SanityImage, SkillCategoryIcon } from "@/sanity/types";
+
+export interface SkillCategory {
+  /** Sanity's array key, or a stable stand-in for the built-in defaults. */
+  key: string;
+  name: string;
+  icon: SkillCategoryIcon;
+  items: string[];
+}
 
 export interface WebsiteProfile {
   name: string;
@@ -12,6 +20,10 @@ export interface WebsiteProfile {
   availabilityText: string;
   // Absent until a portrait is uploaded; the page falls back to a monogram.
   portrait?: SanityImage;
+  skills: {
+    intro: string;
+    categories: SkillCategory[];
+  };
   musicIntro: string;
   featured: {
     intro: string;
@@ -31,6 +43,66 @@ I’m a performer, composer, and producer. I perform with the OSU Jazz Band and 
   sloganText:
     "CS Honors Student at OSU building full-stack applications, audio software, and AI.",
   availabilityText: "Based in Tulsa, OK · Open to Relocation & Remote Roles",
+  skills: {
+    intro: "Technologies, frameworks, and tools I use to build.",
+    categories: [
+      {
+        key: "languages",
+        name: "Languages",
+        icon: "code",
+        items: [
+          "TypeScript",
+          "JavaScript",
+          "Java",
+          "Python",
+          "C++",
+          "HTML",
+          "CSS",
+        ],
+      },
+      {
+        key: "web",
+        name: "Web Development",
+        icon: "layers",
+        items: [
+          "React",
+          "Next.js",
+          "Node.js",
+          "Express",
+          "FastAPI",
+          "ASP.NET Core",
+          "Tailwind CSS",
+          "Socket.IO",
+        ],
+      },
+      {
+        key: "ai-audio-graphics",
+        name: "AI, Audio & Graphics",
+        icon: "terminal",
+        items: ["PyTorch", "JUCE", "OpenGL", "WebGL", "Three.js", "Tone.js"],
+      },
+      {
+        key: "data-content",
+        name: "Data & Content",
+        icon: "database",
+        items: ["MariaDB", "Redis", "ChromaDB", "Sanity"],
+      },
+      {
+        key: "tools",
+        name: "Tools & Environment",
+        icon: "tools",
+        items: [
+          "Git",
+          "Docker",
+          "CMake",
+          "GitHub Actions",
+          "Jupyter",
+          "Vite",
+          "pnpm",
+        ],
+      },
+    ],
+  },
   musicIntro:
     "I write, record, and produce original music. Explore my featured tracks, custom tape player, and the gear behind my sound.",
   featured: {
@@ -69,6 +141,20 @@ export const getWebsiteProfile = cache(async (): Promise<WebsiteProfile> => {
       DEFAULT_PROFILE.availabilityText,
     ),
     portrait: profile.portrait,
+    skills: {
+      intro: text(profile.skillsIntro, DEFAULT_PROFILE.skills.intro),
+      // An empty array means the document has no categories yet, so the
+      // built-in set stands in rather than leaving the section headless.
+      categories:
+        profile.skills.length > 0
+          ? profile.skills.map((category) => ({
+              key: category._key,
+              name: category.name,
+              icon: category.icon ?? "code",
+              items: category.items,
+            }))
+          : DEFAULT_PROFILE.skills.categories,
+    },
     musicIntro: text(profile.musicIntro, DEFAULT_PROFILE.musicIntro),
     featured: {
       intro: text(profile.projectsIntro, DEFAULT_PROFILE.featured.intro),

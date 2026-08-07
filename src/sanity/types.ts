@@ -53,6 +53,23 @@ export interface SanityMusic {
   };
 }
 
+export type SkillCategoryIcon =
+  | "code"
+  | "layers"
+  | "audio"
+  | "terminal"
+  | "database"
+  | "chip"
+  | "palette"
+  | "tools";
+
+export interface SanitySkillCategory {
+  _key: string;
+  name: string;
+  icon?: SkillCategoryIcon;
+  items: string[];
+}
+
 export interface SanityProfile {
   _id: string;
   name: string;
@@ -62,6 +79,8 @@ export interface SanityProfile {
   sloganText: string;
   availabilityText?: string;
   portrait?: SanityImage;
+  skillsIntro?: string;
+  skills: SanitySkillCategory[];
   projectsIntro?: string;
   /**
    * Pinned references projected down to `githubRepository`, how projects are
@@ -70,12 +89,6 @@ export interface SanityProfile {
   featuredProjects: (string | null)[];
   featuredProjectCount?: number;
   musicIntro?: string;
-}
-
-export interface SanityAboutSkillCategory {
-  _key: string;
-  name: string;
-  items: string[];
 }
 
 export interface SanityAboutPage {
@@ -88,8 +101,6 @@ export interface SanityAboutPage {
   locationLabel?: string;
   graduationLabel?: string;
   availabilityLabel?: string;
-  skillsHeading?: string;
-  skills: SanityAboutSkillCategory[];
   galleryHeading?: string;
   galleryIntro?: string;
   gallery: SanityImage[];

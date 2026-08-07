@@ -16,7 +16,7 @@ export default function Badge({ children, oneLine = false }: BadgeProps) {
 
   return (
     <div
-      className={`inline-flex items-center rounded-full border border-brand/25 bg-brand/10 py-1 font-semibold text-brand ${sizing}`}
+      className={`inline-flex items-center rounded-full border border-brand/25 bg-brand/10 py-1 text-center font-semibold text-brand ${sizing}`}
     >
       {children}
     </div>

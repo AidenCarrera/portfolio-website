@@ -3,6 +3,7 @@ import JsonLd from "@/components/common/JsonLd";
 import Hero from "@/components/home/Hero";
 import HeroSocials from "@/components/home/HeroSocials";
 import Bio from "@/components/home/Bio";
+import Skills from "@/components/home/Skills";
 import FeaturedProjects from "@/components/home/FeaturedProjects";
 import CreatorBand from "@/components/home/CreatorBand";
 import ClosingCta from "@/components/home/ClosingCta";
@@ -59,6 +60,10 @@ export default async function Home() {
         portrait={profile.portrait}
       />
       <FeaturedProjects projects={featured} intro={profile.featured.intro} />
+      <Skills
+        intro={profile.skills.intro}
+        categories={profile.skills.categories}
+      />
       <CreatorBand intro={profile.musicIntro} />
       <ClosingCta
         availabilityText={profile.availabilityText}

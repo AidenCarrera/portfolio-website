@@ -157,37 +157,6 @@ export default async function About() {
         </header>
 
         <div className="mt-10 space-y-10">
-          {about.skills.length > 0 && (
-            <section
-              aria-labelledby="skills-heading"
-              className="rounded-2xl border border-slate-700/80 bg-slate-800/50 p-6 sm:p-8"
-            >
-              <h2 id="skills-heading" className={sectionHeadingClass}>
-                {about.skillsHeading}
-              </h2>
-
-              <div className="mt-7 grid gap-6 sm:grid-cols-2">
-                {about.skills.map((category) => (
-                  <div key={category._key}>
-                    <h3 className="mt-1 font-medium text-white">
-                      {category.name}
-                    </h3>
-                    <ul className="mt-3 flex flex-wrap gap-2">
-                      {category.items.map((item) => (
-                        <li
-                          key={item}
-                          className="rounded-full border border-brand/20 bg-brand/5 px-2.5 py-1 text-xs font-medium text-brand-light"
-                        >
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
           {about.gallery.length > 0 && (
             <section aria-labelledby="gallery-heading">
               <h2 id="gallery-heading" className={sectionHeadingClass}>

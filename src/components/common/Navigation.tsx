@@ -63,7 +63,7 @@ export default function Navigation({ name }: NavigationProps) {
       // pixel when the bar takes on its background.
       className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-sm transition-colors duration-300 ${
         opaque
-          ? "border-slate-800 bg-slate-900/95"
+          ? "border-slate-800 bg-slate-900"
           : "border-transparent bg-transparent"
       }`}
     >
