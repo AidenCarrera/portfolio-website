@@ -63,7 +63,7 @@ export default function Hero({ profile, socials }: HeroProps) {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-linear-to-b from-transparent to-slate-900"
       />
 
-      <div className="relative mx-auto w-full max-w-5xl text-center">
+      <div className="relative mx-auto w-full max-w-5xl text-center lg:-translate-y-10">
         <motion.div
           className="relative inline-block"
           initial={{ opacity: 0, scale: 0.8 }}
