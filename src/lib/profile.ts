@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { getSanityProfile } from "@/sanity/content";
+import type { SanityImage } from "@/sanity/types";
 
 export interface WebsiteProfile {
   name: string;
@@ -9,6 +10,19 @@ export interface WebsiteProfile {
   landingText: string;
   sloganText: string;
   availabilityText: string;
+  // Absent until a portrait is uploaded; the page falls back to a monogram.
+  portrait?: SanityImage;
+  aboutHeading: string;
+  musicHeading: string;
+  musicIntro: string;
+  contactHeading: string;
+  featured: {
+    heading: string;
+    intro: string;
+    /** Pinned repositories as "owner/name", in the order they should appear. */
+    repositories: string[];
+    count: number;
+  };
 }
 
 export const DEFAULT_PROFILE: WebsiteProfile = {
@@ -23,7 +37,24 @@ I'm also a performer, composer, and producer. I perform with the OSU Jazz Band, 
   sloganText: "I build creative software and make original music.",
   availabilityText:
     "Based in Tulsa, Oklahoma · Open to full-time opportunities in Oklahoma and remote",
+  aboutHeading: "About Me",
+  musicHeading: "I also make music",
+  musicIntro:
+    "I write, record, and produce original music. Explore my featured tracks, custom tape player, and the gear behind my sound.",
+  contactHeading: "Let’s Connect",
+  featured: {
+    heading: "Featured Projects",
+    intro:
+      "Featured projects showcasing full-stack development, AI tools, and interactive software. Click any project for more information, screenshots, and repo links.",
+    repositories: [],
+    count: 4,
+  },
 };
+
+/** Trims a CMS string, falling back when the field is absent or blank. */
+function text(value: string | undefined, fallback: string): string {
+  return value?.trim() || fallback;
+}
 
 export const getWebsiteProfile = cache(async (): Promise<WebsiteProfile> => {
   const profile = await getSanityProfile();
@@ -38,7 +69,26 @@ export const getWebsiteProfile = cache(async (): Promise<WebsiteProfile> => {
     aboutMe: profile.aboutMe || DEFAULT_PROFILE.aboutMe,
     landingText: profile.landingText || DEFAULT_PROFILE.landingText,
     sloganText: profile.sloganText || DEFAULT_PROFILE.sloganText,
-    availabilityText:
-      profile.availabilityText?.trim() || DEFAULT_PROFILE.availabilityText,
+    availabilityText: text(
+      profile.availabilityText,
+      DEFAULT_PROFILE.availabilityText,
+    ),
+    portrait: profile.portrait,
+    aboutHeading: text(profile.aboutHeading, DEFAULT_PROFILE.aboutHeading),
+    musicHeading: text(profile.musicHeading, DEFAULT_PROFILE.musicHeading),
+    musicIntro: text(profile.musicIntro, DEFAULT_PROFILE.musicIntro),
+    contactHeading: text(
+      profile.contactHeading,
+      DEFAULT_PROFILE.contactHeading,
+    ),
+    featured: {
+      heading: text(profile.projectsHeading, DEFAULT_PROFILE.featured.heading),
+      intro: text(profile.projectsIntro, DEFAULT_PROFILE.featured.intro),
+      // Dangling references drop out rather than taking up a pinned slot.
+      repositories: profile.featuredProjects
+        .map((repository) => repository?.trim())
+        .filter((repository): repository is string => Boolean(repository)),
+      count: profile.featuredProjectCount ?? DEFAULT_PROFILE.featured.count,
+    },
   };
 });

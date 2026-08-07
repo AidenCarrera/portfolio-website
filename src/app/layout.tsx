@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/common/Navigation";
 import Footer from "@/components/common/Footer";
+import ScrollToTop from "@/components/common/ScrollToTop";
+import MotionProvider from "@/components/common/MotionProvider";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE_URL } from "@/lib/siteUrl";
@@ -115,21 +117,24 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-slate-900 text-white`}
       >
         <JsonLd data={getGlobalStructuredData(profile)} />
+        <ScrollToTop />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 bg-brand text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-brand"
         >
           Skip to content
         </a>
-        <Navigation name={profile.name} />
-        <main
-          id="main-content"
-          className="flex grow flex-col pt-16 outline-none"
-          tabIndex={-1}
-        >
-          {children}
-        </main>
-        <Footer name={profile.name} />
+        <MotionProvider>
+          <Navigation name={profile.name} />
+          <main
+            id="main-content"
+            className="flex grow flex-col pt-16 outline-none"
+            tabIndex={-1}
+          >
+            {children}
+          </main>
+          <Footer name={profile.name} />
+        </MotionProvider>
         <Analytics />
         <SpeedInsights />
       </body>

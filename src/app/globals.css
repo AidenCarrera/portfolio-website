@@ -15,6 +15,22 @@ body {
   @apply font-sans;
 }
 
+/* 
+  The landing page runs edge to edge, so a platform scrollbar would cut a grey
+  gutter through it.
+
+  Deliberately no `scroll-behavior: smooth`: it applies to route changes as
+  well as anchors, so every navigation animates its way to the top instead of
+  arriving there. The one anchor that wants easing asks for it in JS. 
+*/
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes subtle-radial {
   0% {
     background-position: 50% 50%;
@@ -35,7 +51,6 @@ body {
   z-index: 0;
 }
 
-/* Hide scrollbars without disabling scrolling. */
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
@@ -43,4 +58,58 @@ body {
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Callers stagger `animation-delay` per bar so the band reads as a travelling
+   wave rather than a synchronised bounce. */
+@keyframes waveform {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.animate-waveform {
+  animation: waveform 2.4s ease-in-out infinite;
+}
+
+@keyframes playhead {
+  from {
+    left: 0%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+.animate-playhead {
+  animation: playhead 9s linear infinite;
+}
+
+@keyframes scroll-cue {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+.animate-scroll-cue {
+  animation: scroll-cue 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-waveform,
+  .animate-playhead,
+  .animate-scroll-cue,
+  .bg-animated-dark {
+    animation: none;
+  }
 }

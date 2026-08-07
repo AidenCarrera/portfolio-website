@@ -5,7 +5,7 @@ import { Briefcase, GraduationCap, MapPin } from "lucide-react";
 import Badge from "@/components/common/Badge";
 import JsonLd from "@/components/common/JsonLd";
 import PhotoGallery from "@/components/about/PhotoGallery";
-import Portrait from "@/components/about/Portrait";
+import Portrait from "@/components/common/Portrait";
 import { getAboutPage, splitParagraphs } from "@/lib/about";
 import { getWebsiteProfile } from "@/lib/profile";
 import { socialLinks } from "@/lib/socialLinks";
@@ -86,7 +86,11 @@ export default async function About() {
             {/* self-start keeps the portrait at its own aspect ratio rather
                 than stretching to whatever the rows beside it add up to. */}
             <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
-              <Portrait portrait={about.portrait} name={profile.name} />
+              <Portrait
+                portrait={about.portrait}
+                name={profile.name}
+                priority
+              />
             </div>
 
             <div className="space-y-5 text-lg leading-relaxed text-slate-300 lg:col-start-1 lg:row-start-2">
@@ -111,7 +115,11 @@ export default async function About() {
                       key={label}
                       className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm font-medium text-slate-300"
                     >
-                      <Icon size={16} className="text-brand" aria-hidden="true" />
+                      <Icon
+                        size={16}
+                        className="text-brand"
+                        aria-hidden="true"
+                      />
                       {label}
                     </li>
                   ))}
@@ -206,8 +214,8 @@ export default async function About() {
               to see more of my work, or visit{" "}
               <Link href="/contact" className={inlineLinkClass}>
                 Contact
-              </Link>
-              {" "}to get in touch.
+              </Link>{" "}
+              to get in touch.
             </p>
           </section>
         </div>
