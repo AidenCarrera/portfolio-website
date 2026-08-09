@@ -121,7 +121,7 @@ const resumePageQuery = defineQuery(`*[_type == "resumePage"][0] {
     _key,
     name,
     url,
-    description,
+    "highlights": coalesce(highlights, []),
     "technologies": coalesce(technologies, [])
   }, []),
   "experience": coalesce(experience[] {

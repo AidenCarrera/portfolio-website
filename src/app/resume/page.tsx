@@ -185,18 +185,41 @@ export default async function ResumePage() {
             </div>
           </section>
 
+          <section
+            aria-labelledby="skills-heading"
+            className="rounded-2xl border border-slate-700/80 bg-slate-800/50 p-6 sm:p-8"
+          >
+            <h2 id="skills-heading" className={sectionHeadingClass}>
+              {labels.skills}
+            </h2>
+
+            <div className="mt-7 divide-y divide-slate-700/80">
+              {resume.skills.map((category) => (
+                <div
+                  key={category._key}
+                  className="grid gap-2 py-4 first:pt-0 last:pb-0 sm:grid-cols-[10rem_1fr] sm:items-baseline sm:gap-6"
+                >
+                  <h3 className={experienceLabelClass}>
+                    {category.name}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-slate-200 lg:whitespace-nowrap">
+                    {category.items.join(", ")}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
           <section aria-labelledby="projects-heading">
             <h2 id="projects-heading" className={sectionHeadingClass}>
               {labels.projects}
             </h2>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              {resume.projects.map((project, index) => (
+            <div className="mt-6 grid gap-4">
+              {resume.projects.map((project) => (
                 <article
                   key={project._key}
-                  className={`group rounded-2xl border border-slate-700/80 bg-slate-800/50 p-6 transition-colors hover:border-brand/40 ${
-                    index === 0 ? "md:col-span-2" : ""
-                  }`}
+                  className="group rounded-2xl border border-slate-700/80 bg-slate-800/50 p-6 transition-colors hover:border-brand/40"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <h3 className="text-xl font-bold text-white">
@@ -215,9 +238,14 @@ export default async function ResumePage() {
                       </span>
                     </a>
                   </div>
-                  <p className="mt-4 leading-relaxed text-slate-300">
-                    {project.description}
-                  </p>
+                  <ul className="mt-4 space-y-2 text-slate-300">
+                    {project.highlights.map((highlight) => (
+                      <li key={highlight} className="flex gap-3 leading-relaxed">
+                        <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
+                        {highlight}
+                      </li>
+                    ))}
+                  </ul>
                   <div className="mt-5 flex flex-wrap gap-2">
                     {project.technologies.map((technology) => (
                       <span
@@ -276,31 +304,6 @@ export default async function ResumePage() {
                     {experience.dates}
                   </p>
                 </article>
-              ))}
-            </div>
-          </section>
-
-          <section
-            aria-labelledby="skills-heading"
-            className="rounded-2xl border border-slate-700/80 bg-slate-800/50 p-6 sm:p-8"
-          >
-            <h2 id="skills-heading" className={sectionHeadingClass}>
-              {labels.skills}
-            </h2>
-
-            <div className="mt-7 divide-y divide-slate-700/80">
-              {resume.skills.map((category) => (
-                <div
-                  key={category._key}
-                  className="grid gap-2 py-4 first:pt-0 last:pb-0 sm:grid-cols-[10rem_1fr] sm:items-baseline sm:gap-6"
-                >
-                  <h3 className={experienceLabelClass}>
-                    {category.name}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-slate-200 lg:whitespace-nowrap">
-                    {category.items.join(", ")}
-                  </p>
-                </div>
               ))}
             </div>
           </section>

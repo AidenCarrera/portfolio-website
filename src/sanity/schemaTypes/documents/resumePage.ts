@@ -165,11 +165,11 @@ export const resumePage = defineType({
                 rule.required().uri({ scheme: ["http", "https"] }),
             }),
             defineField({
-              name: "description",
-              title: "Description",
-              type: "text",
-              rows: 4,
-              validation: (rule) => rule.required(),
+              name: "highlights",
+              title: "Highlights",
+              type: "array",
+              of: [defineArrayMember({ type: "string" })],
+              validation: (rule) => rule.required().min(1),
             }),
             defineField({
               name: "technologies",
@@ -180,7 +180,15 @@ export const resumePage = defineType({
             }),
           ],
           preview: {
-            select: { title: "name", subtitle: "description" },
+            select: { title: "name", highlights: "highlights" },
+            prepare({ title, highlights }) {
+              return {
+                title,
+                subtitle: Array.isArray(highlights)
+                  ? highlights[0]
+                  : undefined,
+              };
+            },
           },
         }),
       ],

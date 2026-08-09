@@ -131,7 +131,7 @@ export interface SanityResumeProject {
   _key: string;
   name: string;
   url: string;
-  description: string;
+  highlights: string[];
   technologies: string[];
 }
 
