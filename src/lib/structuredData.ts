@@ -1,8 +1,8 @@
 import { socialLinks } from "@/lib/socialLinks";
 import { SITE_URL } from "@/lib/siteUrl";
 import { splitParagraphs } from "@/lib/about";
-import type { WebsiteProfile } from "@/lib/profile";
-import type { SanityAboutPage } from "@/sanity/types";
+import { JOB_TITLE } from "@/lib/profile";
+import type { AboutPageContent, WebsiteProfile } from "@/lib/profile";
 
 const personId = `${SITE_URL}/#person`;
 const websiteId = `${SITE_URL}/#website`;
@@ -18,7 +18,7 @@ export function getGlobalStructuredData(profile: WebsiteProfile) {
         ...(profile.email ? { email: profile.email } : {}),
         url: SITE_URL,
         image: `${SITE_URL}/developer-logo.svg`,
-        jobTitle: "Software Engineer, Audio Programmer, and Music Producer",
+        jobTitle: JOB_TITLE,
         description: profile.aboutMe,
         sameAs: socialLinks.map((link) => link.url),
       },
@@ -38,7 +38,7 @@ export function getGlobalStructuredData(profile: WebsiteProfile) {
 }
 
 export function getAboutPageStructuredData(
-  about: SanityAboutPage,
+  about: AboutPageContent,
   profile: WebsiteProfile,
 ) {
   return {

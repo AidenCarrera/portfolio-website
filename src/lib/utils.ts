@@ -1,5 +1,10 @@
 import type { SanityImage } from "@/sanity/types";
 
+/** Trims a CMS string, falling back when the field is absent or blank. */
+export function cmsText(value: string | undefined, fallback: string): string {
+  return value?.trim() || fallback;
+}
+
 // Preserve GIF animation by bypassing image optimization.
 export function isAnimatedImage(image: SanityImage | undefined): boolean {
   const asset = image?.asset;

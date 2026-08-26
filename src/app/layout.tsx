@@ -10,7 +10,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE_URL } from "@/lib/siteUrl";
 import JsonLd from "@/components/common/JsonLd";
 import { getGlobalStructuredData } from "@/lib/structuredData";
-import { getWebsiteProfile } from "@/lib/profile";
+import { getWebsiteProfile, SEO_KEYWORDS } from "@/lib/profile";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,20 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: "/",
     },
-    keywords: [
-      profile.name,
-      portfolioName,
-      "portfolio",
-      "Software Engineer Portfolio",
-      "Audio Developer Portfolio",
-      "Music Portfolio",
-      "Software Engineer",
-      "Music Producer",
-      "Audio Programmer",
-      "JUCE C++",
-      "React Developer",
-      "Web Audio API",
-    ],
+    keywords: [profile.name, portfolioName, ...SEO_KEYWORDS],
     authors: [{ name: profile.name }],
     creator: profile.name,
     openGraph: {
@@ -112,8 +99,8 @@ export default async function RootLayout({
   const profile = await getWebsiteProfile();
 
   return (
-    // Chrome on Android and some extensions stamp attributes onto the root
-    // elements pre-hydration; scoped to these two, it does not reach children.
+    // Browser extensions stamp attributes onto html and body before
+    // hydration; suppressing here does not affect any child.
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning

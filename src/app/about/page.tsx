@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { Briefcase, GraduationCap, MapPin } from "lucide-react";
 import Badge from "@/components/common/Badge";
 import JsonLd from "@/components/common/JsonLd";
@@ -19,8 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "About",
     description:
-      about?.seoDescription?.trim() ||
-      (about?.intro ? splitParagraphs(about.intro)[0] : undefined),
+      about.seoDescription?.trim() || splitParagraphs(about.intro)[0],
     alternates: {
       canonical: "/about",
     },
@@ -38,13 +36,9 @@ export default async function About() {
     getWebsiteProfile(),
   ]);
 
-  if (!about) {
-    notFound();
-  }
-
   const introParagraphs = splitParagraphs(about.intro);
-  // The portrait sits beside the opening of the intro; whatever follows runs
-  // the full width of the header underneath it.
+  // The portrait sits beside the first two paragraphs; the rest run full
+  // width beneath it.
   const leadParagraphs = introParagraphs.slice(0, 2);
   const remainingParagraphs = introParagraphs.slice(2);
 
@@ -69,10 +63,8 @@ export default async function About() {
       <JsonLd data={getAboutPageStructuredData(about, profile)} />
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
         <header className="relative overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-800/50 p-6 shadow-2xl shadow-black/20 sm:p-10">
-          {/* Three rows from lg up: the portrait spans the heading and the
-              opening paragraphs beside it, then everything after runs the full
-              width beneath it. Stacked, the same order reads heading, portrait,
-              intro. */}
+          {/* From lg up the portrait spans the heading and lead paragraph
+              rows; stacked, the order reads heading, portrait, intro. */}
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-x-12 lg:gap-y-6">
             <div className="lg:col-start-1 lg:row-start-1">
               <div className="mb-5">
@@ -83,8 +75,8 @@ export default async function About() {
               </h1>
             </div>
 
-            {/* self-start keeps the portrait at its own aspect ratio rather
-                than stretching to whatever the rows beside it add up to. */}
+            {/* self-start keeps the portrait at its own aspect ratio instead
+                of stretching to the height of the rows beside it. */}
             <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
               <Portrait
                 portrait={about.portrait}
