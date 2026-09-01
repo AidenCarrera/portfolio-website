@@ -8,6 +8,9 @@
 
   --font-sans: var(--font-geist-sans, system-ui, sans-serif);
   --font-mono: var(--font-geist-mono, monospace);
+
+  /* Height of the fixed nav. The layout reserves it, the hero cancels it. */
+  --spacing-nav: 4rem;
 }
 
 /* Page background and text colour are set on the body in layout.tsx. */

@@ -118,7 +118,7 @@ export default async function RootLayout({
           <Navigation name={profile.name} />
           <main
             id="main-content"
-            className="flex grow flex-col pt-16 outline-none"
+            className="flex grow flex-col pt-nav outline-none"
             tabIndex={-1}
           >
             {children}

@@ -50,7 +50,9 @@ export default function Hero({ profile, socials }: HeroProps) {
   };
 
   return (
-    <section className="relative -mt-16 flex min-h-dvh flex-col justify-center overflow-hidden bg-animated-dark px-4 pb-20 pt-20 sm:px-6 sm:pb-32 lg:px-8 lg:pb-40">
+    // The background runs under the bar, so the top padding has to clear it
+    // again, plus the 40px the content is lifted by on `lg`.
+    <section className="relative -mt-nav flex min-h-dvh flex-col justify-center overflow-hidden bg-animated-dark px-4 pb-20 pt-[calc(var(--spacing-nav)+1.5rem)] sm:px-6 sm:pb-32 lg:px-8 lg:pb-40 lg:pt-[calc(var(--spacing-nav)+4rem)]">
       <HeroSpectrum />
 
       {/* Keeps the headline off the analyser without flattening it out. */}

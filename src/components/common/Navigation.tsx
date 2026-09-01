@@ -68,7 +68,7 @@ export default function Navigation({ name }: NavigationProps) {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex h-nav items-center justify-between">
           {/* The wordmark is the only route back to the landing page now that
               Home has left the nav, so it names that destination outright
               rather than leaving assistive tech with a bare name. */}
