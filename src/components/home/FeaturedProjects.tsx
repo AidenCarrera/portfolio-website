@@ -50,7 +50,7 @@ export default function FeaturedProjects({
         <ul className="mt-12 grid gap-8 md:grid-cols-2">
           {projects.map((project) => (
             <RepoCard
-              key={project.github.html_url}
+              key={project.github.url}
               project={project}
               imageSizes={IMAGE_SIZES}
             />

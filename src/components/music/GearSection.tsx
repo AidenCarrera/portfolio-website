@@ -11,7 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import CategoryFilter from "@/components/projects/CategoryFilter";
+import CategoryFilter from "@/components/common/CategoryFilter";
 import ImageLightbox from "@/components/common/ImageLightbox";
 import { isAnimatedImage } from "@/lib/utils";
 import type { GearItemType, SanityGearItem } from "@/sanity/types";
@@ -160,7 +160,6 @@ function GearCarousel({
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-linear-to-l from-slate-900 to-transparent" />
       )}
 
-      {/* Accessible name and list role for keyboard/screen reader navigation. */}
       <ul
         ref={railRef}
         onScroll={updateBounds}
@@ -212,7 +211,9 @@ function PluginList({ items }: { items: SanityGearItem[] }) {
     <div className="space-y-6">
       {Array.from(groups.entries()).map(([category, categoryItems]) => (
         <div key={category}>
-          <h4 className="mb-3 text-sm font-medium text-slate-300">{category}</h4>
+          <h4 className="mb-3 text-sm font-medium text-slate-300">
+            {category}
+          </h4>
           <ul className="flex flex-wrap gap-2">
             {categoryItems.map((item) => (
               <li
@@ -297,7 +298,6 @@ export default function GearSection({ gear }: GearSectionProps) {
                   </h3>
                 </div>
 
-                {/* Grid view replaces rail when single category filter is active. */}
                 {PLUGIN_TYPES.has(type) ? (
                   <PluginList items={items} />
                 ) : activeType === "all" ? (

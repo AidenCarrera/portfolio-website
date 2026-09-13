@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { imageFields, imageWithAlt } from "@/sanity/schemaTypes/fields";
 
 export const project = defineType({
   name: "project",
@@ -90,26 +91,12 @@ export const project = defineType({
         layout: "radio",
       },
     }),
-    defineField({
+    imageWithAlt({
       name: "heroImage",
       title: "Hero image",
-      type: "image",
       description:
         "Optional primary media for the project detail page, also used as the preview on the Projects card. Upload a still image or an animated GIF; GIFs keep playing on both. Cards without a hero image fall back to a placeholder. Alternative text is required when media is added.",
-      options: { hotspot: true, accept: "image/gif,image/png,image/jpeg,image/webp" },
-      fields: [
-        defineField({
-          name: "alt",
-          title: "Alternative text",
-          type: "string",
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: "caption",
-          title: "Caption",
-          type: "string",
-        }),
-      ],
+      options: { accept: "image/gif,image/png,image/jpeg,image/webp" },
     }),
     defineField({
       name: "highlights",
@@ -137,19 +124,7 @@ export const project = defineType({
         defineArrayMember({
           type: "image",
           options: { hotspot: true },
-          fields: [
-            defineField({
-              name: "alt",
-              title: "Alternative text",
-              type: "string",
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: "caption",
-              title: "Caption",
-              type: "string",
-            }),
-          ],
+          fields: imageFields(),
         }),
       ],
     }),
@@ -161,10 +136,11 @@ export const project = defineType({
       cardDescription: "cardDescription",
       media: "heroImage",
     },
-    prepare({ githubRepository, repoNameOverwrite, cardDescription }) {
+    prepare({ githubRepository, repoNameOverwrite, cardDescription, media }) {
       return {
         title: repoNameOverwrite || githubRepository,
         subtitle: cardDescription || undefined,
+        media,
       };
     },
   },

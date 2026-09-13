@@ -1,8 +1,8 @@
 export interface GithubRepo {
   name: string;
-  description: string | null;
-  html_url: string;
-  homepage: string | null;
+  description: string;
+  url: string;
+  homepageUrl: string | null;
   topics: string[];
   isCollab: boolean;
   createdAt: string;

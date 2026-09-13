@@ -1,11 +1,10 @@
 import type { StructureResolver } from "sanity/structure";
 
-const PROFILE_TYPE = "profile";
-const PROFILE_ID = "profile";
-const ABOUT_PAGE_TYPE = "aboutPage";
-const ABOUT_PAGE_ID = "aboutPage";
-const RESUME_PAGE_TYPE = "resumePage";
-const RESUME_PAGE_ID = "resumePage";
+// Each of these is both the schema type and the id of its one singleton
+// document, so the Studio always edits the same document for that type.
+const PROFILE = "profile";
+const ABOUT_PAGE = "aboutPage";
+const RESUME_PAGE = "resumePage";
 
 export const structure: StructureResolver = (structureBuilder) =>
   structureBuilder
@@ -14,46 +13,46 @@ export const structure: StructureResolver = (structureBuilder) =>
     .items([
       structureBuilder
         .listItem()
-        .id(PROFILE_ID)
+        .id(PROFILE)
         .title("Landing")
-        .schemaType(PROFILE_TYPE)
+        .schemaType(PROFILE)
         .child(
           structureBuilder
             .document()
-            .schemaType(PROFILE_TYPE)
-            .documentId(PROFILE_ID)
+            .schemaType(PROFILE)
+            .documentId(PROFILE)
             .title("Landing"),
         ),
       structureBuilder
         .listItem()
-        .id(ABOUT_PAGE_ID)
+        .id(ABOUT_PAGE)
         .title("About")
-        .schemaType(ABOUT_PAGE_TYPE)
+        .schemaType(ABOUT_PAGE)
         .child(
           structureBuilder
             .document()
-            .schemaType(ABOUT_PAGE_TYPE)
-            .documentId(ABOUT_PAGE_ID)
+            .schemaType(ABOUT_PAGE)
+            .documentId(ABOUT_PAGE)
             .title("About"),
         ),
       structureBuilder
         .listItem()
-        .id(RESUME_PAGE_ID)
+        .id(RESUME_PAGE)
         .title("Resume")
-        .schemaType(RESUME_PAGE_TYPE)
+        .schemaType(RESUME_PAGE)
         .child(
           structureBuilder
             .document()
-            .schemaType(RESUME_PAGE_TYPE)
-            .documentId(RESUME_PAGE_ID)
+            .schemaType(RESUME_PAGE)
+            .documentId(RESUME_PAGE)
             .title("Resume"),
         ),
       ...structureBuilder
         .documentTypeListItems()
         .filter(
           (item) =>
-            item.getId() !== PROFILE_TYPE &&
-            item.getId() !== ABOUT_PAGE_TYPE &&
-            item.getId() !== RESUME_PAGE_TYPE,
+            item.getId() !== PROFILE &&
+            item.getId() !== ABOUT_PAGE &&
+            item.getId() !== RESUME_PAGE,
         ),
     ]);

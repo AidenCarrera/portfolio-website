@@ -2,20 +2,20 @@
 
 import { useMemo, useState } from "react";
 import RepoGrid from "@/components/projects/RepoGrid";
-import CategoryFilter from "@/components/projects/CategoryFilter";
-import type { CategoryOption } from "@/components/projects/CategoryFilter";
+import CategoryFilter from "@/components/common/CategoryFilter";
+import type { CategoryOption } from "@/components/common/CategoryFilter";
 import type { PortfolioProject } from "@/lib/projects";
 import { formatTagName, normalizeTag } from "@/lib/utils";
 
+type SortOption = "featured" | "newest" | "name";
+
 interface ProjectsClientProps {
-  initialProjects: PortfolioProject[];
+  projects: PortfolioProject[];
   defaultSort: SortOption;
 }
 
-type SortOption = "featured" | "newest" | "name";
-
 export default function ProjectsClient({
-  initialProjects,
+  projects,
   defaultSort,
 }: ProjectsClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -26,7 +26,7 @@ export default function ProjectsClient({
   const categories = useMemo<CategoryOption[]>(() => {
     const topicByCategory = new Map<string, string>();
 
-    for (const project of initialProjects) {
+    for (const project of projects) {
       for (const topic of project.presentation.tags) {
         const category = normalizeTag(topic);
         if (!category) {
@@ -50,12 +50,12 @@ export default function ProjectsClient({
         label: formatTagName(topic),
       })).sort((a, b) => a.label.localeCompare(b.label)),
     ];
-  }, [initialProjects]);
+  }, [projects]);
 
   const filteredProjects =
     selectedCategory === "all"
-      ? initialProjects
-      : initialProjects.filter((project) =>
+      ? projects
+      : projects.filter((project) =>
           project.presentation.tags
             .map((topic) => normalizeTag(topic))
             .includes(selectedCategory),
@@ -82,7 +82,7 @@ export default function ProjectsClient({
 
   return (
     <>
-      {initialProjects.length > 0 ? (
+      {projects.length > 0 ? (
         <>
           <CategoryFilter
             categories={categories}

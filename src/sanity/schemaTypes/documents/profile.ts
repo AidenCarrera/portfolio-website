@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { imageWithAlt } from "@/sanity/schemaTypes/fields";
 
 export const profile = defineType({
   name: "profile",
@@ -59,24 +60,13 @@ export const profile = defineType({
       description: "Separate paragraphs with a blank line.",
       validation: (rule) => rule.required(),
     }),
-    defineField({
+    imageWithAlt({
       name: "portrait",
       title: "Portrait",
-      type: "image",
       group: "about",
-      options: { hotspot: true },
       description:
         "Shown beside the about summary. A monogram stands in until one is uploaded.",
-      fields: [
-        defineField({
-          name: "alt",
-          title: "Alt Text",
-          type: "string",
-          description:
-            "Describes the photo for screen readers and search engines.",
-          validation: (rule) => rule.required(),
-        }),
-      ],
+      caption: false,
     }),
     defineField({
       name: "skillsIntro",

@@ -1,28 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-
-const photo = (name: string, title: string, group: string) =>
-  defineField({
-    name,
-    title,
-    type: "image",
-    group,
-    options: { hotspot: true },
-    fields: [
-      defineField({
-        name: "alt",
-        title: "Alt Text",
-        type: "string",
-        description: "Describes the photo for screen readers and search engines.",
-        validation: (rule) => rule.required(),
-      }),
-      defineField({
-        name: "caption",
-        title: "Caption",
-        type: "string",
-        description: "Shown beneath the photo.",
-      }),
-    ],
-  });
+import { imageFields, imageWithAlt } from "@/sanity/schemaTypes/fields";
 
 export const aboutPage = defineType({
   name: "aboutPage",
@@ -57,7 +34,7 @@ export const aboutPage = defineType({
       description: "Separate paragraphs with a blank line.",
       validation: (rule) => rule.required(),
     }),
-    photo("portrait", "Portrait", "header"),
+    imageWithAlt({ name: "portrait", title: "Portrait", group: "header" }),
     defineField({
       name: "locationLabel",
       title: "Location",
@@ -101,30 +78,18 @@ export const aboutPage = defineType({
         defineArrayMember({
           type: "image",
           options: { hotspot: true },
-          fields: [
-            defineField({
-              name: "alt",
-              title: "Alt Text",
-              type: "string",
-              description:
-                "Describes the photo for screen readers and search engines.",
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: "caption",
-              title: "Caption",
-              type: "string",
-              description: "Shown beneath the photo in the gallery.",
-            }),
-            defineField({
-              name: "displayOrder",
-              title: "Display Order",
-              type: "number",
-              description:
-                "Lower numbers appear first. Photos without a number keep their existing order after numbered photos.",
-              validation: (rule) => rule.integer().min(0),
-            }),
-          ],
+          fields: imageFields({
+            extra: [
+              defineField({
+                name: "displayOrder",
+                title: "Display Order",
+                type: "number",
+                description:
+                  "Lower numbers appear first. Photos without a number keep their existing order after numbered photos.",
+                validation: (rule) => rule.integer().min(0),
+              }),
+            ],
+          }),
         }),
       ],
     }),

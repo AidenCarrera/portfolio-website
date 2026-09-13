@@ -1,7 +1,7 @@
 import { Code2, ExternalLink } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { getGitHubProfileUrl } from "@/lib/github";
-import { getPortfolioProjects } from "@/lib/projects";
+import { getRoutableProjects } from "@/lib/projects";
 import ProjectsClient from "./ProjectsClient";
 import type { Metadata } from "next";
 
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProjectsPage() {
-  const projects = await getPortfolioProjects();
+  const projects = await getRoutableProjects();
   const githubProfileUrl = getGitHubProfileUrl();
   const defaultSort = projects.some((project) => project.content)
     ? "featured"
@@ -35,15 +35,13 @@ export default async function ProjectsPage() {
             Projects
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            My open-source GitHub repos: interactive web apps, full-stack applications,
-            audio tools, and games - including collaborative team projects.
+            My open-source GitHub repos: interactive web apps, full-stack
+            applications, audio tools, and games - including collaborative team
+            projects.
           </p>
         </div>
 
-        <ProjectsClient
-          initialProjects={projects}
-          defaultSort={defaultSort}
-        />
+        <ProjectsClient projects={projects} defaultSort={defaultSort} />
 
         {githubProfileUrl && (
           <div className="mt-16 text-center">
@@ -53,7 +51,7 @@ export default async function ProjectsPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center space-x-2 text-brand hover:text-brand-light transition-colors"
             >
-              <SiGithub size={20} />
+              <SiGithub size={20} aria-hidden="true" />
               <span className="font-medium">View more on GitHub</span>
               <ExternalLink size={16} />
             </a>
