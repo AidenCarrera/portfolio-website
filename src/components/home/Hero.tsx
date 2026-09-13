@@ -35,7 +35,6 @@ export default function Hero({ profile, socials }: HeroProps) {
   const availabilityTail =
     lastSpace === -1 ? "" : availability.slice(lastSpace + 1);
 
-  // Smooth scroll handler that respects reduced motion preferences
   const scrollToOverview = (event: React.MouseEvent<HTMLAnchorElement>) => {
     const overview = document.getElementById("overview");
     if (!overview) {

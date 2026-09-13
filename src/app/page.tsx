@@ -9,7 +9,10 @@ import CreatorBand from "@/components/home/CreatorBand";
 import ClosingCta from "@/components/home/ClosingCta";
 import { splitParagraphs } from "@/lib/about";
 import { getWebsiteProfile } from "@/lib/profile";
-import { getProjectsInDisplayOrder } from "@/lib/projects";
+import {
+  getProjectsInDisplayOrder,
+  selectFeaturedProjects,
+} from "@/lib/projects";
 import { getProfilePageStructuredData } from "@/lib/structuredData";
 
 // Kept in step with the projects page's revalidate window.
@@ -26,28 +29,7 @@ export default async function Home() {
     getWebsiteProfile(),
     getProjectsInDisplayOrder(),
   ]);
-
-  // Pinned projects lead in the Landing document's order, then the curated
-  // order fills the rest. Pins GitHub cannot resolve drop out.
-  const pinnedRepositories = profile.featured.repositories.map((repository) =>
-    repository.toLowerCase(),
-  );
-  const byRepository = new Map(
-    projects.map((project) => [
-      project.githubRepository.toLowerCase(),
-      project,
-    ]),
-  );
-  const pinned = pinnedRepositories
-    .map((repository) => byRepository.get(repository))
-    .filter((project) => project !== undefined);
-  const featured = [
-    ...pinned,
-    ...projects.filter(
-      (project) =>
-        !pinnedRepositories.includes(project.githubRepository.toLowerCase()),
-    ),
-  ].slice(0, profile.featured.count);
+  const featured = selectFeaturedProjects(profile, projects);
 
   return (
     <>

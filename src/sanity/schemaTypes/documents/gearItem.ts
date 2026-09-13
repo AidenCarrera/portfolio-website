@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { imageWithAlt } from "@/sanity/schemaTypes/fields";
 
 const gearTypes = [
   { title: "Instrument", value: "instrument" },
@@ -40,26 +41,11 @@ export const gearItem = defineType({
       title: "Manufacturer",
       type: "string",
     }),
-    defineField({
+    imageWithAlt({
       name: "image",
       title: "Image",
-      type: "image",
       description:
         "Optional photo of the gear shown on its card. Alternative text is required when an image is added.",
-      options: { hotspot: true },
-      fields: [
-        defineField({
-          name: "alt",
-          title: "Alternative text",
-          type: "string",
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: "caption",
-          title: "Caption",
-          type: "string",
-        }),
-      ],
     }),
     defineField({
       name: "featured",

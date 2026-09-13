@@ -1,12 +1,13 @@
 import { cache } from "react";
 import { getGithubRepos } from "@/lib/github";
+import type { WebsiteProfile } from "@/lib/profile";
 import { getSanityProjects } from "@/sanity/content";
 import type { SanityProject } from "@/sanity/types";
 import type { GithubRepo } from "@/types";
 
 // Repositories without a curated display order sort after the curated ones.
 const DEFAULT_DISPLAY_ORDER = 999;
-const SAFE_PROJECT_DESCRIPTION = "No description";
+const FALLBACK_PROJECT_DESCRIPTION = "No description";
 
 export interface PortfolioProject {
   github: GithubRepo;
@@ -55,7 +56,7 @@ function mergeGithubRepoWithSanity(
 
   return {
     github,
-    githubRepository: getGithubRepositoryIdentity(github.html_url),
+    githubRepository: getGithubRepositoryIdentity(github.url),
     slug: getProjectSlug(github),
     content,
     presentation: {
@@ -64,8 +65,8 @@ function mergeGithubRepoWithSanity(
       repoName: content?.repoNameOverwrite?.trim() || github.name,
       cardDescription:
         content?.cardDescription?.trim() ||
-        github.description?.trim() ||
-        SAFE_PROJECT_DESCRIPTION,
+        github.description.trim() ||
+        FALLBACK_PROJECT_DESCRIPTION,
       tags: tagsOverwrite?.length ? tagsOverwrite : github.topics,
     },
   };
@@ -87,7 +88,7 @@ export const getPortfolioProjects = cache(
     return githubRepos
       .map((github) => {
         const repository = getGithubRepositoryIdentity(
-          github.html_url,
+          github.url,
         ).toLowerCase();
         return mergeGithubRepoWithSanity(
           github,
@@ -136,6 +137,36 @@ export const getProjectsInDisplayOrder = cache(
     });
   },
 );
+
+/**
+ * The homepage grid: pinned projects lead in the Landing document's order, then
+ * the curated order fills the remaining slots. Pins that no longer resolve to a
+ * GitHub repository drop out rather than taking up a slot.
+ *
+ * Takes the projects rather than fetching them so the caller can load them
+ * alongside the profile instead of waiting on it.
+ */
+export function selectFeaturedProjects(
+  profile: WebsiteProfile,
+  projects: PortfolioProject[],
+): PortfolioProject[] {
+  const byRepository = new Map(
+    projects.map((project) => [
+      project.githubRepository.toLowerCase(),
+      project,
+    ]),
+  );
+
+  const pinned = profile.featured.repositories
+    .map((repository) => byRepository.get(repository.toLowerCase()))
+    .filter((project) => project !== undefined);
+  const pinnedSlugs = new Set(pinned.map((project) => project.slug));
+
+  return [
+    ...pinned,
+    ...projects.filter((project) => !pinnedSlugs.has(project.slug)),
+  ].slice(0, profile.featured.count);
+}
 
 /** Wraps around at the end so the last project still links onward. */
 export const getNextProjectInDisplayOrder = cache(

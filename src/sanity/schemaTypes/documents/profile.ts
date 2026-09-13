@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { imageWithAlt } from "@/sanity/schemaTypes/fields";
 
 export const profile = defineType({
   name: "profile",
@@ -46,7 +47,7 @@ export const profile = defineType({
       group: "hero",
       description:
         "The location and work availability shown in the badge on the homepage. Keep it under ~55 characters — the badge holds this on a single line, so a longer value will run off the edge on a phone.",
-      initialValue: "Based in Tulsa, OK · Open to Relocation & Remote Roles",
+      initialValue: "Based in OK · Open to Relocation & Remote Roles",
       // 160 let through strings that overflow the badge on a narrow screen.
       validation: (rule) => rule.required().max(55),
     }),
@@ -59,24 +60,13 @@ export const profile = defineType({
       description: "Separate paragraphs with a blank line.",
       validation: (rule) => rule.required(),
     }),
-    defineField({
+    imageWithAlt({
       name: "portrait",
       title: "Portrait",
-      type: "image",
       group: "about",
-      options: { hotspot: true },
       description:
         "Shown beside the about summary. A monogram stands in until one is uploaded.",
-      fields: [
-        defineField({
-          name: "alt",
-          title: "Alt Text",
-          type: "string",
-          description:
-            "Describes the photo for screen readers and search engines.",
-          validation: (rule) => rule.required(),
-        }),
-      ],
+      caption: false,
     }),
     defineField({
       name: "skillsIntro",

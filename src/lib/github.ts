@@ -119,8 +119,8 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
       return {
         name: node.name,
         description: node.description ?? "",
-        html_url: node.url,
-        homepage: node.homepageUrl || null,
+        url: node.url,
+        homepageUrl: node.homepageUrl || null,
         topics: node.repositoryTopics.nodes.map((item) => item.topic.name),
         isCollab:
           isContributed ||
@@ -146,8 +146,8 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
     // Prefer collaborative records when GitHub returns the same URL twice.
     const uniqueRepos = new Map<string, GithubRepo>();
     for (const repo of [...mainRepos, ...contributed]) {
-      if (!uniqueRepos.has(repo.html_url) || repo.isCollab) {
-        uniqueRepos.set(repo.html_url, repo);
+      if (!uniqueRepos.has(repo.url) || repo.isCollab) {
+        uniqueRepos.set(repo.url, repo);
       }
     }
 

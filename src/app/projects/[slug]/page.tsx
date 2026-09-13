@@ -66,9 +66,9 @@ export default async function ProjectDetailPage({
     timeZone: "UTC",
   }).format(new Date(github.createdAt));
   const liveUrl =
-    github.homepage && !github.homepage.startsWith("http")
-      ? `https://${github.homepage}`
-      : github.homepage;
+    github.homepageUrl && !github.homepageUrl.startsWith("http")
+      ? `https://${github.homepageUrl}`
+      : github.homepageUrl;
 
   return (
     <div className="min-h-screen bg-slate-900 pt-8 pb-20">
@@ -160,7 +160,7 @@ export default async function ProjectDetailPage({
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href={github.html_url}
+              href={github.url}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2.5 font-semibold text-slate-950 transition-colors hover:bg-brand-light focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"

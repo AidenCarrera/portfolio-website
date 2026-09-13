@@ -18,60 +18,61 @@ export function normalizeTag(tag: string): string {
   return tag.toLowerCase().trim().replace(/-/g, " ");
 }
 
-export function formatTagName(tag: string): string {
-  const mapping: Record<string, string> = {
-    nextjs: "Next.js",
-    tailwindcss: "Tailwind",
-    fastapi: "FastAPI",
-    typescript: "TypeScript",
-    cpp: "C++",
-    howlerjs: "Howler.js",
-    ollama: "Ollama",
-    chromadb: "ChromaDB",
-    nodejs: "Node.js",
-    socketio: "Socket.IO",
-    react: "React",
-    python: "Python",
-    csharp: "C#",
-    aspnet: "ASP.NET",
-    mariadb: "MariaDB",
-    ai: "AI",
-    docker: "Docker",
-    game: "Game",
-    javascript: "JavaScript",
-    mongodb: "MongoDB",
-    postgres: "PostgreSQL",
-    redis: "Redis",
-    juce: "JUCE",
-    opengl: "OpenGL",
-    html: "HTML",
-    css: "CSS",
-    pygame: "Pygame",
-    vst3: "VST3",
-    vst: "VST",
-    tonejs: "Tone.js",
-    dsp: "DSP",
-    fft: "FFT",
-    elevenlabs: "ElevenLabs",
-    json: "JSON",
-    api: "API",
-    db: "DB",
-    cli: "CLI",
-    sdk: "SDK",
-    jwt: "JWT",
-    ui: "UI",
-    ux: "UX",
-    sql: "SQL",
-    nosql: "NoSQL",
-    rest: "REST",
-    http: "HTTP",
-    github: "GitHub",
-    cmake: "CMake",
-  };
+// Canonical spellings for tags whose display form is not just title case.
+const TAG_NAMES: Record<string, string> = {
+  nextjs: "Next.js",
+  tailwindcss: "Tailwind",
+  fastapi: "FastAPI",
+  typescript: "TypeScript",
+  cpp: "C++",
+  howlerjs: "Howler.js",
+  ollama: "Ollama",
+  chromadb: "ChromaDB",
+  nodejs: "Node.js",
+  socketio: "Socket.IO",
+  react: "React",
+  python: "Python",
+  csharp: "C#",
+  aspnet: "ASP.NET",
+  mariadb: "MariaDB",
+  ai: "AI",
+  docker: "Docker",
+  game: "Game",
+  javascript: "JavaScript",
+  mongodb: "MongoDB",
+  postgres: "PostgreSQL",
+  redis: "Redis",
+  juce: "JUCE",
+  opengl: "OpenGL",
+  html: "HTML",
+  css: "CSS",
+  pygame: "Pygame",
+  vst3: "VST3",
+  vst: "VST",
+  tonejs: "Tone.js",
+  dsp: "DSP",
+  fft: "FFT",
+  elevenlabs: "ElevenLabs",
+  json: "JSON",
+  api: "API",
+  db: "DB",
+  cli: "CLI",
+  sdk: "SDK",
+  jwt: "JWT",
+  ui: "UI",
+  ux: "UX",
+  sql: "SQL",
+  nosql: "NoSQL",
+  rest: "REST",
+  http: "HTTP",
+  github: "GitHub",
+  cmake: "CMake",
+};
 
+export function formatTagName(tag: string): string {
   const lower = normalizeTag(tag);
-  if (mapping[lower]) {
-    return mapping[lower];
+  if (TAG_NAMES[lower]) {
+    return TAG_NAMES[lower];
   }
 
   return tag
@@ -79,7 +80,9 @@ export function formatTagName(tag: string): string {
     .split(" ")
     .map((word) => {
       const lowerWord = word.toLowerCase();
-      return mapping[lowerWord] || word.charAt(0).toUpperCase() + word.slice(1);
+      return (
+        TAG_NAMES[lowerWord] || word.charAt(0).toUpperCase() + word.slice(1)
+      );
     })
     .join(" ");
 }

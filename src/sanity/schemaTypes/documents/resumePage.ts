@@ -1,14 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
-const requiredStringArray = (title: string) =>
-  defineField({
-    name: title.toLowerCase().replaceAll(" ", ""),
-    title,
-    type: "array",
-    of: [defineArrayMember({ type: "string" })],
-    validation: (rule) => rule.required().min(1).unique(),
-  });
-
 export const resumePage = defineType({
   name: "resumePage",
   title: "Resume",
@@ -135,8 +126,20 @@ export const resumePage = defineType({
           type: "string",
           validation: (rule) => rule.required(),
         }),
-        requiredStringArray("Coursework"),
-        requiredStringArray("Honors"),
+        defineField({
+          name: "coursework",
+          title: "Coursework",
+          type: "array",
+          of: [defineArrayMember({ type: "string" })],
+          validation: (rule) => rule.required().min(1).unique(),
+        }),
+        defineField({
+          name: "honors",
+          title: "Honors",
+          type: "array",
+          of: [defineArrayMember({ type: "string" })],
+          validation: (rule) => rule.required().min(1).unique(),
+        }),
       ],
       validation: (rule) => rule.required(),
     }),
@@ -184,9 +187,7 @@ export const resumePage = defineType({
             prepare({ title, highlights }) {
               return {
                 title,
-                subtitle: Array.isArray(highlights)
-                  ? highlights[0]
-                  : undefined,
+                subtitle: Array.isArray(highlights) ? highlights[0] : undefined,
               };
             },
           },

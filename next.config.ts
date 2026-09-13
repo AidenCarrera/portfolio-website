@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
 
+const devOrigin = process.env.DEV_ORIGIN?.trim();
+
 const nextConfig: NextConfig = {
-  // Allow LAN IP access for local network device testing in dev
-  allowedDevOrigins: ["192.168.0.32"],
+  ...(devOrigin ? { allowedDevOrigins: [devOrigin] } : {}),
   images: {
     remotePatterns: [
       {
@@ -13,7 +14,6 @@ const nextConfig: NextConfig = {
     ],
     // Allowed image quality levels (75 default, 90 for screenshots/UI)
     qualities: [75, 90],
-    // Format optimization hierarchy (AVIF preferred, WebP fallback)
     formats: ["image/avif", "image/webp"],
   },
 };

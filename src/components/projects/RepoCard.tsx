@@ -45,7 +45,7 @@ export default function RepoCard({
 
         <div className="flex shrink-0 space-x-2 pointer-events-auto">
           <a
-            href={github.html_url}
+            href={github.url}
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-lg bg-slate-800/40 border border-slate-700/30 text-slate-400 hover:text-brand hover:bg-slate-700/40 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
@@ -54,12 +54,12 @@ export default function RepoCard({
           >
             <SiGithub size={20} />
           </a>
-          {github.homepage && github.homepage.trim() !== "" && (
+          {github.homepageUrl && github.homepageUrl.trim() !== "" && (
             <a
               href={
-                github.homepage.startsWith("http")
-                  ? github.homepage
-                  : `https://${github.homepage}`
+                github.homepageUrl.startsWith("http")
+                  ? github.homepageUrl
+                  : `https://${github.homepageUrl}`
               }
               target="_blank"
               rel="noopener noreferrer"

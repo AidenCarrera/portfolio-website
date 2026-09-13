@@ -24,6 +24,8 @@ It showcases my projects, released music, contact information, and the tools I u
 - Sanity
 - Vercel
 
+`styled-components` is a required peer dependency of `sanity` and is not imported by the site itself.
+
 ## Setup
 
 You'll need Git, Node.js, and pnpm. Fork the repository, then run:
@@ -60,6 +62,7 @@ Copy [`.env.example`](./.env.example) to `.env.local`. Never commit `.env.local`
 | Variable                   | Used for         | Purpose                                               |
 | -------------------------- | ---------------- | ----------------------------------------------------- |
 | `SITE_URL`                 | Deployment       | Canonical origin for URLs and metadata                |
+| `DEV_ORIGIN`               | Local dev        | LAN address `pnpm dev:mobile` may be reached from     |
 | `SANITY_STUDIO_PROJECT_ID` | Sanity content   | Sanity project ID                                     |
 | `SANITY_STUDIO_DATASET`    | Sanity content   | Sanity dataset name                                   |
 | `SANITY_STUDIO_APP_ID`     | Hosted Studio    | Studio app ID used for later deployments              |
