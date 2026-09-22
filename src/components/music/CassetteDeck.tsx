@@ -12,8 +12,19 @@ const VOLUME_DRAG_RANGE_PX = 480;
 const VOLUME_WHEEL_STEP = 0.02;
 // Applied while Shift is held, for fine adjustment.
 const VOLUME_FINE_FACTOR = 0.2;
+const KNOB_TICKS = 11;
 
 const clampVolume = (value: number) => Math.min(1, Math.max(0, value));
+
+const formatTime = (time: number) => {
+  const mins = Math.floor(time / 60);
+  const secs = Math.floor(time % 60);
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+};
+
+// Hardware transport key: a raised cap that sinks when pressed.
+const KEY_CLASS =
+  "flex items-center justify-center rounded-xl border transition-[transform,box-shadow,background-color,filter] duration-150 active:translate-y-0.5 disabled:pointer-events-none disabled:opacity-40";
 
 export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
   const {
@@ -23,22 +34,16 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
     volume,
     setVolume,
     audioRef,
-    controls,
     togglePlay,
     stop,
     seek,
     handleTimeUpdate,
     handleLoadedMetadata,
-    handlePlaybackStarted,
-    handlePlaybackStopped,
+    syncPlayState,
   } = useTapePlayer(activeSnippet);
 
   const knobRotation = volume * 270 - 135;
-  const formatTime = (time: number) => {
-    const mins = Math.floor(time / 60);
-    const secs = Math.floor(time % 60);
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
+  const progress = (currentTime / (duration || 1)) * 100;
 
   const handleKnobPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
@@ -80,67 +85,48 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto mb-12">
-      <div className="bg-slate-800 rounded-3xl p-1 shadow-2xl border border-slate-700 relative overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-b from-white/5 to-transparent pointer-events-none rounded-3xl" />
+    <div className="mx-auto w-full max-w-3xl">
+      {/* Chassis: a brushed top plate around a recessed deck. */}
+      <div className="relative rounded-[2rem] border border-line bg-linear-to-b from-[#1a2432] to-ink-850 p-1.5 shadow-[0_60px_120px_-50px_rgb(0_0_0/0.95),inset_0_1px_0_rgb(255_255_255/0.08)]">
+        <div className="relative rounded-[1.65rem] bg-ink-900/85 p-4 shadow-[inset_0_2px_12px_rgb(0_0_0/0.5)] sm:p-7">
+          <p className="mb-6 text-sm font-bold tracking-[0.2em] text-brand uppercase">
+            Tape Player
+          </p>
 
-        <div className="bg-slate-900 rounded-[1.4rem] p-6 sm:p-8 relative">
-          <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center space-x-2">
-              <div
-                className={`w-3 h-3 rounded-full ${activeSnippet ? "bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]" : "bg-red-900"}`}
-              />
-              <span className="text-xs font-mono text-slate-400 tracking-widest uppercase">
-                Power On
-              </span>
-            </div>
-            <div className="text-right">
-              <h3 className="text-brand font-bold uppercase tracking-widest text-sm">
-                Tape Player
-              </h3>
-              <p className="text-[10px] text-slate-500 font-mono">
-                STEREO CASSETTE DECK
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-slate-800 rounded-xl p-4 mb-8 border-4 border-slate-700 shadow-inner relative overflow-hidden h-72 flex items-center justify-center">
-            <div className="absolute inset-0 bg-linear-to-tr from-white/5 via-transparent to-transparent pointer-events-none z-20" />
+          {/* Tape well, behind smoked glass. */}
+          <div className="relative flex h-60 items-center justify-center overflow-hidden rounded-2xl border border-black/50 bg-[radial-gradient(ellipse_at_50%_30%,var(--color-ink-700),var(--color-ink-850)_90%)] p-5 shadow-[inset_0_4px_24px_rgb(0_0_0/0.6)] sm:h-72 sm:p-8">
             {activeSnippet ? (
               <CassetteVisual
                 title={activeSnippet.title}
                 variant="deck"
-                reelAnimation={controls}
+                playing={isPlaying}
               />
             ) : (
-              <div className="text-slate-600 font-mono text-sm uppercase tracking-widest">
-                No Cassette Loaded
-              </div>
+              <p className="eyebrow text-muted">No Cassette Loaded</p>
             )}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgb(255_255_255/0.04),transparent_60%)]"
+            />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-            <div className="bg-slate-800 rounded-lg p-4 border border-slate-600 shadow-inner font-mono relative overflow-hidden">
-              <div className="flex justify-between items-center text-brand mb-2">
-                <div className="text-xs tracking-widest uppercase">
-                  Playback
-                </div>
-                <div className="text-lg font-bold tracking-wider">
-                  {formatTime(currentTime)} / {formatTime(duration)}
-                </div>
-              </div>
+          <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-center">
+            {/* Scrub bar: a styled track over a transparent native range, so
+                keyboard and assistive tech get a real slider. */}
+            <div className="flex flex-1 items-center gap-3 font-mono text-xs text-slate-400 tabular-nums">
+              <span>{formatTime(currentTime)}</span>
               <div
-                className={`w-full bg-slate-800 h-2 rounded-full relative group focus-within:ring-2 focus-within:ring-brand ${activeSnippet ? "cursor-pointer" : ""}`}
+                className={`group relative h-2 flex-1 rounded-full bg-white/[0.07] shadow-[inset_0_1px_2px_rgb(0_0_0/0.6)] focus-within:ring-2 focus-within:ring-brand focus-within:ring-offset-2 focus-within:ring-offset-ink-900 ${
+                  activeSnippet ? "cursor-pointer" : ""
+                }`}
               >
                 <div
-                  className="h-full bg-brand shadow-[0_0_10px_rgba(51,230,204,0.8)] relative"
-                  style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
-                >
-                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50 blur-[1px]" />
-                </div>
+                  className="h-full rounded-full bg-linear-to-r from-brand-dark to-brand shadow-[0_0_12px_rgb(0_255_204/0.6)]"
+                  style={{ width: `${progress}%` }}
+                />
                 <div
-                  className="absolute top-1/2 w-3 h-3 bg-white rounded-full shadow-lg border-2 border-brand -translate-x-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-200 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100"
-                  style={{ left: `${(currentTime / (duration || 1)) * 100}%` }}
+                  className="pointer-events-none absolute top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-brand bg-white shadow-lg transition-opacity duration-200 group-focus-within:opacity-100 group-hover:opacity-100 sm:opacity-0"
+                  style={{ left: `${progress}%` }}
                 />
                 <input
                   type="range"
@@ -152,36 +138,40 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                   disabled={!activeSnippet || duration <= 0}
                   aria-label="Playback position"
                   aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
-                  className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0 disabled:cursor-default"
+                  className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0 focus:outline-none disabled:cursor-default"
                 />
               </div>
+              <span>{formatTime(duration)}</span>
             </div>
 
-            <div className="flex justify-end items-end space-x-6">
-              <div className="flex flex-col items-center mr-4">
-                <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest mb-1">
-                  Vol
-                </div>
+            <div className="flex items-center justify-between gap-5 sm:justify-end">
+              <div className="flex flex-col items-center">
+                <span className="eyebrow mb-1.5 text-muted">Vol</span>
                 <div
                   onPointerDown={handleKnobPointerDown}
                   onWheel={handleKnobWheel}
-                  className="relative w-12 h-12 flex items-center justify-center cursor-ns-resize group focus-within:ring-2 focus-within:ring-brand rounded-full select-none"
+                  className="group relative flex size-14 cursor-ns-resize items-center justify-center rounded-full select-none focus-within:ring-2 focus-within:ring-brand"
                 >
-                  {Array.from({ length: 11 }).map((_, i) => (
+                  {Array.from({ length: KNOB_TICKS }).map((_, i) => (
                     <div
                       key={i}
-                      className="absolute w-0.5 h-1.5 bg-slate-600 origin-bottom"
+                      aria-hidden="true"
+                      className={`absolute h-1.5 w-0.5 origin-bottom rounded-full ${
+                        i / (KNOB_TICKS - 1) <= volume
+                          ? "bg-brand shadow-[0_0_6px_var(--color-brand)]"
+                          : "bg-slate-600"
+                      }`}
                       style={{
-                        transform: `rotate(${-135 + i * 27}deg) translateY(-18px)`,
-                        opacity: 0.3 + (i / 10) * 0.7,
+                        transform: `rotate(${-135 + i * 27}deg) translateY(-22px)`,
                       }}
                     />
                   ))}
                   <div
-                    className="w-9 h-9 rounded-full bg-linear-to-br from-slate-300 to-slate-500 shadow-lg border border-slate-600 relative transition-transform duration-75 ease-out group-hover:brightness-110 pointer-events-none"
+                    aria-hidden="true"
+                    className="pointer-events-none relative size-10 rounded-full border border-black/60 bg-[conic-gradient(from_0deg,#cfd6df,#8a95a5,#e3e8ee,#7d8898,#cfd6df,#8a95a5,#e3e8ee,#7d8898,#cfd6df)] shadow-[0_6px_14px_rgb(0_0_0/0.6),inset_0_1px_0_rgb(255_255_255/0.6)] transition-[filter] duration-75 group-hover:brightness-110"
                     style={{ transform: `rotate(${knobRotation}deg)` }}
                   >
-                    <div className="absolute top-1 left-1/2 -translate-x-1/2 w-0.5 h-2 bg-slate-800 rounded-full" />
+                    <div className="absolute top-1 left-1/2 h-2.5 w-0.5 -translate-x-1/2 rounded-full bg-ink-900" />
                   </div>
                   <input
                     type="range"
@@ -194,31 +184,35 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
                     }
                     aria-label="Volume"
                     aria-valuetext={`${Math.round(volume * 100)}%`}
-                    className="absolute inset-0 z-10 h-full w-full cursor-ns-resize opacity-0 pointer-events-none"
+                    className="pointer-events-none absolute inset-0 z-10 h-full w-full cursor-ns-resize opacity-0 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <button
-                onClick={stop}
-                disabled={!activeSnippet}
-                aria-label="Stop playback"
-                className="w-12 h-12 rounded bg-slate-700 shadow-md active:translate-y-1 transition-all flex items-center justify-center text-slate-300 hover:bg-slate-600 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
-              >
-                <Square size={16} fill="currentColor" />
-              </button>
-              <button
-                onClick={togglePlay}
-                disabled={!activeSnippet}
-                aria-label={isPlaying ? "Pause playback" : "Start playback"}
-                className="w-12 h-12 rounded bg-brand shadow-md active:translate-y-1 transition-all flex items-center justify-center text-slate-900 hover:brightness-110 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-              >
-                {isPlaying ? (
-                  <Pause size={20} fill="currentColor" />
-                ) : (
-                  <Play size={20} fill="currentColor" />
-                )}
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={stop}
+                  disabled={!activeSnippet}
+                  aria-label="Stop playback"
+                  className={`${KEY_CLASS} size-14 border-black/50 bg-linear-to-b from-[#2a3546] to-[#1a2330] text-slate-300 shadow-[0_4px_0_#0b1018,inset_0_1px_0_rgb(255_255_255/0.1)] hover:brightness-110 active:shadow-[0_1px_0_#0b1018,inset_0_1px_0_rgb(255_255_255/0.1)]`}
+                >
+                  <Square size={16} fill="currentColor" aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={togglePlay}
+                  disabled={!activeSnippet}
+                  aria-label={isPlaying ? "Pause playback" : "Start playback"}
+                  className={`${KEY_CLASS} h-14 w-20 border-brand-darker bg-linear-to-b from-[#5dffe0] to-brand text-ink-950 shadow-[0_4px_0_#008a6b,0_0_28px_-6px_rgb(0_255_204/0.7),inset_0_1px_0_rgb(255_255_255/0.5)] hover:brightness-105 active:shadow-[0_1px_0_#008a6b,inset_0_1px_0_rgb(255_255_255/0.5)]`}
+                >
+                  {isPlaying ? (
+                    <Pause size={20} fill="currentColor" aria-hidden="true" />
+                  ) : (
+                    <Play size={20} fill="currentColor" aria-hidden="true" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -228,9 +222,9 @@ export default function CassetteDeck({ activeSnippet }: CassetteDeckProps) {
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
-        onPlay={handlePlaybackStarted}
-        onPause={handlePlaybackStopped}
-        onEnded={handlePlaybackStopped}
+        onPlay={syncPlayState}
+        onPause={syncPlayState}
+        onEnded={syncPlayState}
         className="hidden"
       />
     </div>

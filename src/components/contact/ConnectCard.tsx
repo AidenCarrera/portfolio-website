@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
 import { socialLinks } from "@/lib/socialLinks";
 
 export default function ConnectCard() {
@@ -6,27 +7,36 @@ export default function ConnectCard() {
   }
 
   return (
-    <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700">
-      <h2 className="text-2xl font-bold text-white mb-6">Connect</h2>
-      <div className="space-y-3">
+    <section aria-labelledby="connect-heading">
+      <h2 id="connect-heading" className="eyebrow text-muted">
+        Connect
+      </h2>
+      <ul className="mt-4 border-t border-line">
         {socialLinks.map((link) => (
-          <a
-            key={link.label}
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`flex items-center space-x-4 p-4 rounded-lg bg-slate-700/50 border border-slate-600 hover:border-brand/50 transition-all group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand ${link.color}`}
-          >
-            <link.icon
-              size={24}
-              className="text-slate-400 group-hover:text-current transition-colors"
-            />
-            <span className="text-slate-300 group-hover:text-white transition-colors font-medium">
-              {link.label}
-            </span>
-          </a>
+          <li key={link.label} className="border-b border-line">
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-4 rounded-sm py-4 transition-colors"
+            >
+              <span
+                className={`flex size-10 shrink-0 items-center justify-center rounded-full border border-line text-slate-400 transition-colors group-hover:border-line-strong ${link.groupColor}`}
+              >
+                <link.icon size={17} aria-hidden="true" />
+              </span>
+              <span className="min-w-0 flex-1 font-medium text-slate-200 transition-colors group-hover:text-white">
+                {link.label}
+              </span>
+              <ArrowUpRight
+                size={18}
+                aria-hidden="true"
+                className="shrink-0 text-slate-600 transition-all duration-300 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand"
+              />
+            </a>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </section>
   );
 }

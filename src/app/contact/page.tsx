@@ -1,7 +1,10 @@
 import ContactFormCard from "@/components/contact/ContactFormCard";
 import ConnectCard from "@/components/contact/ConnectCard";
-import { Mail } from "lucide-react";
+import EmailCopyField from "@/components/common/EmailCopyField";
+import PageHeader from "@/components/common/PageHeader";
+import Reveal from "@/components/common/Reveal";
 import { getWebsiteProfile } from "@/lib/profile";
+import { CONTAINER } from "@/lib/styles";
 import type { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,24 +23,34 @@ export default async function Contact() {
   const profile = await getWebsiteProfile();
 
   return (
-    <div className="min-h-screen bg-slate-900 pt-8 pb-20">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-brand to-brand-dark mb-6">
-            <Mail size={32} className="text-white" />
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Get In Touch
-          </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Interested in working together or discussing an opportunity? Let&apos;s connect!
-          </p>
-        </div>
+    <div className="pb-24 sm:pb-32">
+      <PageHeader title="Get In Touch">
+        Interested in working together or discussing an opportunity? Let&apos;s
+        connect!
+      </PageHeader>
 
-        <div className="grid items-start gap-8 md:grid-cols-2">
-          <ContactFormCard email={profile.email} />
+      <div
+        className={`${CONTAINER} grid items-start gap-12 lg:grid-cols-12 lg:gap-16`}
+      >
+        {/* min-w-0: the email field cannot shrink below its own text, so
+            without it the column grows past a phone's width. */}
+        <Reveal className="min-w-0 space-y-12 lg:col-span-5">
+          {profile.email && (
+            <section aria-labelledby="direct-heading">
+              <h2 id="direct-heading" className="eyebrow text-muted">
+                Direct Contact
+              </h2>
+              <div className="mt-4">
+                <EmailCopyField email={profile.email} size="large" />
+              </div>
+            </section>
+          )}
           <ConnectCard />
-        </div>
+        </Reveal>
+
+        <Reveal delay={0.08} className="min-w-0 lg:col-span-7">
+          <ContactFormCard />
+        </Reveal>
       </div>
     </div>
   );

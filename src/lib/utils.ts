@@ -5,6 +5,19 @@ export function cmsText(value: string | undefined, fallback: string): string {
   return value?.trim() || fallback;
 }
 
+/**
+ * GitHub stores a repository's homepage as typed, which is sometimes without
+ * a scheme. Lives here rather than in `projects.ts` so client components can
+ * use it without bundling the GitHub and Sanity fetchers.
+ */
+export function getLiveUrl(homepageUrl: string | null): string | null {
+  const homepage = homepageUrl?.trim();
+  if (!homepage) {
+    return null;
+  }
+  return homepage.startsWith("http") ? homepage : `https://${homepage}`;
+}
+
 // Preserve GIF animation by bypassing image optimization.
 export function isAnimatedImage(image: SanityImage | undefined): boolean {
   const asset = image?.asset;

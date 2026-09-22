@@ -10,9 +10,14 @@ import {
   Laptop,
   ChevronLeft,
   ChevronRight,
+  Piano,
+  type LucideIcon,
 } from "lucide-react";
 import CategoryFilter from "@/components/common/CategoryFilter";
 import ImageLightbox from "@/components/common/ImageLightbox";
+import Reveal from "@/components/common/Reveal";
+import SectionHeading from "@/components/common/SectionHeading";
+import { CHIP, CHIP_ACCENT } from "@/lib/styles";
 import { isAnimatedImage } from "@/lib/utils";
 import type { GearItemType, SanityGearItem } from "@/sanity/types";
 
@@ -23,21 +28,13 @@ interface GearSectionProps {
 const TYPE_SECTIONS: Array<{
   type: GearItemType;
   title: string;
-  icon: React.ReactNode;
+  icon: LucideIcon;
 }> = [
-  { type: "instrument", title: "Instruments", icon: <Music size={24} /> },
-  { type: "hardware", title: "Hardware", icon: <Mic2 size={24} /> },
-  { type: "software", title: "Software", icon: <Laptop size={24} /> },
-  {
-    type: "instrumentPlugin",
-    title: "Instrument Plugins",
-    icon: <Music size={24} />,
-  },
-  {
-    type: "mixingPlugin",
-    title: "Mixing Plugins",
-    icon: <Speaker size={24} />,
-  },
+  { type: "instrument", title: "Instruments", icon: Music },
+  { type: "hardware", title: "Hardware", icon: Mic2 },
+  { type: "software", title: "Software", icon: Laptop },
+  { type: "instrumentPlugin", title: "Instrument Plugins", icon: Piano },
+  { type: "mixingPlugin", title: "Mixing Plugins", icon: Speaker },
 ];
 
 // Plugins are listed as compact pills instead of image-led cards.
@@ -45,6 +42,9 @@ const PLUGIN_TYPES = new Set<GearItemType>([
   "instrumentPlugin",
   "mixingPlugin",
 ]);
+
+const railButtonClass =
+  "absolute top-[40%] z-20 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-ink-900/85 text-slate-300 shadow-lg backdrop-blur-md transition-all hover:border-brand/50 hover:text-brand disabled:pointer-events-none disabled:opacity-0 sm:flex";
 
 function GearCard({
   item,
@@ -60,12 +60,8 @@ function GearCard({
 
   return (
     <li
-      className={`group overflow-hidden rounded-xl border bg-slate-800/50 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-brand/5 ${
+      className={`relative panel group rounded-2xl p-2 transition-transform duration-500 ease-out-expo hover:-translate-y-1 motion-reduce:hover:translate-y-0 ${
         layout === "rail" ? "w-56 shrink-0 snap-start sm:w-64" : "h-full"
-      } ${
-        item.featured
-          ? "border-brand/30 hover:border-brand/60"
-          : "border-slate-700 hover:border-brand/50"
       }`}
     >
       {image && imageUrl && (
@@ -73,7 +69,7 @@ function GearCard({
           image={image}
           title={item.name}
           label={`View a larger image of ${item.name}`}
-          className="relative block aspect-square w-full bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+          className="relative block aspect-square w-full overflow-hidden rounded-xl bg-white focus-visible:outline-offset-[-2px]"
         >
           <Image
             src={imageUrl}
@@ -94,14 +90,20 @@ function GearCard({
             // same check here the thumbnail sits frozen on its first frame
             // until opened.
             unoptimized={isAnimatedImage(image)}
-            className="object-cover"
+            className="object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
         </ImageLightbox>
       )}
-      <div className="p-4">
-        <h4 className="font-semibold text-white transition-colors group-hover:text-brand">
+      <div className="flex items-center justify-between gap-2 px-2.5 pt-3.5 pb-2">
+        <h4 className="text-sm font-semibold text-white transition-colors group-hover:text-brand">
           {item.name}
         </h4>
+        {item.featured && (
+          <span
+            aria-label="Featured"
+            className="size-1.5 shrink-0 rounded-full bg-brand shadow-[0_0_8px_var(--color-brand)]"
+          />
+        )}
       </div>
     </li>
   );
@@ -154,10 +156,10 @@ function GearCarousel({
     <div className="relative flex flex-col">
       {/* Fades hint that the rail continues past the viewport edge. */}
       {!atStart && (
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-linear-to-r from-slate-900 to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-linear-to-r from-ink-900 to-transparent" />
       )}
       {!atEnd && (
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-linear-to-l from-slate-900 to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-linear-to-l from-ink-900 to-transparent" />
       )}
 
       <ul
@@ -165,8 +167,8 @@ function GearCarousel({
         onScroll={updateBounds}
         tabIndex={0}
         aria-label={`${label} — scroll horizontally to browse`}
-        // Counter-margin padding offsets horizontal overflow shadow clipping.
-        className="scrollbar-none -mt-2 flex snap-x snap-mandatory gap-6 overflow-x-auto overscroll-x-contain pt-2 pb-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+        // Counter-margin padding keeps the cards' hover lift from clipping.
+        className="scrollbar-none -mt-2 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain rounded-2xl pt-2 pb-2"
       >
         {items.map((item) => (
           <GearCard key={item._id} item={item} layout="rail" />
@@ -179,18 +181,18 @@ function GearCarousel({
         onClick={() => scrollByPage(-1)}
         disabled={atStart}
         aria-label={`Scroll ${label} left`}
-        className="absolute top-1/2 left-2 z-20 hidden -translate-y-1/2 rounded-lg border border-slate-700/50 bg-slate-900/80 p-2 text-slate-300 backdrop-blur-sm transition-all hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:pointer-events-none disabled:opacity-0 sm:block"
+        className={`${railButtonClass} left-3`}
       >
-        <ChevronLeft size={20} />
+        <ChevronLeft size={18} aria-hidden="true" />
       </button>
       <button
         type="button"
         onClick={() => scrollByPage(1)}
         disabled={atEnd}
         aria-label={`Scroll ${label} right`}
-        className="absolute top-1/2 right-2 z-20 hidden -translate-y-1/2 rounded-lg border border-slate-700/50 bg-slate-900/80 p-2 text-slate-300 backdrop-blur-sm transition-all hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:pointer-events-none disabled:opacity-0 sm:block"
+        className={`${railButtonClass} right-3`}
       >
-        <ChevronRight size={20} />
+        <ChevronRight size={18} aria-hidden="true" />
       </button>
     </div>
   );
@@ -208,29 +210,28 @@ function PluginList({ items }: { items: SanityGearItem[] }) {
   }
 
   return (
-    <div className="space-y-6">
+    <dl className="divide-y divide-line border-y border-line">
       {Array.from(groups.entries()).map(([category, categoryItems]) => (
-        <div key={category}>
-          <h4 className="mb-3 text-sm font-medium text-slate-300">
-            {category}
-          </h4>
-          <ul className="flex flex-wrap gap-2">
-            {categoryItems.map((item) => (
-              <li
-                key={item._id}
-                className={`rounded-full border px-3 py-1 text-xs font-medium ${
-                  item.featured
-                    ? "border-brand/20 bg-brand/10 text-brand"
-                    : "border-transparent bg-slate-700 text-slate-300"
-                }`}
-              >
-                {item.name}
-              </li>
-            ))}
-          </ul>
+        <div
+          key={category}
+          className="grid gap-3 py-5 sm:grid-cols-[14rem_1fr] sm:gap-8"
+        >
+          <dt className="text-sm font-medium text-slate-300">{category}</dt>
+          <dd>
+            <ul className="flex flex-wrap gap-1.5">
+              {categoryItems.map((item) => (
+                <li
+                  key={item._id}
+                  className={item.featured ? CHIP_ACCENT : CHIP}
+                >
+                  {item.name}
+                </li>
+              ))}
+            </ul>
+          </dd>
         </div>
       ))}
-    </div>
+    </dl>
   );
 }
 
@@ -259,41 +260,46 @@ export default function GearSection({ gear }: GearSectionProps) {
 
   const categories = useMemo(
     () => [
-      { value: "all", label: "All" },
+      { value: "all", label: "All", count: gear.length },
       ...sections.map((section) => ({
         value: section.type,
         label: section.title,
+        count: section.items.length,
       })),
     ],
-    [sections],
+    [gear.length, sections],
   );
 
   return (
-    <section>
-      <div className="mb-8 flex items-center space-x-3">
-        <Wrench className="text-brand" size={28} />
-        <h2 className="text-3xl font-bold text-white">Gear &amp; Software</h2>
-      </div>
+    <section aria-labelledby="gear-heading">
+      <Reveal>
+        <SectionHeading title="Gear & Software" id="gear-heading" />
+      </Reveal>
 
       {gear.length > 0 ? (
         <>
-          <CategoryFilter
-            categories={categories}
-            selected={activeType}
-            onSelect={(selected) => {
-              const match = sections.find(
-                (section) => section.type === selected,
-              );
-              setActiveType(match ? match.type : "all");
-            }}
-          />
+          <div className="mt-10">
+            <CategoryFilter
+              categories={categories}
+              selected={activeType}
+              label="Filter gear by type"
+              onSelect={(selected) => {
+                const match = sections.find(
+                  (section) => section.type === selected,
+                );
+                setActiveType(match ? match.type : "all");
+              }}
+            />
+          </div>
 
-          <div className="space-y-16">
-            {visibleSections.map(({ type, title, icon, items }) => (
+          <div className="mt-12 space-y-16">
+            {visibleSections.map(({ type, title, icon: Icon, items }) => (
               <div key={type}>
-                <div className="mb-6 flex items-center space-x-3 border-b border-slate-800 pb-2">
-                  <span className="text-brand">{icon}</span>
-                  <h3 className="text-2xl font-semibold text-slate-200">
+                <div className="mb-6 flex items-center gap-3">
+                  <span className="flex size-9 items-center justify-center rounded-lg border border-brand/20 bg-brand/[0.07] text-brand">
+                    <Icon size={17} aria-hidden="true" />
+                  </span>
+                  <h3 className="text-xl font-semibold tracking-tight text-white">
                     {title}
                   </h3>
                 </div>
@@ -304,7 +310,7 @@ export default function GearSection({ gear }: GearSectionProps) {
                   <GearCarousel items={items} label={title} />
                 ) : (
                   // Auto-fill grid (16-17rem range) yields 4 columns on desktop, scaling cleanly down.
-                  <ul className="grid justify-center gap-6 grid-cols-[repeat(auto-fill,minmax(min(16rem,100%),17rem))]">
+                  <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(16rem,100%),17rem))] justify-center gap-4">
                     {items.map((item) => (
                       <GearCard key={item._id} item={item} layout="grid" />
                     ))}
@@ -315,8 +321,12 @@ export default function GearSection({ gear }: GearSectionProps) {
           </div>
         </>
       ) : (
-        <div className="rounded-xl border border-slate-700 bg-slate-800/30 p-12 text-center">
-          <Wrench size={48} className="mx-auto mb-4 text-slate-600" />
+        <div className="panel mt-12 rounded-2xl p-12 text-center">
+          <Wrench
+            size={40}
+            className="mx-auto mb-4 text-slate-600"
+            aria-hidden="true"
+          />
           <p className="text-slate-400">Gear showcase coming soon.</p>
         </div>
       )}

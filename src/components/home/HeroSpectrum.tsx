@@ -1,27 +1,23 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { type CSSProperties, useEffect, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 
-// Dot pitch of the LED wall. Larger cells mean fewer fills per frame, which is
-// what keeps the hero cheap on low-end laptops and phones.
 const CELL_X = 20;
 const CELL_Y = 14;
 const DOT_SIZE = 2.5;
 const MAX_DPR = 2;
-// Rows a held peak falls by, mirroring an analyser's peak hold. Per second, not
-// per frame, so the fall reads the same on a 60Hz panel and a 120Hz one.
+const TAIL_ROWS = 8;
+export const SPECTRUM_TAIL_HEIGHT = TAIL_ROWS * CELL_Y;
+const BAR_BASE_ALPHA = 0.9;
 const PEAK_DECAY_PER_SECOND = 3;
-// Guards the first frame and any tab that was throttled in the background, so a
-// long gap cannot drop every peak to the floor at once.
 const MAX_FRAME_SECONDS = 1 / 20;
 const NOISE_FLOOR = 0.05;
 const POINTER_WIDTH = 0.05;
-// On top of lifting the columns it is over, the pointer lights them harder.
-// The glow is spread wider than the lift so the cursor reads as a soft
-// highlight across the wall rather than one hot column.
 const POINTER_GLOW_WIDTH = 0.085;
 const POINTER_GLOW = 0.65;
+const BAR_COLOR = "#00ffcc";
+const PEAK_COLOR = "#c6fff2";
 
 interface SpectralPeak {
   centre: number;
@@ -33,8 +29,6 @@ interface SpectralPeak {
   phase: number;
 }
 
-// Drifting gaussian bumps across the normalised frequency axis, weighted low so
-// the wall has the bass-heavy tilt of real programme material, not flat noise.
 const PEAKS: SpectralPeak[] = [
   {
     centre: 0.05,
@@ -102,10 +96,16 @@ function spectrum(position: number, seconds: number): number {
   return energy;
 }
 
-/**
- * Spectrum-analyser wall behind the hero. The envelope is synthesised, not
- * sampled from audio, so nothing here asks for a microphone or downloads media.
- */
+function wallStop(fraction: number): string {
+  return `calc(${SPECTRUM_TAIL_HEIGHT}px + (100% - ${SPECTRUM_TAIL_HEIGHT}px) * ${fraction})`;
+}
+
+const CANVAS_STYLE: CSSProperties = {
+  bottom: -SPECTRUM_TAIL_HEIGHT,
+  height: `calc(56% + ${SPECTRUM_TAIL_HEIGHT}px)`,
+  maskImage: `linear-gradient(to top, transparent, rgb(0 0 0 / 0.35) ${SPECTRUM_TAIL_HEIGHT / 2}px, black ${SPECTRUM_TAIL_HEIGHT}px, black ${wallStop(0.3)}, transparent ${wallStop(0.92)})`,
+};
+
 export default function HeroSpectrum() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerRef = useRef({ position: 0.5, strength: 0, target: 0 });
@@ -122,16 +122,15 @@ export default function HeroSpectrum() {
     const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
     let width = 0;
     let height = 0;
+    let wallHeight = 0;
     let columns = 0;
     let rows = 0;
     let heldPeaks = new Float32Array(0);
-    // Unlit dots never change, so they are rasterised once and blitted as a
-    // single image each frame rather than re-filled cell by cell.
-    let unlitLayer: HTMLCanvasElement | null = null;
+    let staticLayer: HTMLCanvasElement | null = null;
     let frameId = 0;
     let onScreen = true;
 
-    const buildUnlitLayer = () => {
+    const buildStaticLayer = () => {
       const layer = document.createElement("canvas");
       layer.width = Math.max(1, Math.round(width * dpr));
       layer.height = Math.max(1, Math.round(height * dpr));
@@ -148,7 +147,21 @@ export default function HeroSpectrum() {
         for (let row = 0; row < rows; row += 1) {
           layerContext.fillRect(
             column * CELL_X,
-            height - (row + 1) * CELL_Y,
+            wallHeight - (row + 1) * CELL_Y,
+            DOT_SIZE,
+            DOT_SIZE,
+          );
+        }
+      }
+
+      layerContext.globalAlpha = BAR_BASE_ALPHA;
+      layerContext.fillStyle = BAR_COLOR;
+
+      for (let column = 0; column < columns; column += 1) {
+        for (let row = 0; row < TAIL_ROWS; row += 1) {
+          layerContext.fillRect(
+            column * CELL_X,
+            wallHeight + row * CELL_Y,
             DOT_SIZE,
             DOT_SIZE,
           );
@@ -161,14 +174,14 @@ export default function HeroSpectrum() {
     const draw = (seconds: number, elapsed: number) => {
       context.clearRect(0, 0, width, height);
 
-      if (unlitLayer) {
-        context.drawImage(unlitLayer, 0, 0, width, height);
+      if (staticLayer) {
+        context.drawImage(staticLayer, 0, 0, width, height);
       }
 
       const pointer = pointerRef.current;
       pointer.strength += (pointer.target - pointer.strength) * 0.08;
 
-      context.fillStyle = "#00ffcc";
+      context.fillStyle = BAR_COLOR;
 
       for (let column = 0; column < columns; column += 1) {
         const position = columns > 1 ? column / (columns - 1) : 0;
@@ -185,37 +198,40 @@ export default function HeroSpectrum() {
           glow =
             pointer.strength *
             POINTER_GLOW *
-            Math.exp(
-              -squared / (2 * POINTER_GLOW_WIDTH * POINTER_GLOW_WIDTH),
-            );
+            Math.exp(-squared / (2 * POINTER_GLOW_WIDTH * POINTER_GLOW_WIDTH));
         }
 
         const lit = Math.min(rows, Math.round(Math.min(energy, 0.95) * rows));
         const x = column * CELL_X;
 
         for (let row = 0; row < lit; row += 1) {
-          // Alpha rather than fillStyle: no per-dot string allocation. The
-          // glow scales the column rather than adding a flat amount, so it
-          // keeps its base-to-top falloff instead of going solid under the
-          // cursor.
           const alpha =
-            (0.62 - 0.41 * (row / Math.max(lit - 1, 1))) * (1 + glow);
+            (BAR_BASE_ALPHA - 0.55 * (row / Math.max(lit - 1, 1))) * (1 + glow);
           context.globalAlpha = alpha > 1 ? 1 : alpha;
-          context.fillRect(x, height - (row + 1) * CELL_Y, DOT_SIZE, DOT_SIZE);
+          context.fillRect(
+            x,
+            wallHeight - (row + 1) * CELL_Y,
+            DOT_SIZE,
+            DOT_SIZE,
+          );
         }
 
-        const held = Math.max(
+        heldPeaks[column] = Math.max(
           heldPeaks[column] - PEAK_DECAY_PER_SECOND * elapsed,
           lit,
         );
-        heldPeaks[column] = held;
-        const heldRow = Math.floor(held);
+      }
+
+      context.globalAlpha = 0.8;
+      context.fillStyle = PEAK_COLOR;
+
+      for (let column = 0; column < columns; column += 1) {
+        const heldRow = Math.floor(heldPeaks[column]);
 
         if (heldRow > 0 && heldRow < rows) {
-          context.globalAlpha = glow > 0.05 ? 1 : 0.95;
           context.fillRect(
-            x,
-            height - (heldRow + 1) * CELL_Y,
+            column * CELL_X,
+            wallHeight - (heldRow + 1) * CELL_Y,
             DOT_SIZE,
             DOT_SIZE,
           );
@@ -232,10 +248,11 @@ export default function HeroSpectrum() {
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      wallHeight = Math.max(0, height - SPECTRUM_TAIL_HEIGHT);
       columns = Math.ceil(width / CELL_X) + 1;
-      rows = Math.ceil(height / CELL_Y) + 1;
+      rows = Math.ceil(wallHeight / CELL_Y) + 1;
       heldPeaks = new Float32Array(columns);
-      unlitLayer = buildUnlitLayer();
+      staticLayer = buildStaticLayer();
       draw(0, 0);
     };
 
@@ -261,8 +278,6 @@ export default function HeroSpectrum() {
       if (frameId) {
         cancelAnimationFrame(frameId);
         frameId = 0;
-        // The next frame after a pause resumes from a fresh clock rather than
-        // charging the whole hidden stretch to one decay step.
         previousTime = 0;
       }
     };
@@ -270,8 +285,6 @@ export default function HeroSpectrum() {
     const handlePointerMove = (event: PointerEvent) => {
       const bounds = canvas.getBoundingClientRect();
       const pointer = pointerRef.current;
-      // The wall only covers the lower part of the hero, so the pointer is
-      // tracked well above it to keep the response from feeling like a hotspot.
       const withinReach =
         event.clientX >= bounds.left &&
         event.clientX <= bounds.right &&
@@ -342,7 +355,8 @@ export default function HeroSpectrum() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] w-full mask-[linear-gradient(to_top,black_0%,black_30%,transparent_92%)]"
+      className="pointer-events-none absolute inset-x-0 w-full"
+      style={CANVAS_STYLE}
     />
   );
 }

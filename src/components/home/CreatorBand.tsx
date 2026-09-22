@@ -1,12 +1,14 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import Reveal from "./Reveal";
+import ArrowLink from "@/components/common/ArrowLink";
+import Reveal from "@/components/common/Reveal";
+import SectionHeading from "@/components/common/SectionHeading";
+import { CONTAINER } from "@/lib/styles";
 
 interface CreatorBandProps {
   intro: string;
 }
 
 const BAR_COUNT = 72;
+const RULER_MARKS = ["0:00", "0:15", "0:30", "0:45", "1:00", "1:15"];
 
 // Deterministic envelope: a slow swell crossed with two faster partials, so the
 // shape reads like a mixed-down waveform and matches between server and client.
@@ -21,65 +23,78 @@ function barHeight(index: number): number {
   return Math.max(0.12, Math.min(1, swell * detail));
 }
 
+const BARS = Array.from({ length: BAR_COUNT }, (_, index) => barHeight(index));
+
+function Bars({ played }: { played: boolean }) {
+  return (
+    <div className="flex h-full items-center justify-between gap-px">
+      {BARS.map((height, index) => (
+        <span
+          key={index}
+          className={`animate-waveform flex-1 rounded-full ${
+            played
+              ? "bg-linear-to-t from-brand-dark to-brand shadow-[0_0_10px_rgb(0_255_204/0.35)]"
+              : "bg-slate-500/25"
+          }`}
+          style={{
+            height: `${height * 100}%`,
+            animationDelay: `${(index % 18) * 0.11}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function CreatorBand({ intro }: CreatorBandProps) {
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 pb-20 pt-4 sm:px-6 sm:pb-24 lg:px-8">
+    <section
+      aria-labelledby="music-heading"
+      className={`${CONTAINER} py-20 sm:py-28`}
+    >
       <Reveal>
-        <div className="relative overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-800/40 p-6 shadow-2xl shadow-black/20 sm:p-10">
-          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+        <div className="rounded-[2rem] border border-line bg-ink-850">
+          <div className="grid items-center gap-12 p-6 sm:p-10 lg:grid-cols-12 lg:gap-14 lg:p-14">
             <div className="lg:col-span-5">
-              <h2 className="text-[1.75rem] font-bold tracking-tight text-white sm:text-[2rem]">
-                Music
-              </h2>
-
-              {intro && (
-                <p className="mt-4 leading-relaxed text-slate-400">{intro}</p>
-              )}
-
-              <Link
-                href="/music"
-                className="group mt-6 inline-flex items-center gap-2 rounded font-semibold text-brand transition-colors hover:text-brand-light focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-              >
+              <SectionHeading title="Music" id="music-heading">
+                {intro}
+              </SectionHeading>
+              <ArrowLink href="/music" className="mt-8">
                 Take a listen
-                <ArrowRight
-                  size={17}
-                  aria-hidden="true"
-                  className="transition-transform group-hover:translate-x-1"
-                />
-              </Link>
+              </ArrowLink>
             </div>
 
-            <div className="lg:col-span-7">
-              <div className="relative overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-900 px-4 py-6 shadow-inner sm:px-6">
-                <div
-                  aria-hidden="true"
-                  className="flex h-28 items-center justify-between gap-px sm:h-32"
-                >
-                  {Array.from({ length: BAR_COUNT }, (_, index) => {
-                    const height = barHeight(index);
-
-                    return (
+            {/* A clip on a DAW timeline, playing. Decorative throughout. */}
+            <div aria-hidden="true" className="lg:col-span-7">
+              <div className="overflow-hidden rounded-2xl border border-line bg-ink-950/80 shadow-[inset_0_2px_20px_rgb(0_0_0/0.5)]">
+                <div className="relative px-4 pt-5 pb-6 sm:px-6">
+                  <div className="mb-4 flex justify-between font-mono text-[0.625rem] text-slate-600">
+                    {RULER_MARKS.map((mark, index) => (
                       <span
-                        key={index}
-                        className="animate-waveform flex-1 rounded-full bg-linear-to-t from-brand-dark/70 to-brand"
-                        style={{
-                          height: `${height * 100}%`,
-                          animationDelay: `${(index % 18) * 0.11}s`,
-                          opacity: 0.35 + height * 0.5,
-                        }}
-                      />
-                    );
-                  })}
-                </div>
+                        key={mark}
+                        className={index % 2 === 1 ? "hidden sm:inline" : ""}
+                      >
+                        {mark}
+                      </span>
+                    ))}
+                  </div>
 
-                {/* The full-width track is what animates; the line rides its
-                    leading edge, since a transform percentage resolves against
-                    the element it is applied to. */}
-                <div
-                  aria-hidden="true"
-                  className="animate-playhead pointer-events-none absolute inset-0"
-                >
-                  <div className="absolute inset-y-0 left-0 w-px bg-brand/60 shadow-[0_0_12px_rgba(0,255,204,0.6)]" />
+                  <div className="relative h-28 sm:h-36">
+                    <Bars played={false} />
+                    {/* The played half: the same bars, lit, uncovered on the
+                        playhead's clock so the two meet exactly. */}
+                    <div className="animate-played absolute inset-0">
+                      <Bars played />
+                    </div>
+                    {/* The full-width track is what animates; the line rides
+                        its leading edge, since a transform percentage resolves
+                        against the element it is applied to. */}
+                    <div className="animate-playhead pointer-events-none absolute -inset-y-2 inset-x-0">
+                      <div className="absolute inset-y-0 left-0 w-px bg-brand shadow-[0_0_14px_rgb(0_255_204/0.9)]">
+                        <span className="absolute -top-1 -left-[3px] size-[7px] rotate-45 bg-brand" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

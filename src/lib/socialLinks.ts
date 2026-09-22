@@ -8,6 +8,9 @@ interface SocialLink {
   url: string;
   label: string;
   color: string;
+  /** The same hue for when an enclosing `group` is hovered, spelled out so
+   *  Tailwind generates it. */
+  groupColor: string;
 }
 
 const spotifyArtistId = process.env.SPOTIFY_ARTIST_ID?.trim();
@@ -18,12 +21,14 @@ const configuredSocialLinks: Array<SocialLink | null> = [
     url: getGitHubProfileUrl() ?? "",
     label: "GitHub",
     color: "hover:text-purple-400",
+    groupColor: "group-hover:text-purple-400",
   },
   {
     icon: FaLinkedin,
     url: process.env.LINKEDIN_URL?.trim() ?? "",
     label: "LinkedIn",
     color: "hover:text-blue-400",
+    groupColor: "group-hover:text-blue-400",
   },
   {
     icon: SiSpotify,
@@ -32,18 +37,21 @@ const configuredSocialLinks: Array<SocialLink | null> = [
       : "",
     label: "Spotify",
     color: "hover:text-green-400",
+    groupColor: "group-hover:text-green-400",
   },
   {
     icon: SiInstagram,
     url: process.env.INSTAGRAM_URL?.trim() ?? "",
     label: "Instagram",
     color: "hover:text-pink-400",
+    groupColor: "group-hover:text-pink-400",
   },
   {
     icon: SiYoutube,
     url: process.env.YOUTUBE_URL?.trim() ?? "",
     label: "YouTube",
     color: "hover:text-red-400",
+    groupColor: "group-hover:text-red-400",
   },
 ];
 

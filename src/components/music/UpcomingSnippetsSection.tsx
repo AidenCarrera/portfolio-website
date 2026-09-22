@@ -3,6 +3,8 @@
 import { Music } from "lucide-react";
 import type { MusicSnippet } from "@/types";
 import { useState } from "react";
+import Reveal from "@/components/common/Reveal";
+import SectionHeading from "@/components/common/SectionHeading";
 import CassetteDeck from "./CassetteDeck";
 import Cassette from "./Cassette";
 
@@ -18,35 +20,46 @@ export default function UpcomingSnippetsSection({
   );
 
   return (
-    <section className="mb-24">
-      <div className="flex items-center space-x-3 mb-12">
-        <Music className="text-brand" size={28} />
-        <h2 className="text-3xl font-bold text-white">Upcoming Snippets</h2>
-      </div>
+    <section aria-labelledby="snippets-heading">
+      <Reveal>
+        <SectionHeading title="Upcoming Snippets" id="snippets-heading" />
+      </Reveal>
 
       {snippets.length > 0 ? (
-        <div className="space-y-12">
-          <CassetteDeck activeSnippet={activeSnippet} />
+        <div className="mt-12 space-y-16">
+          <Reveal>
+            <CassetteDeck activeSnippet={activeSnippet} />
+          </Reveal>
 
           <div>
-            <h3 className="text-slate-400 text-sm font-mono uppercase tracking-widest mb-6 border-b border-slate-800 pb-2">
+            <h3 className="eyebrow flex items-center justify-between border-b border-line pb-3 text-muted">
               Tape Collection
+              <span className="text-muted">
+                {String(snippets.length).padStart(2, "0")}
+              </span>
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-              {snippets.map((snippet) => (
-                <Cassette
-                  key={snippet.id}
-                  snippet={snippet}
-                  isSelected={activeSnippet?.id === snippet.id}
-                  onClick={() => setActiveSnippet(snippet)}
-                />
+            <ul className="mt-8 grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 lg:grid-cols-5">
+              {snippets.map((snippet, position) => (
+                <li key={snippet.id}>
+                  <Reveal delay={(position % 5) * 0.05}>
+                    <Cassette
+                      snippet={snippet}
+                      isSelected={activeSnippet?.id === snippet.id}
+                      onClick={() => setActiveSnippet(snippet)}
+                    />
+                  </Reveal>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       ) : (
-        <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
-          <Music size={48} className="text-slate-600 mx-auto mb-4" />
+        <div className="panel mt-12 rounded-2xl p-12 text-center">
+          <Music
+            size={40}
+            className="mx-auto mb-4 text-slate-600"
+            aria-hidden="true"
+          />
           <p className="text-slate-400">
             Tape collection empty. Check back later!
           </p>

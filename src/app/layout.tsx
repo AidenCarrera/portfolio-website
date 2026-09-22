@@ -5,6 +5,7 @@ import Navigation from "@/components/common/Navigation";
 import Footer from "@/components/common/Footer";
 import ScrollToTop from "@/components/common/ScrollToTop";
 import MotionProvider from "@/components/common/MotionProvider";
+import SocialIcons from "@/components/common/SocialIcons";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE_URL } from "@/lib/siteUrl";
@@ -86,7 +87,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport = {
-  themeColor: "#0a0a0a",
+  themeColor: "#060a11",
   width: "device-width",
   initialScale: 1,
 };
@@ -104,18 +105,18 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-slate-900 text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
       >
         <JsonLd data={getGlobalStructuredData(profile)} />
         <ScrollToTop />
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 bg-brand text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg border border-white/10 focus:outline-none focus:ring-2 focus:ring-brand"
+          className="sr-only rounded-full bg-brand px-5 py-2.5 font-semibold text-ink-950 shadow-lg focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-100"
         >
           Skip to content
         </a>
         <MotionProvider>
-          <Navigation name={profile.name} />
+          <Navigation name={profile.name} socials={<SocialIcons />} />
           <main
             id="main-content"
             className="flex grow flex-col pt-nav outline-none"

@@ -1,21 +1,20 @@
 "use client";
 
-import { useActionState, useRef, useEffect } from "react";
-import { Send } from "lucide-react";
-import EmailCopyField from "@/components/common/EmailCopyField";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { AlertCircle, CheckCircle2, Loader2, Send } from "lucide-react";
 import { CONTACT_LIMITS } from "@/lib/contact";
-
-interface ContactFormCardProps {
-  email?: string;
-}
+import { BUTTON_PRIMARY } from "@/lib/styles";
 
 interface FormState {
   status: "idle" | "success" | "error";
 }
 
+const labelClassName = "eyebrow block text-slate-400";
+// Inputs are always :focus-visible when focused, so they get their own ring:
+// a brand border plus a soft halo, in place of the site-wide outline.
 const fieldBaseClassName =
-  "w-full rounded-lg border border-slate-600 bg-slate-700 text-white placeholder-slate-400 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-brand";
-const singleLineFieldClassName = `${fieldBaseClassName} h-[50px] px-4`;
+  "mt-2.5 w-full rounded-xl border border-line-strong bg-ink-900/70 text-white placeholder-slate-600 transition-[border-color,background-color,box-shadow] duration-200 hover:border-slate-500/40 focus:border-brand/70 focus:bg-ink-900 focus:shadow-[0_0_0_4px_rgb(0_255_204/0.12)] focus:outline-none";
+const singleLineFieldClassName = `${fieldBaseClassName} h-12 px-4`;
 const multilineFieldClassName = `${fieldBaseClassName} px-4 py-3`;
 
 async function contactAction(
@@ -41,11 +40,12 @@ async function contactAction(
   }
 }
 
-export default function ContactFormCard({ email }: ContactFormCardProps) {
+export default function ContactFormCard() {
   const [state, formAction, isPending] = useActionState(contactAction, {
     status: "idle",
   } as FormState);
   const formRef = useRef<HTMLFormElement>(null);
+  const [messageLength, setMessageLength] = useState(0);
 
   useEffect(() => {
     if (state.status === "success") {
@@ -53,26 +53,26 @@ export default function ContactFormCard({ email }: ContactFormCardProps) {
     }
   }, [state]);
 
+  const nearLimit = messageLength > CONTACT_LIMITS.message * 0.9;
+
   return (
-    <div className="space-y-8">
-      <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700">
-        <h2 className="text-2xl font-bold text-white mb-6">Contact Form</h2>
+    <div className="relative panel rounded-[1.5rem] p-6 sm:p-8">
+      <h2 className="text-2xl font-semibold tracking-[-0.03em] text-white">
+        Contact Form
+      </h2>
+      <p className="mt-2 text-slate-400">Messages land straight in my inbox.</p>
 
-        {email && (
-          <div className="mb-6">
-            <h3 className="mb-2 block text-sm font-medium text-slate-300">
-              Direct Contact
-            </h3>
-            <EmailCopyField email={email} />
-          </div>
-        )}
-
-        <form ref={formRef} action={formAction} className="space-y-4">
+      <form
+        ref={formRef}
+        action={formAction}
+        // A reset clears the fields but fires no input event, so the counter
+        // is zeroed here rather than left showing the sent message's length.
+        onReset={() => setMessageLength(0)}
+        className="mt-8 space-y-5"
+      >
+        <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-slate-300 mb-2"
-            >
+            <label htmlFor="name" className={labelClassName}>
               Name
             </label>
             <input
@@ -80,6 +80,7 @@ export default function ContactFormCard({ email }: ContactFormCardProps) {
               id="name"
               name="name"
               required
+              autoComplete="name"
               maxLength={CONTACT_LIMITS.name}
               className={singleLineFieldClassName}
               placeholder="Your name"
@@ -87,10 +88,7 @@ export default function ContactFormCard({ email }: ContactFormCardProps) {
           </div>
 
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-slate-300 mb-2"
-            >
+            <label htmlFor="email" className={labelClassName}>
               Email
             </label>
             <input
@@ -98,64 +96,90 @@ export default function ContactFormCard({ email }: ContactFormCardProps) {
               id="email"
               name="email"
               required
+              autoComplete="email"
               maxLength={CONTACT_LIMITS.email}
               className={singleLineFieldClassName}
               placeholder="your.email@example.com"
             />
           </div>
+        </div>
 
-          <div>
-            <label
-              htmlFor="message"
-              className="block text-sm font-medium text-slate-300 mb-2"
-            >
+        <div>
+          <div className="flex items-baseline justify-between gap-4">
+            <label htmlFor="message" className={labelClassName}>
               Message
             </label>
-            <textarea
-              id="message"
-              name="message"
-              required
-              maxLength={CONTACT_LIMITS.message}
-              rows={5}
-              className={`${multilineFieldClassName} resize-none`}
-              placeholder="Tell me about your project or idea..."
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isPending}
-            className="w-full bg-linear-to-r from-brand-dark to-brand-darker hover:from-brand hover:to-brand-dark text-white font-semibold py-3 px-6 rounded-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center space-x-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-          >
-            {isPending ? (
-              <span>Sending...</span>
-            ) : (
-              <>
-                <Send size={20} />
-                <span>Send Message</span>
-              </>
-            )}
-          </button>
-
-          {state.status === "success" && (
-            <div
-              role="status"
-              className="p-4 rounded-lg bg-green-500/20 border border-green-500/50 text-green-400 text-sm"
+            <span
+              id="message-count"
+              className={`font-mono text-[0.6875rem] tabular-nums transition-colors ${
+                nearLimit ? "text-amber-300" : "text-muted"
+              }`}
             >
+              {messageLength} / {CONTACT_LIMITS.message}
+            </span>
+          </div>
+          <textarea
+            id="message"
+            name="message"
+            required
+            maxLength={CONTACT_LIMITS.message}
+            rows={6}
+            aria-describedby="message-count"
+            onChange={(event) =>
+              setMessageLength(event.currentTarget.value.length)
+            }
+            className={`${multilineFieldClassName} resize-none`}
+            placeholder="Tell me about your project or idea..."
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={isPending}
+          className={`${BUTTON_PRIMARY} w-full`}
+        >
+          {isPending ? (
+            <>
+              <Loader2 size={18} aria-hidden="true" className="animate-spin" />
+              Sending...
+            </>
+          ) : (
+            <>
+              Send Message
+              <Send
+                size={17}
+                aria-hidden="true"
+                className="transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </>
+          )}
+        </button>
+
+        {/* One live region for both outcomes, so either is announced. */}
+        <div role="status">
+          {state.status === "success" && (
+            <p className="flex items-start gap-3 rounded-xl border border-emerald-400/30 bg-emerald-400/[0.08] p-4 text-sm text-emerald-300">
+              <CheckCircle2
+                size={18}
+                aria-hidden="true"
+                className="mt-px shrink-0"
+              />
               Thanks for reaching out! I&apos;ll get back to you soon.
-            </div>
+            </p>
           )}
 
           {state.status === "error" && (
-            <div
-              role="status"
-              className="p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm"
-            >
+            <p className="flex items-start gap-3 rounded-xl border border-rose-400/30 bg-rose-400/[0.08] p-4 text-sm text-rose-300">
+              <AlertCircle
+                size={18}
+                aria-hidden="true"
+                className="mt-px shrink-0"
+              />
               Oops! Something went wrong. Please try again or email me directly.
-            </div>
+            </p>
           )}
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   );
 }

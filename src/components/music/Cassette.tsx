@@ -8,6 +8,8 @@ interface CassetteProps {
   onClick: () => void;
 }
 
+const SPRING = { type: "spring", stiffness: 300, damping: 20 } as const;
+
 export default function Cassette({
   snippet,
   isSelected,
@@ -15,30 +17,32 @@ export default function Cassette({
 }: CassetteProps) {
   return (
     <motion.button
+      type="button"
       onClick={onClick}
-      whileHover={{
-        scale: 1.02,
-        rotate: 1,
-        transition: { type: "spring", stiffness: 300, damping: 20 },
-      }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      whileHover={{ y: -6, rotate: -1.5, transition: SPRING }}
+      whileTap={{ scale: 0.97 }}
+      transition={SPRING}
       aria-label={`Load cassette tape: ${snippet.title}`}
       aria-pressed={isSelected}
-      className={`relative w-full aspect-[1.6] rounded-lg overflow-hidden transition-all duration-75 group focus:outline-none focus-visible:ring-4 focus-visible:ring-brand ${
-        isSelected
-          ? "ring-4 ring-brand shadow-[0_0_30px_rgba(51,230,204,0.3)] opacity-50 grayscale"
-          : "hover:shadow-xl hover:shadow-brand/5"
-      }`}
+      className="group relative block aspect-[1.58] w-full rounded-[5%/8%]"
     >
-      <CassetteVisual title={snippet.title} variant="shelf" />
+      {/* The loaded tape is in the deck, so its slot on the shelf reads as
+          taken rather than available. */}
+      <div
+        className={`absolute inset-0 transition-[opacity,filter] duration-300 ${
+          isSelected ? "opacity-35 saturate-0" : ""
+        }`}
+      >
+        <CassetteVisual title={snippet.title} variant="shelf" />
+      </div>
 
       {isSelected && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
-          <span className="bg-brand text-slate-900 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg border border-white/20">
+        <span className="absolute inset-0 flex items-center justify-center">
+          <span className="eyebrow inline-flex items-center gap-2 rounded-full border border-brand/40 bg-ink-950/90 px-3 py-1.5 text-brand shadow-[0_0_24px_-4px_rgb(0_255_204/0.6)] backdrop-blur-sm">
+            <span className="size-1.5 rounded-full bg-brand shadow-[0_0_8px_var(--color-brand)]" />
             Loaded
           </span>
-        </div>
+        </span>
       )}
     </motion.button>
   );

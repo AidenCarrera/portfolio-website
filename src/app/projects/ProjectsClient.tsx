@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion } from "motion/react";
 import RepoGrid from "@/components/projects/RepoGrid";
 import CategoryFilter from "@/components/common/CategoryFilter";
 import type { CategoryOption } from "@/components/common/CategoryFilter";
@@ -8,6 +9,8 @@ import type { PortfolioProject } from "@/lib/projects";
 import { formatTagName, normalizeTag } from "@/lib/utils";
 
 type SortOption = "featured" | "newest" | "name";
+
+const SORT_OPTIONS: SortOption[] = ["featured", "newest", "name"];
 
 interface ProjectsClientProps {
   projects: PortfolioProject[];
@@ -25,8 +28,12 @@ export default function ProjectsClient({
   // If spellings differ, prefer the capitalized version (e.g. "GraphQL").
   const categories = useMemo<CategoryOption[]>(() => {
     const topicByCategory = new Map<string, string>();
+    const countByCategory = new Map<string, number>();
 
     for (const project of projects) {
+      // A project tagged twice in different spellings still counts once.
+      const seen = new Set<string>();
+
       for (const topic of project.presentation.tags) {
         const category = normalizeTag(topic);
         if (!category) {
@@ -40,14 +47,23 @@ export default function ProjectsClient({
         if (current === undefined || addsCasing) {
           topicByCategory.set(category, topic);
         }
+
+        if (!seen.has(category)) {
+          seen.add(category);
+          countByCategory.set(
+            category,
+            (countByCategory.get(category) ?? 0) + 1,
+          );
+        }
       }
     }
 
     return [
-      { value: "all", label: "All" },
+      { value: "all", label: "All", count: projects.length },
       ...Array.from(topicByCategory, ([value, topic]) => ({
         value,
         label: formatTagName(topic),
+        count: countByCategory.get(value),
       })).sort((a, b) => a.label.localeCompare(b.label)),
     ];
   }, [projects]);
@@ -80,47 +96,67 @@ export default function ProjectsClient({
     return a.presentation.repoName.localeCompare(b.presentation.repoName);
   });
 
+  if (projects.length === 0) {
+    return (
+      <div className="panel rounded-2xl p-12 text-center">
+        <p className="text-slate-400">No projects found.</p>
+      </div>
+    );
+  }
+
   return (
     <>
-      {projects.length > 0 ? (
-        <>
-          <CategoryFilter
-            categories={categories}
-            selected={selectedCategory}
-            onSelect={setSelectedCategory}
-          />
+      <CategoryFilter
+        categories={categories}
+        selected={selectedCategory}
+        onSelect={setSelectedCategory}
+        label="Filter projects by topic"
+      />
 
-          <div className="flex justify-center items-center gap-4 mb-12 text-sm">
-            <span className="text-slate-400 font-mono text-xs uppercase tracking-wider">
-              Sort By:
-            </span>
-            <div className="flex items-center bg-slate-800/40 border border-slate-700/50 rounded-lg p-1">
-              {(["featured", "newest", "name"] as const).map((option) => (
-                <button
-                  key={option}
-                  onClick={() => setSortBy(option)}
-                  aria-pressed={sortBy === option}
-                  className={`px-3.5 py-1.5 rounded-md text-xs font-medium capitalize transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand
-                    ${
-                      sortBy === option
-                        ? "bg-brand text-slate-900 shadow-sm"
-                        : "text-slate-400 hover:text-white"
-                    }
-                  `}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
+      <div className="mt-8 mb-8 flex flex-col-reverse gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <p className="eyebrow text-muted" role="status">
+          Showing{" "}
+          <span className="text-slate-300">{sortedProjects.length}</span> of{" "}
+          {projects.length}
+        </p>
+
+        <div className="flex items-center gap-3">
+          <span id="sort-label" className="eyebrow text-muted">
+            Sort
+          </span>
+          <div
+            role="group"
+            aria-labelledby="sort-label"
+            className="flex items-center rounded-full border border-line bg-white/[0.02] p-1"
+          >
+            {SORT_OPTIONS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setSortBy(option)}
+                aria-pressed={sortBy === option}
+                className={`relative isolate rounded-full px-3.5 py-1.5 text-xs font-medium capitalize transition-colors duration-200 ${
+                  sortBy === option
+                    ? "text-white"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                {sortBy === option && (
+                  <motion.span
+                    layoutId="projects-sort"
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 rounded-full border border-line-strong bg-white/[0.08]"
+                    transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                  />
+                )}
+                {option}
+              </button>
+            ))}
           </div>
-
-          <RepoGrid projects={sortedProjects} />
-        </>
-      ) : (
-        <div className="bg-slate-800/30 rounded-xl p-12 text-center border border-slate-700">
-          <p className="text-slate-400">No projects found.</p>
         </div>
-      )}
+      </div>
+
+      <RepoGrid projects={sortedProjects} />
     </>
   );
 }

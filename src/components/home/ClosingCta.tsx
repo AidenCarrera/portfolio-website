@@ -2,7 +2,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Badge from "@/components/common/Badge";
 import EmailCopyField from "@/components/common/EmailCopyField";
-import Reveal from "./Reveal";
+import Reveal from "@/components/common/Reveal";
+import { BUTTON_PRIMARY, CONTAINER } from "@/lib/styles";
 
 interface ClosingCtaProps {
   availabilityText: string;
@@ -14,39 +15,39 @@ export default function ClosingCta({
   email,
 }: ClosingCtaProps) {
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 pb-24 sm:px-6 lg:px-8">
+    <section
+      aria-labelledby="connect-heading"
+      className={`${CONTAINER} pb-20 sm:pb-28`}
+    >
       <Reveal>
-        <div className="flex flex-col gap-6 rounded-2xl border border-slate-700/80 bg-slate-800/40 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
-          {/* The email field cannot shrink below its own text, so the column has
-              to be allowed to: stretched full width on mobile and min-w-0 in the
-              row, it stays inside the card instead of pushing the page sideways. */}
-          <div className="w-full min-w-0 sm:w-auto">
-            <h2 className="text-[1.75rem] font-bold tracking-tight text-white sm:text-[2rem]">
-              Let&rsquo;s Connect
-            </h2>
+        <div className="rounded-[2rem] border border-line bg-ink-850 px-6 py-14 sm:px-12 sm:py-20 lg:px-16">
+          <h2 id="connect-heading" className="text-heading text-white">
+            Let&rsquo;s Connect
+          </h2>
 
-            <div className="mt-4">
-              <Badge oneLine>{availabilityText}</Badge>
-            </div>
+          <div className="mt-8">
+            <Badge oneLine>{availabilityText}</Badge>
+          </div>
 
+          {/* The email field cannot shrink below its own text, so its column
+              has to be allowed to: full width on mobile and min-w-0 in the
+              row, it stays inside the card instead of pushing the page
+              sideways. */}
+          <div className="mt-12 flex flex-col gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
             {email && (
-              <div className="mt-5 max-w-md">
+              <div className="w-full min-w-0 sm:max-w-md">
                 <EmailCopyField email={email} size="large" />
               </div>
             )}
+            <Link href="/contact" className={`${BUTTON_PRIMARY} shrink-0`}>
+              Get in touch
+              <ArrowRight
+                size={17}
+                aria-hidden="true"
+                className="transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
+              />
+            </Link>
           </div>
-
-          <Link
-            href="/contact"
-            className="group inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand-dark to-brand-darker px-6 py-3.5 font-semibold text-white shadow-lg shadow-brand/10 transition-all hover:-translate-y-0.5 hover:from-brand hover:to-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:w-auto"
-          >
-            Get in touch
-            <ArrowRight
-              size={18}
-              aria-hidden="true"
-              className="transition-transform group-hover:translate-x-1"
-            />
-          </Link>
         </div>
       </Reveal>
     </section>

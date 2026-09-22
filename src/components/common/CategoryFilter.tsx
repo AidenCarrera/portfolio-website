@@ -1,45 +1,79 @@
+"use client";
+
+import { useId } from "react";
+import { motion } from "motion/react";
+
 export interface CategoryOption {
   /** Stable key compared against `selected` and reported to `onSelect`. */
   value: string;
   /** Display text, already formatted by the caller. */
   label: string;
+  /** How many items the option matches, shown beside the label. */
+  count?: number;
 }
 
 interface CategoryFilterProps {
   categories: CategoryOption[];
   selected: string;
   onSelect: (category: string) => void;
+  /** Names the group for assistive tech, e.g. "Filter projects by topic". */
+  label: string;
 }
 
 export default function CategoryFilter({
   categories,
   selected,
   onSelect,
+  label,
 }: CategoryFilterProps) {
-  return (
-    <div className="relative w-full -mx-4 px-4 mb-10 overflow-hidden md:mx-0 md:px-0">
-      {/* Mobile fades indicate horizontal overflow. */}
-      <div className="absolute top-0 bottom-0 left-0 w-8 bg-linear-to-r from-slate-900 to-transparent pointer-events-none z-10 md:hidden" />
-      <div className="absolute top-0 bottom-0 right-0 w-8 bg-linear-to-l from-slate-900 to-transparent pointer-events-none z-10 md:hidden" />
+  // Namespaces the sliding highlight, so two filters on one page never trade
+  // highlights with each other.
+  const id = useId();
 
-      <div className="flex overflow-x-auto pb-2 gap-3 scrollbar-none md:flex-wrap md:justify-center px-4 md:px-0 snap-x snap-mandatory">
-        {categories.map(({ value, label }) => {
+  return (
+    <div className="relative -mx-4 md:mx-0">
+      {/* Mobile fades indicate horizontal overflow. */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-4 bg-linear-to-r from-ink-900 to-transparent md:hidden" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-4 bg-linear-to-l from-ink-900 to-transparent md:hidden" />
+
+      <div
+        role="group"
+        aria-label={label}
+        className="scrollbar-none flex snap-x gap-2 overflow-x-auto px-4 py-1 md:flex-wrap md:overflow-visible md:px-0"
+      >
+        {categories.map(({ value, label: optionLabel, count }) => {
           const isSelected = selected === value;
 
           return (
             <button
               key={value}
+              type="button"
               onClick={() => onSelect(value)}
               aria-pressed={isSelected}
-              className={`snap-start shrink-0 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand
-                ${
-                  isSelected
-                    ? "bg-brand text-slate-900 shadow-md"
-                    : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
-                }
-              `}
+              className={`relative isolate shrink-0 snap-start rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors duration-200 ${
+                isSelected
+                  ? "border-transparent text-ink-950"
+                  : "border-line text-slate-400 hover:border-line-strong hover:text-white"
+              }`}
             >
-              {label}
+              {isSelected && (
+                <motion.span
+                  layoutId={`${id}-selected`}
+                  aria-hidden="true"
+                  className="absolute -inset-px -z-10 rounded-full bg-brand shadow-[0_0_24px_-6px_rgb(0_255_204/0.7)]"
+                  transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                />
+              )}
+              {optionLabel}
+              {count !== undefined && (
+                <span
+                  className={`ml-1.5 font-mono text-[0.6875rem] ${
+                    isSelected ? "text-ink-950/60" : "text-muted"
+                  }`}
+                >
+                  {count}
+                </span>
+              )}
             </button>
           );
         })}

@@ -8,6 +8,8 @@ interface PortraitProps {
   name: string;
   /** Sizes the wrapper; the frame inside it keeps the 5:7 crop either way. */
   className?: string;
+  /** Shapes the frame: 5:7 unless a layout needs it to fill a set height. */
+  frameClassName?: string;
   sizes?: string;
   priority?: boolean;
 }
@@ -30,6 +32,7 @@ export default function Portrait({
   portrait,
   name,
   className = DEFAULT_CLASS_NAME,
+  frameClassName = "aspect-5/7",
   sizes = DEFAULT_SIZES,
   priority = false,
 }: PortraitProps) {
@@ -39,9 +42,9 @@ export default function Portrait({
 
   return (
     <div className={className}>
-      {/* A slightly shorter portrait crop at every width, on the same corner
-          radius as the cards elsewhere on the site. */}
-      <div className="relative aspect-5/7 overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl shadow-black/30">
+      <div
+        className={`relative ${frameClassName} overflow-hidden rounded-xl border border-line bg-ink-800 shadow-[0_40px_80px_-30px_rgb(0_0_0/0.8)]`}
+      >
         {portrait && imageUrl ? (
           <Image
             src={imageUrl}
@@ -59,7 +62,7 @@ export default function Portrait({
           // Placeholder until a portrait is uploaded in the Studio. Purely
           // decorative, so it stays out of the accessibility tree.
           <div
-            className="flex h-full w-full items-center justify-center bg-linear-to-br from-slate-800 to-slate-900"
+            className="flex h-full w-full items-center justify-center bg-linear-to-br from-ink-700 to-ink-900"
             aria-hidden="true"
           >
             <span className="font-mono text-5xl font-bold tracking-widest text-brand/60 lg:text-6xl">
@@ -67,6 +70,11 @@ export default function Portrait({
             </span>
           </div>
         )}
+        {/* A faint inner edge so light photos do not bleed into the page. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 rounded-xl shadow-[inset_0_0_0_1px_rgb(255_255_255/0.06)]"
+        />
       </div>
     </div>
   );

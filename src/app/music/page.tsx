@@ -1,10 +1,11 @@
-import { Music as MusicIcon } from "lucide-react";
 import type { Metadata } from "next";
 
+import PageHeader from "@/components/common/PageHeader";
 import ReleasedMusicSection from "@/components/music/ReleasedMusicSection";
 import UpcomingSnippetsSection from "@/components/music/UpcomingSnippetsSection";
 import GearSection from "@/components/music/GearSection";
 import { getSpotifyTracks } from "@/lib/spotify";
+import { CONTAINER } from "@/lib/styles";
 import { getSanityGearItems, getSanityMusic } from "@/sanity/content";
 import type { MusicSnippet } from "@/types";
 
@@ -32,21 +33,13 @@ export default async function Music() {
     }));
 
   return (
-    <div className="min-h-screen bg-slate-900 pt-8 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-brand to-brand-dark mb-6">
-            <MusicIcon size={32} className="text-white" />
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Music
-          </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Explore my upcoming snippets, released tracks from Spotify, and the gear
-            behind them. I write, produce, mix, and master all of my music myself.
-          </p>
-        </div>
+    <div className="pb-24 sm:pb-32">
+      <PageHeader title="Music">
+        Explore my upcoming snippets, released tracks from Spotify, and the gear
+        behind them. I write, produce, mix, and master all of my music myself.
+      </PageHeader>
 
+      <div className={`${CONTAINER} space-y-28 sm:space-y-36`}>
         <UpcomingSnippetsSection snippets={snippets} />
         <ReleasedMusicSection tracks={tracks} />
         <GearSection gear={gearItems} />

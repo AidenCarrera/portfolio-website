@@ -1,14 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Briefcase, GraduationCap, MapPin } from "lucide-react";
-import Badge from "@/components/common/Badge";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Briefcase,
+  GraduationCap,
+  MapPin,
+  type LucideIcon,
+} from "lucide-react";
 import JsonLd from "@/components/common/JsonLd";
 import PhotoGallery from "@/components/about/PhotoGallery";
 import Portrait from "@/components/common/Portrait";
+import Reveal from "@/components/common/Reveal";
+import SectionHeading from "@/components/common/SectionHeading";
 import { getAboutPage, splitParagraphs } from "@/lib/about";
 import { getWebsiteProfile } from "@/lib/profile";
 import { socialLinks } from "@/lib/socialLinks";
 import { getAboutPageStructuredData } from "@/lib/structuredData";
+import { BUTTON_PRIMARY, BUTTON_SECONDARY, CONTAINER } from "@/lib/styles";
 
 export const revalidate = 3600;
 
@@ -25,10 +34,16 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const sectionHeadingClass = "text-2xl sm:text-3xl font-bold text-white";
+// Tracks the portrait's widths below: a fixed column from lg, stacked and
+// capped under it.
+const PORTRAIT_SIZES =
+  "(min-width: 1280px) 24rem, (min-width: 1024px) 22rem, (min-width: 640px) 26rem, 22rem";
 
-const inlineLinkClass =
-  "rounded-sm font-semibold text-brand underline-offset-4 transition-colors hover:text-brand-light hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand";
+interface MetaItem {
+  icon: LucideIcon;
+  caption: string;
+  label: string;
+}
 
 export default async function About() {
   const [about, profile] = await Promise.all([
@@ -37,149 +52,195 @@ export default async function About() {
   ]);
 
   const introParagraphs = splitParagraphs(about.intro);
-  // The portrait sits beside the first two paragraphs; the rest run full
-  // width beneath it.
-  const leadParagraphs = introParagraphs.slice(0, 2);
-  const remainingParagraphs = introParagraphs.slice(2);
+  // The first three paragraphs stand beside the portrait; the rest run the
+  // full width beneath it.
+  const [leadParagraph, ...sideParagraphs] = introParagraphs.slice(0, 3);
+  const remainingParagraphs = introParagraphs.slice(3);
 
   const metaItems = [
-    { icon: MapPin, label: about.locationLabel },
-    { icon: GraduationCap, label: about.graduationLabel },
-    { icon: Briefcase, label: about.availabilityLabel },
-  ].filter((item): item is { icon: typeof MapPin; label: string } =>
-    Boolean(item.label),
-  );
+    { icon: MapPin, caption: "Location", label: about.locationLabel },
+    {
+      icon: GraduationCap,
+      caption: "Education",
+      label: about.graduationLabel,
+    },
+    {
+      icon: Briefcase,
+      caption: "Availability",
+      label: about.availabilityLabel,
+    },
+  ].filter((item): item is MetaItem => Boolean(item.label));
 
   const gitHubLink = socialLinks.find((link) => link.label === "GitHub");
   const linkedInLink = socialLinks.find((link) => link.label === "LinkedIn");
 
-  const primaryLinkClass =
-    "inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand-dark to-brand-darker px-5 py-3 font-semibold text-white shadow-lg shadow-brand/10 transition-transform hover:-translate-y-0.5 hover:from-brand hover:to-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand";
-  const secondaryLinkClass =
-    "inline-flex items-center justify-center gap-2 rounded-xl border border-blue-500/60 bg-blue-600 px-5 py-3 font-semibold text-white shadow-lg shadow-blue-500/10 transition-transform hover:-translate-y-0.5 hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400";
+  const profileLinks =
+    gitHubLink || linkedInLink ? (
+      <div className="flex flex-col gap-3 sm:flex-row">
+        {gitHubLink && (
+          <a
+            href={gitHubLink.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={BUTTON_PRIMARY}
+          >
+            <gitHubLink.icon size={18} aria-hidden="true" />
+            GitHub
+          </a>
+        )}
+        {linkedInLink && (
+          <a
+            href={linkedInLink.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={BUTTON_SECONDARY}
+          >
+            <linkedInLink.icon size={18} aria-hidden="true" />
+            LinkedIn
+            <ArrowUpRight
+              size={15}
+              aria-hidden="true"
+              className="transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </a>
+        )}
+      </div>
+    ) : null;
 
   return (
-    <div className="min-h-screen bg-slate-900 pt-8 pb-20">
+    <div className="pb-24 sm:pb-32">
       <JsonLd data={getAboutPageStructuredData(about, profile)} />
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-        <header className="relative overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-800/50 p-6 shadow-2xl shadow-black/20 sm:p-10">
-          {/* From lg up the portrait spans the heading and lead paragraph
-              rows; stacked, the order reads heading, portrait, intro. */}
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-x-12 lg:gap-y-6">
-            <div className="lg:col-start-1 lg:row-start-1">
-              <div className="mb-5">
-                <Badge>{about.eyebrow}</Badge>
-              </div>
-              <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                {about.heading}
-              </h1>
-            </div>
 
-            {/* self-start keeps the portrait at its own aspect ratio instead
-                of stretching to the height of the rows beside it. */}
-            <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
-              <Portrait
-                portrait={about.portrait}
-                name={profile.name}
-                priority
-              />
-            </div>
+      <div className={`${CONTAINER} pt-14 pb-16 sm:pt-20 sm:pb-24`}>
+        <header>
+          <Reveal>
+            <h1 className="text-title text-white">{about.heading}</h1>
+          </Reveal>
+        </header>
 
-            <div className="space-y-5 text-lg leading-relaxed text-slate-300 lg:col-start-1 lg:row-start-2">
-              {leadParagraphs.map((paragraph) => (
+        {/* From lg up the portrait stands beside the first three paragraphs
+            and stretches to their height, so the story carries on full width
+            beneath it without a paragraph splitting at the photo's edge.
+            Stacked, the order reads heading, portrait, story. */}
+        <div className="mt-10 grid gap-10 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16 xl:grid-cols-[minmax(0,1fr)_24rem]">
+          <Reveal
+            delay={0.1}
+            className="mx-auto w-full max-w-88 sm:max-w-104 lg:order-last lg:max-w-none"
+          >
+            <Portrait
+              portrait={about.portrait}
+              name={profile.name}
+              className="w-full lg:h-full"
+              frameClassName="aspect-5/7 lg:aspect-auto lg:h-full lg:min-h-96"
+              sizes={PORTRAIT_SIZES}
+              priority
+            />
+          </Reveal>
+
+          <Reveal>
+            {leadParagraph && (
+              <p className="text-xl leading-relaxed text-slate-200 sm:text-2xl sm:leading-relaxed">
+                {leadParagraph}
+              </p>
+            )}
+            {sideParagraphs.map((paragraph) => (
+              <p
+                key={paragraph}
+                className="mt-6 text-lg leading-relaxed text-slate-400"
+              >
+                {paragraph}
+              </p>
+            ))}
+          </Reveal>
+        </div>
+
+        {(remainingParagraphs.length > 0 || profileLinks) && (
+          <Reveal className="mt-8">
+            <div className="space-y-6 text-lg leading-relaxed text-slate-400">
+              {remainingParagraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </div>
+            {profileLinks && <div className="mt-10">{profileLinks}</div>}
+          </Reveal>
+        )}
+      </div>
 
-            <div className="lg:col-span-2 lg:col-start-1 lg:row-start-3">
-              {remainingParagraphs.length > 0 && (
-                <div className="space-y-5 text-lg leading-relaxed text-slate-300">
-                  {remainingParagraphs.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
+      <div className={CONTAINER}>
+        {metaItems.length > 0 && (
+          <Reveal>
+            {/* Ruled above and below rather than boxed, so a value that wraps
+                does not leave its neighbours' cells looking empty. */}
+            <dl
+              className={`grid gap-7 border-y border-line py-8 sm:py-10 md:gap-12 ${
+                metaItems.length === 3
+                  ? "md:grid-cols-3"
+                  : metaItems.length === 2
+                    ? "md:grid-cols-2"
+                    : ""
+              }`}
+            >
+              {metaItems.map(({ icon: Icon, caption, label }) => (
+                <div key={caption} className="min-w-0">
+                  <dt className="eyebrow flex items-center gap-2 text-muted">
+                    <Icon size={14} aria-hidden="true" className="text-brand" />
+                    {caption}
+                  </dt>
+                  <dd className="mt-3 text-lg leading-snug text-white">
+                    {label}
+                  </dd>
                 </div>
-              )}
+              ))}
+            </dl>
+          </Reveal>
+        )}
 
-              {metaItems.length > 0 && (
-                <ul className="mt-8 flex flex-wrap gap-2.5">
-                  {metaItems.map(({ icon: Icon, label }) => (
-                    <li
-                      key={label}
-                      className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm font-medium text-slate-300"
-                    >
-                      <Icon
-                        size={16}
-                        className="text-brand"
-                        aria-hidden="true"
-                      />
-                      {label}
-                    </li>
-                  ))}
-                </ul>
-              )}
+        {about.gallery.length > 0 && (
+          <section aria-labelledby="gallery-heading" className="mt-24 sm:mt-32">
+            <Reveal>
+              <SectionHeading
+                title={about.galleryHeading ?? "Gallery"}
+                id="gallery-heading"
+              >
+                {about.galleryIntro}
+              </SectionHeading>
+            </Reveal>
 
-              {(gitHubLink || linkedInLink) && (
-                <div className="mt-8 flex flex-col gap-3 border-t border-slate-700/80 pt-6 sm:flex-row sm:flex-wrap sm:items-center">
-                  {gitHubLink && (
-                    <a
-                      href={gitHubLink.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={primaryLinkClass}
-                    >
-                      <gitHubLink.icon size={20} aria-hidden="true" />
-                      GitHub
-                    </a>
-                  )}
-                  {linkedInLink && (
-                    <a
-                      href={linkedInLink.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={secondaryLinkClass}
-                    >
-                      <linkedInLink.icon size={20} aria-hidden="true" />
-                      LinkedIn
-                    </a>
-                  )}
-                </div>
-              )}
+            <div className="mt-12">
+              <PhotoGallery photos={about.gallery} />
             </div>
-          </div>
-        </header>
-
-        <div className="mt-10 space-y-10">
-          {about.gallery.length > 0 && (
-            <section aria-labelledby="gallery-heading">
-              <h2 id="gallery-heading" className={sectionHeadingClass}>
-                {about.galleryHeading}
-              </h2>
-              {about.galleryIntro && (
-                <p className="mt-3 max-w-3xl leading-relaxed text-slate-400">
-                  {about.galleryIntro}
-                </p>
-              )}
-
-              <div className="mt-6">
-                <PhotoGallery photos={about.gallery} />
-              </div>
-            </section>
-          )}
-
-          <section className="rounded-2xl border border-slate-700/80 bg-slate-800/50 p-6 text-center sm:p-8">
-            <p className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-300">
-              Explore my{" "}
-              <Link href="/projects" className={inlineLinkClass}>
-                Projects
-              </Link>{" "}
-              to see more of my work, or visit{" "}
-              <Link href="/contact" className={inlineLinkClass}>
-                Contact
-              </Link>{" "}
-              to get in touch.
-            </p>
           </section>
-        </div>
+        )}
+
+        <Reveal className="mt-24 sm:mt-32">
+          <section
+            aria-labelledby="explore-heading"
+            className="flex flex-col gap-10 rounded-[2rem] border border-line bg-ink-850 px-6 py-14 sm:px-12 sm:py-16 md:flex-row md:items-end md:justify-between lg:px-16"
+          >
+            <div className="max-w-xl">
+              <h2 id="explore-heading" className="text-heading text-white">
+                Keep exploring
+              </h2>
+              <p className="mt-5 text-lg leading-relaxed text-slate-400">
+                See what I&rsquo;ve been building, or reach out about a role or
+                a project.
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+              <Link href="/projects" className={BUTTON_PRIMARY}>
+                View Projects
+                <ArrowRight
+                  size={17}
+                  aria-hidden="true"
+                  className="transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
+                />
+              </Link>
+              <Link href="/contact" className={BUTTON_SECONDARY}>
+                Get in touch
+              </Link>
+            </div>
+          </section>
+        </Reveal>
       </div>
     </div>
   );

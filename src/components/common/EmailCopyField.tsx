@@ -10,8 +10,8 @@ interface EmailCopyFieldProps {
 }
 
 const SIZES = {
-  default: "h-[50px] text-base",
-  large: "h-14 text-lg",
+  default: "h-12 text-[0.9375rem]",
+  large: "h-14 text-base sm:text-lg",
 } as const;
 
 const COPIED_RESET_MS = 2000;
@@ -27,8 +27,14 @@ export default function EmailCopyField({
 
   useEffect(() => () => clearTimeout(resetTimer.current), []);
 
-  const copyEmail = () => {
-    navigator.clipboard.writeText(email);
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+    } catch {
+      // No clipboard (insecure origin, denied permission): the address is
+      // still a mailto link and selectable, so there is nothing to confirm.
+      return;
+    }
     setCopied(true);
     clearTimeout(resetTimer.current);
     resetTimer.current = setTimeout(() => setCopied(false), COPIED_RESET_MS);
@@ -36,12 +42,15 @@ export default function EmailCopyField({
 
   return (
     <div
-      className={`flex w-full items-center justify-between rounded-lg border border-slate-600 bg-slate-700 px-4 text-white ${SIZES[size]}`}
+      className={`flex w-full items-center gap-3 rounded-full border border-line-strong bg-ink-900/70 pr-1.5 pl-5 backdrop-blur-sm transition-colors focus-within:border-brand/50 hover:border-brand/40 ${SIZES[size]}`}
     >
-      <div className="flex min-w-0 items-center space-x-3">
-        <Mail className="shrink-0 text-brand" size={20} />
-        <span className="truncate text-slate-300">{email}</span>
-      </div>
+      <Mail className="shrink-0 text-brand" size={18} aria-hidden="true" />
+      <a
+        href={`mailto:${email}`}
+        className="min-w-0 truncate rounded-sm text-slate-200 transition-colors hover:text-white"
+      >
+        {email}
+      </a>
       <button
         type="button"
         onClick={copyEmail}
@@ -50,14 +59,21 @@ export default function EmailCopyField({
             ? "Email address copied to clipboard"
             : "Copy email address to clipboard"
         }
-        className="ml-3 rounded-lg p-2 transition-colors hover:bg-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+        className={`ml-auto flex size-10 shrink-0 items-center justify-center rounded-full transition-colors ${
+          copied
+            ? "bg-brand/15 text-brand"
+            : "text-slate-400 hover:bg-white/[0.06] hover:text-white"
+        }`}
       >
         {copied ? (
-          <Check className="text-green-400" size={20} />
+          <Check size={17} aria-hidden="true" />
         ) : (
-          <Copy className="text-slate-400" size={20} />
+          <Copy size={17} aria-hidden="true" />
         )}
       </button>
+      <span role="status" className="sr-only">
+        {copied ? "Email address copied to clipboard" : ""}
+      </span>
     </div>
   );
 }

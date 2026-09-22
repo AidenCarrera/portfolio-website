@@ -10,19 +10,25 @@ interface RevealProps {
   className?: string;
 }
 
+const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
+
 /**
  * Scroll-in entrance shared by every section below the hero. Reduced motion is
  * handled site-wide by `MotionProvider`, which drops the `y` travel and leaves
  * the opacity fade in place.
  */
-export default function Reveal({ children, delay = 0, className }: RevealProps) {
+export default function Reveal({
+  children,
+  delay = 0,
+  className,
+}: RevealProps) {
   return (
     <motion.div
       className={className}
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
-      transition={{ type: "spring", stiffness: 60, damping: 18, delay }}
+      transition={{ duration: 0.9, ease: EASE_OUT_EXPO, delay }}
     >
       {children}
     </motion.div>

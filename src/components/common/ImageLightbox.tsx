@@ -79,7 +79,7 @@ export default function ImageLightbox({
         // `open:` keeps the display change behind the open state; a bare `grid`
         // beats the UA `dialog:not([open]){display:none}`, leaving a closed
         // 100dvw dialog in flow that overflows the page by the scrollbar width.
-        className="m-auto open:grid h-dvh max-h-dvh w-dvw max-w-dvw place-items-center bg-transparent p-4 backdrop:bg-slate-950/85"
+        className="lightbox m-auto h-dvh max-h-dvh w-dvw max-w-dvw place-items-center bg-transparent p-4 open:grid"
       >
         {isOpen && (
           <figure
@@ -92,7 +92,7 @@ export default function ImageLightbox({
             style={{
               maxWidth: `min(${intrinsicWidth}px, 72rem, calc((82dvh - ${captionReserve}) * ${intrinsicWidth / intrinsicHeight}))`,
             }}
-            className="relative w-full overflow-hidden rounded-2xl border border-slate-700 bg-slate-900"
+            className="relative w-full overflow-hidden rounded-2xl border border-line-strong bg-ink-850 shadow-[0_40px_120px_-20px_rgb(0_0_0/0.9)]"
           >
             <Image
               src={imageUrl}
@@ -114,12 +114,12 @@ export default function ImageLightbox({
               type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close image viewer"
-              className="absolute top-3 right-3 rounded-lg border border-slate-700/50 bg-slate-900/80 p-2 text-slate-300 backdrop-blur-sm transition-colors hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              className="absolute top-3 right-3 flex size-10 items-center justify-center rounded-full border border-line-strong bg-ink-900/80 text-slate-300 backdrop-blur-md transition-colors hover:border-brand/50 hover:text-brand"
             >
-              <X size={18} />
+              <X size={18} aria-hidden="true" />
             </button>
             {(title || image.caption) && (
-              <figcaption className="px-5 py-3 text-sm">
+              <figcaption className="border-t border-line px-5 py-3 text-sm">
                 {title && (
                   <span className="font-semibold text-white">{title}</span>
                 )}

@@ -1,7 +1,9 @@
-import { Code2, ExternalLink } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { SiGithub } from "react-icons/si";
+import PageHeader from "@/components/common/PageHeader";
 import { getGitHubProfileUrl } from "@/lib/github";
 import { getRoutableProjects } from "@/lib/projects";
+import { BUTTON_SECONDARY, CONTAINER } from "@/lib/styles";
 import ProjectsClient from "./ProjectsClient";
 import type { Metadata } from "next";
 
@@ -25,35 +27,31 @@ export default async function ProjectsPage() {
     : "newest";
 
   return (
-    <div className="min-h-screen bg-slate-900 pt-8 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-brand to-brand-dark mb-6">
-            <Code2 size={32} className="text-white" />
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Projects
-          </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            My open-source GitHub repos: interactive web apps, full-stack
-            applications, audio tools, and games - including collaborative team
-            projects.
-          </p>
-        </div>
+    <div className="pb-24 sm:pb-32">
+      <PageHeader title="Projects">
+        My open-source GitHub repos: interactive web apps, full-stack
+        applications, audio tools, and games - including collaborative team
+        projects.
+      </PageHeader>
 
+      <div className={CONTAINER}>
         <ProjectsClient projects={projects} defaultSort={defaultSort} />
 
         {githubProfileUrl && (
-          <div className="mt-16 text-center">
+          <div className="mt-20 flex justify-center">
             <a
               href={githubProfileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 text-brand hover:text-brand-light transition-colors"
+              className={BUTTON_SECONDARY}
             >
-              <SiGithub size={20} aria-hidden="true" />
-              <span className="font-medium">View more on GitHub</span>
-              <ExternalLink size={16} />
+              <SiGithub size={18} aria-hidden="true" />
+              View more on GitHub
+              <ArrowUpRight
+                size={16}
+                aria-hidden="true"
+                className="transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
             </a>
           </div>
         )}

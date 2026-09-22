@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import PageHeader from "@/components/common/PageHeader";
+import Reveal from "@/components/common/Reveal";
 import { getWebsiteProfile } from "@/lib/profile";
-
-const LINK_CLASS =
-  "rounded text-brand underline decoration-brand/40 underline-offset-4 transition-colors hover:text-brand-light focus:outline-none focus-visible:ring-2 focus-visible:ring-brand";
+import { CONTAINER, INLINE_LINK, PROSE } from "@/lib/styles";
 
 export async function generateMetadata(): Promise<Metadata> {
   const profile = await getWebsiteProfile();
@@ -21,75 +21,59 @@ export default async function PrivacyPolicy() {
   const profile = await getWebsiteProfile();
 
   return (
-    <div className="flex flex-1 bg-slate-900 px-4 pt-24 pb-16 sm:px-6 sm:pt-28 lg:px-8">
-      <article className="mx-auto w-full max-w-3xl">
-        <p className="mb-3 font-mono text-sm text-brand">
-          Last updated July 27, 2026
-        </p>
-        <h1 className="mb-4 text-4xl font-bold text-white sm:text-5xl">
-          Privacy Policy
-        </h1>
-        <p className="mb-10 text-lg leading-8 text-slate-400">
-          This portfolio collects only the information needed to understand site
-          usage and respond to messages.
-        </p>
+    <div className="pb-24 sm:pb-32">
+      <PageHeader title="Privacy Policy">
+        This portfolio collects only the information needed to understand site
+        usage and respond to messages.
+      </PageHeader>
 
-        <div className="space-y-8 text-slate-300">
-          <section>
-            <h2 className="mb-3 text-xl font-semibold text-white">
-              Information collected
-            </h2>
-            <p className="leading-7">
-              If you use the contact form, I receive your name, email address,
-              and message. Your IP address is used briefly to prevent spam and
-              repeated submissions.
-            </p>
-          </section>
+      <Reveal className={CONTAINER}>
+        <article className={`max-w-3xl border-t border-line pt-4 ${PROSE}`}>
+          <h2>Information collected</h2>
+          <p>
+            If you use the contact form, I receive your name, email address, and
+            message. Your IP address is used briefly to prevent spam and
+            repeated submissions.
+          </p>
 
-          <section>
-            <h2 className="mb-3 text-xl font-semibold text-white">Analytics</h2>
-            <p className="leading-7">
-              Vercel Web Analytics collects anonymous, cookie-free usage data,
-              such as pages visited, referrer, browser, operating system, device
-              type, and performance information.
-            </p>
-          </section>
+          <h2>Analytics</h2>
+          <p>
+            Vercel Web Analytics collects anonymous, cookie-free usage data,
+            such as pages visited, referrer, browser, operating system, device
+            type, and performance information.
+          </p>
 
-          <section>
-            <h2 className="mb-3 text-xl font-semibold text-white">
-              How information is used
-            </h2>
-            <p className="leading-7">
-              If you contact me through the contact form, the information you
-              provide is used only to respond to your message. Messages are sent
-              using Resend and delivered to my email inbox.
-            </p>
-          </section>
+          <h2>How information is used</h2>
+          <p>
+            If you contact me through the contact form, the information you
+            provide is used only to respond to your message. Messages are sent
+            using Resend and delivered to my email inbox.
+          </p>
 
-          <section>
-            <h2 className="mb-3 text-xl font-semibold text-white">Contact</h2>
-            <p className="leading-7">
-              For privacy questions or requests,{" "}
-              {profile.email ? (
-                <>
-                  email{" "}
-                  <a href={`mailto:${profile.email}`} className={LINK_CLASS}>
-                    {profile.email}
-                  </a>
-                </>
-              ) : (
-                <>
-                  use the{" "}
-                  <Link href="/contact" className={LINK_CLASS}>
-                    contact page
-                  </Link>
-                </>
-              )}
-              .
-            </p>
-          </section>
-        </div>
-      </article>
+          <h2>Contact</h2>
+          <p>
+            For privacy questions or requests,{" "}
+            {profile.email ? (
+              <>
+                email{" "}
+                <a href={`mailto:${profile.email}`} className={INLINE_LINK}>
+                  {profile.email}
+                </a>
+              </>
+            ) : (
+              <>
+                use the{" "}
+                <Link href="/contact" className={INLINE_LINK}>
+                  contact page
+                </Link>
+              </>
+            )}
+            .
+          </p>
+
+          <p className="pt-8 text-sm text-muted">Last updated July 27, 2026</p>
+        </article>
+      </Reveal>
     </div>
   );
 }

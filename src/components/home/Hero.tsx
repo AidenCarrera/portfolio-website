@@ -1,12 +1,11 @@
 "use client";
 
-import type { ReactNode } from "react";
-import Image from "next/image";
+import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import Badge from "@/components/common/Badge";
-import HeroSpectrum from "./HeroSpectrum";
+import HeroSpectrum, { SPECTRUM_TAIL_HEIGHT } from "./HeroSpectrum";
+import { BUTTON_PRIMARY, BUTTON_SECONDARY, CONTAINER } from "@/lib/styles";
 import type { WebsiteProfile } from "@/lib/profile";
 
 interface HeroProps {
@@ -15,19 +14,17 @@ interface HeroProps {
   socials?: ReactNode;
 }
 
-const SPRING = { type: "spring", stiffness: 45, damping: 16 } as const;
+function stagger(seconds: number): CSSProperties {
+  return { animationDelay: `${seconds}s` };
+}
 
 export default function Hero({ profile, socials }: HeroProps) {
-  const prefersReducedMotion = useReducedMotion();
-
   const landingLines = profile.landingText
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean);
   const lines = landingLines.length > 0 ? landingLines : [profile.landingText];
 
-  // The availability badge is one word too wide for a phone, so the last word
-  // is dropped below `sm` rather than shrinking the type or wrapping the pill.
   const availability = profile.availabilityText.trim();
   const lastSpace = availability.lastIndexOf(" ");
   const availabilityHead =
@@ -42,150 +39,111 @@ export default function Hero({ profile, socials }: HeroProps) {
     }
 
     event.preventDefault();
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     overview.scrollIntoView({
-      behavior: prefersReducedMotion ? "auto" : "smooth",
+      behavior: reduceMotion ? "auto" : "smooth",
       block: "start",
     });
   };
 
+  const afterHeadline = 0.2 + lines.length * 0.09;
+
   return (
-    // The background runs under the bar, so the top padding has to clear it
-    // again, plus the 40px the content is lifted by on `lg`.
-    <section className="relative -mt-nav flex min-h-dvh flex-col justify-center overflow-hidden bg-animated-dark px-4 pb-20 pt-[calc(var(--spacing-nav)+1.5rem)] sm:px-6 sm:pb-32 lg:px-8 lg:pb-40 lg:pt-[calc(var(--spacing-nav)+4rem)]">
-      <HeroSpectrum />
+    <section
+      className="relative -mt-nav overflow-hidden"
+      style={{ paddingBottom: SPECTRUM_TAIL_HEIGHT }}
+    >
+      <div className="relative flex min-h-dvh flex-col">
+        <HeroSpectrum />
 
-      {/* Keeps the headline off the analyser without flattening it out. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_42%,rgba(2,6,23,0.92),rgba(2,6,23,0.35)_60%,transparent_100%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-[linear-gradient(to_bottom,transparent_0%,rgba(15,23,42,0.12)_25%,rgba(15,23,42,0.4)_50%,rgba(15,23,42,0.78)_75%,rgb(15,23,42)_100%)] sm:h-72"
-      />
-
-      <div className="relative mx-auto w-full max-w-5xl text-center lg:-translate-y-10">
-        <motion.div
-          className="relative inline-block"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={SPRING}
-        >
-          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-brand/20 bg-slate-900 shadow-lg sm:mb-5 sm:h-32 sm:w-32">
-            <Image
-              src="/developer-logo.svg"
-              alt={`${profile.name} - Audio Developer Logo`}
-              width={128}
-              height={128}
-              className="h-full w-full object-contain"
-              priority
-            />
-          </div>
-          <div className="absolute inset-0 -z-10 animate-pulse rounded-full bg-brand/20 blur-xl" />
-        </motion.div>
-
-        <h1 className="text-5xl font-bold leading-tight text-white sm:text-6xl md:text-7xl">
-          {lines.map((line, index) => (
-            <motion.span
-              // Index, not the text: nothing stops the CMS from repeating a line.
-              key={index}
-              className={`${
-                // Only the opening line earns its keep on a phone; the rest
-                // are dropped rather than shrinking the headline to fit.
-                index === 0 ? "block" : "hidden sm:block"
-              } ${
-                index < lines.length - 1
-                  ? "bg-linear-to-r from-brand to-brand-dark bg-clip-text text-transparent"
-                  : "text-white"
-              }`}
-              initial={{ opacity: 0, y: -32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ ...SPRING, delay: 0.15 + index * 0.1 }}
-            >
-              {line}
-            </motion.span>
-          ))}
-        </h1>
-
-        <motion.p
-          className="mx-auto mt-5 max-w-3xl text-lg text-white sm:mt-6 sm:text-xl sm:text-slate-300 md:text-2xl"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ ...SPRING, delay: 0.35 }}
-        >
-          {profile.sloganText}
-        </motion.p>
-
-        <motion.div
-          className="mt-6 sm:mt-7"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ ...SPRING, delay: 0.45 }}
-        >
-          <Badge>
-            <span className="whitespace-nowrap">
-              {availabilityHead}
-              {availabilityTail && (
-                <span className="hidden sm:inline"> {availabilityTail}</span>
-              )}
-            </span>
-          </Badge>
-        </motion.div>
-
-        <motion.div
-          className="mt-7 flex flex-col items-center justify-center gap-3 sm:mt-9 sm:flex-row sm:gap-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ ...SPRING, delay: 0.55 }}
-        >
-          <Link
-            href="/projects"
-            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand-dark to-brand-darker px-6 py-3.5 font-semibold text-white shadow-lg shadow-brand/10 transition-all hover:-translate-y-0.5 hover:from-brand hover:to-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:w-auto"
-          >
-            View Projects
-            <ArrowRight
-              size={18}
-              aria-hidden="true"
-              className="transition-transform group-hover:translate-x-1"
-            />
-          </Link>
-          <Link
-            href="/resume"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800/60 px-6 py-3.5 font-semibold text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-brand/60 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:w-auto"
-          >
-            View Resume
-          </Link>
-        </motion.div>
-
-        {socials && (
-          <motion.div
-            className="mt-6 sm:mt-7"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...SPRING, delay: 0.65 }}
-          >
-            {socials}
-          </motion.div>
-        )}
-      </div>
-
-      <motion.a
-        href="#overview"
-        onClick={scrollToOverview}
-        className="group absolute inset-x-0 bottom-6 mx-auto flex w-fit flex-col items-center gap-1.5 rounded-lg px-3 py-1 text-slate-500 transition-colors hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.1, duration: 0.6 }}
-      >
-        <span className="font-mono text-[10px] uppercase tracking-[0.35em]">
-          Scroll
-        </span>
-        <ChevronDown
-          size={16}
+        <div
           aria-hidden="true"
-          className="animate-scroll-cue"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_50%_at_26%_40%,rgb(6_10_17/0.92),rgb(6_10_17/0.4)_55%,transparent_100%)]"
         />
-      </motion.a>
+
+        <div
+          className={`${CONTAINER} relative flex flex-1 flex-col justify-center pt-[calc(var(--spacing-nav)+2.5rem)] pb-40 sm:pb-48`}
+        >
+          <div className="animate-fade-up" style={stagger(0.05)}>
+            <Badge>
+              <span className="whitespace-nowrap">
+                {availabilityHead}
+                {availabilityTail && (
+                  <span className="hidden sm:inline"> {availabilityTail}</span>
+                )}
+              </span>
+            </Badge>
+          </div>
+
+          <h1 className="text-display mt-7 text-white sm:mt-9">
+            {lines.map((line, index) => (
+              <span
+                key={index}
+                className="-mb-[0.1em] block overflow-hidden pb-[0.1em]"
+              >
+                <span
+                  className={`animate-rise block ${
+                    index < lines.length - 1
+                      ? "bg-linear-to-br from-[#8affea] via-brand to-brand-dark bg-clip-text text-transparent"
+                      : ""
+                  }`}
+                  style={stagger(0.15 + index * 0.09)}
+                >
+                  {line}
+                </span>
+              </span>
+            ))}
+          </h1>
+
+          <p
+            className="animate-fade-up mt-7 max-w-2xl text-lg leading-relaxed text-slate-300 sm:mt-9 sm:text-xl md:text-[1.375rem] md:leading-relaxed"
+            style={stagger(afterHeadline)}
+          >
+            {profile.sloganText}
+          </p>
+
+          <div
+            className="animate-fade-up mt-9 flex flex-col gap-6 sm:mt-11 sm:flex-row sm:items-center sm:gap-8"
+            style={stagger(afterHeadline + 0.1)}
+          >
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href="/projects" className={BUTTON_PRIMARY}>
+                View Projects
+                <ArrowRight
+                  size={17}
+                  aria-hidden="true"
+                  className="transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
+                />
+              </Link>
+              <Link href="/resume" className={BUTTON_SECONDARY}>
+                View Resume
+              </Link>
+            </div>
+
+            {socials && (
+              <div className="sm:border-l sm:border-line sm:pl-8">
+                {socials}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <a
+          href="#overview"
+          onClick={scrollToOverview}
+          className="animate-fade-up group eyebrow absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 rounded-lg px-3 py-1 text-muted transition-colors hover:text-brand sm:bottom-10"
+          style={stagger(afterHeadline + 0.5)}
+        >
+          Scroll
+          <ArrowDown
+            size={14}
+            aria-hidden="true"
+            className="animate-scroll-cue"
+          />
+        </a>
+      </div>
     </section>
   );
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/common/JsonLd";
+import SocialIcons from "@/components/common/SocialIcons";
 import Hero from "@/components/home/Hero";
-import HeroSocials from "@/components/home/HeroSocials";
 import Bio from "@/components/home/Bio";
 import Skills from "@/components/home/Skills";
 import FeaturedProjects from "@/components/home/FeaturedProjects";
@@ -35,7 +35,7 @@ export default async function Home() {
     <>
       <JsonLd data={getProfilePageStructuredData(profile)} />
 
-      <Hero profile={profile} socials={<HeroSocials />} />
+      <Hero profile={profile} socials={<SocialIcons />} />
       <Bio
         paragraphs={splitParagraphs(profile.aboutMe)}
         name={profile.name}

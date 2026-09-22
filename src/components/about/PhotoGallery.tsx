@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Camera } from "lucide-react";
 import ImageLightbox from "@/components/common/ImageLightbox";
+import Reveal from "@/components/common/Reveal";
 import { isAnimatedImage } from "@/lib/utils";
 import type { SanityImage } from "@/sanity/types";
 
@@ -24,44 +25,54 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 
   if (visiblePhotos.length === 0) {
     return (
-      <div className="rounded-xl border border-slate-700 bg-slate-800/30 p-12 text-center">
-        <Camera size={48} className="mx-auto mb-4 text-slate-600" />
+      <div className="panel rounded-2xl p-12 text-center">
+        <Camera
+          size={40}
+          className="mx-auto mb-4 text-slate-600"
+          aria-hidden="true"
+        />
         <p className="text-slate-400">Photo gallery coming soon.</p>
       </div>
     );
   }
 
   return (
-    <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {visiblePhotos.map((photo) => (
+    // Row by row, so the order curated in the Studio reads left to right; a
+    // masonry's column-first fill would scramble it.
+    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {visiblePhotos.map((photo, index) => (
         <li key={photo._key ?? photo.asset._id}>
-          <figure className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-700 bg-slate-800/50 transition-colors hover:border-brand/50">
-            <ImageLightbox
-              image={photo}
-              label={`View a larger version of ${photo.alt || "this photo"}`}
-              className="relative block aspect-[4/3] w-full overflow-hidden bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
-            >
-              <Image
-                src={photo.asset.url}
-                alt={photo.alt ?? ""}
-                fill
-                // Three 21rem-ish columns from lg, two from sm, one below that.
-                sizes="(min-width: 1024px) 22rem, (min-width: 640px) 45vw, 100vw"
-                quality={90}
-                placeholder={photo.asset.metadata?.lqip ? "blur" : "empty"}
-                blurDataURL={photo.asset.metadata?.lqip}
-                // Keeps animated formats playing instead of showing the
-                // flattened first frame the optimizer would return.
-                unoptimized={isAnimatedImage(photo)}
-                className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-              />
-            </ImageLightbox>
-            {photo.caption && (
-              <figcaption className="px-4 py-3 text-sm leading-relaxed text-slate-300">
-                {photo.caption}
-              </figcaption>
-            )}
-          </figure>
+          <Reveal delay={(index % 3) * 0.06} className="h-full">
+            <figure className="group relative h-full overflow-hidden rounded-2xl border border-line bg-ink-800">
+              <ImageLightbox
+                image={photo}
+                label={`View a larger version of ${photo.alt || "this photo"}`}
+                className="relative block aspect-4/3 w-full overflow-hidden focus-visible:outline-offset-[-2px]"
+              >
+                <Image
+                  src={photo.asset.url}
+                  alt={photo.alt ?? ""}
+                  fill
+                  // Three columns from lg, two from sm, one below that.
+                  sizes="(min-width: 1280px) 400px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  quality={90}
+                  placeholder={photo.asset.metadata?.lqip ? "blur" : "empty"}
+                  blurDataURL={photo.asset.metadata?.lqip}
+                  // Keeps animated formats playing instead of showing the
+                  // flattened first frame the optimizer would return.
+                  unoptimized={isAnimatedImage(photo)}
+                  className="object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                />
+              </ImageLightbox>
+              {photo.caption && (
+                // Laid over the photo's foot on a scrim, so the caption
+                // reads on bright and dark shots alike.
+                <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-ink-950/90 via-ink-950/50 to-transparent px-4 pt-12 pb-3.5 text-sm font-medium text-slate-100">
+                  {photo.caption}
+                </figcaption>
+              )}
+            </figure>
+          </Reveal>
         </li>
       ))}
     </ul>

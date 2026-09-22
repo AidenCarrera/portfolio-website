@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useAnimationControls } from "motion/react";
 import type { MusicSnippet } from "@/types";
 
 // Previews are mastered hot, so the slider's full range maps to 75% of the
@@ -13,7 +12,13 @@ export function useTapePlayer(activeSnippet: MusicSnippet | null) {
   const [volume, setVolume] = useState(0.8);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const controls = useAnimationControls();
+
+  // The element is the source of truth for whether the tape is rolling. It is
+  // read back rather than assumed, because load() pauses without firing
+  // "pause" and a rejected play() fires nothing at all.
+  const syncPlayState = useCallback(() => {
+    setIsPlaying(audioRef.current ? !audioRef.current.paused : false);
+  }, []);
 
   // load() pauses the element and resets the clock, so playback state comes
   // back through its events. Volume stays on the element across tape changes.
@@ -30,30 +35,16 @@ export function useTapePlayer(activeSnippet: MusicSnippet | null) {
     if (wasPlaying) {
       audio.play().catch((error) => {
         console.error("Unable to start audio playback:", error);
+        syncPlayState();
       });
     }
-  }, [activeSnippet]);
+  }, [activeSnippet, syncPlayState]);
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume * MAX_GAIN;
     }
   }, [volume]);
-
-  // Event-driven state syncs correctly across rapid pause/play tape swaps.
-  const handlePlaybackStarted = useCallback(() => {
-    setIsPlaying(true);
-    controls.start({
-      rotate: 360,
-      transition: { repeat: Infinity, duration: 1, ease: "linear" },
-    });
-  }, [controls]);
-
-  const handlePlaybackStopped = useCallback(() => {
-    setIsPlaying(false);
-    controls.stop();
-    controls.set({ rotate: 0 });
-  }, [controls]);
 
   const togglePlay = useCallback(async () => {
     const audio = audioRef.current;
@@ -68,9 +59,9 @@ export function useTapePlayer(activeSnippet: MusicSnippet | null) {
       await audio.play();
     } catch (error) {
       console.error("Unable to start audio playback:", error);
-      handlePlaybackStopped();
+      syncPlayState();
     }
-  }, [activeSnippet, handlePlaybackStopped]);
+  }, [activeSnippet, syncPlayState]);
 
   const stop = useCallback(() => {
     const audio = audioRef.current;
@@ -105,13 +96,11 @@ export function useTapePlayer(activeSnippet: MusicSnippet | null) {
     volume,
     setVolume,
     audioRef,
-    controls,
     togglePlay,
     stop,
     seek,
     handleTimeUpdate,
     handleLoadedMetadata,
-    handlePlaybackStarted,
-    handlePlaybackStopped,
+    syncPlayState,
   };
 }
