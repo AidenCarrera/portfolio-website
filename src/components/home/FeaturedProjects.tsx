@@ -14,46 +14,37 @@ interface FeaturedProjectsProps {
   intro: string;
 }
 
-// Seven of twelve columns in the page container, less the bezel.
+// Half of the page container on the two-column grid, less the bezel.
 const IMAGE_SIZES =
-  "(min-width: 1280px) 700px, (min-width: 1024px) 56vw, calc(100vw - 3rem)";
+  "(min-width: 1280px) 580px, (min-width: 768px) calc(50vw - 3rem), calc(100vw - 3rem)";
 
 // Enough to read the stack at a glance without the chips taking over.
 const MAX_TAGS = 5;
 
-function FeaturedProject({
-  project,
-  position,
-}: {
-  project: PortfolioProject;
-  position: number;
-}) {
+function FeaturedProject({ project }: { project: PortfolioProject }) {
   const { github, presentation, slug } = project;
-  const flipped = position % 2 === 1;
 
   return (
-    <article className="group relative grid items-center gap-8 lg:grid-cols-12 lg:gap-16">
+    <article className="group relative flex h-full flex-col">
       <Link
         href={`/projects/${slug}`}
         className="absolute -inset-4 z-10 rounded-3xl"
         aria-label={`View project details for ${presentation.repoName}`}
       />
 
-      <div className={`lg:col-span-7 ${flipped ? "lg:order-last" : ""}`}>
-        <div className="rounded-[1.25rem] border border-line bg-ink-800/80 p-2 shadow-[0_40px_80px_-40px_rgb(0_0_0/0.9)] transition-colors duration-500 group-hover:border-brand/30">
-          <ProjectMedia project={project} sizes={IMAGE_SIZES} />
-        </div>
+      <div className="rounded-[1.25rem] border border-line bg-ink-800/80 p-2 shadow-[0_40px_80px_-40px_rgb(0_0_0/0.9)] transition-colors duration-500 group-hover:border-brand/30">
+        <ProjectMedia project={project} sizes={IMAGE_SIZES} />
       </div>
 
-      <div className="pointer-events-none relative lg:col-span-5">
-        <h3 className="text-3xl font-semibold tracking-[-0.03em] text-white transition-colors duration-300 group-hover:text-brand sm:text-4xl">
+      <div className="pointer-events-none relative mt-8 flex flex-1 flex-col">
+        <h3 className="text-2xl font-semibold tracking-[-0.03em] text-white transition-colors duration-300 group-hover:text-brand sm:text-3xl">
           {presentation.repoName}
         </h3>
-        <p className="mt-4 text-lg leading-relaxed text-slate-400">
+        <p className="mt-3 leading-relaxed text-slate-400">
           {presentation.cardDescription}
         </p>
 
-        <ul className="mt-6 flex flex-wrap gap-1.5">
+        <ul className="mt-6 mb-8 flex flex-wrap gap-1.5">
           {github.isCollab && <li className={CHIP_COLLAB}>Collab</li>}
           {presentation.tags.slice(0, MAX_TAGS).map((tag) => (
             <li key={tag} className={CHIP}>
@@ -68,7 +59,7 @@ function FeaturedProject({
           )}
         </ul>
 
-        <div className="mt-8 flex items-center justify-between gap-4 border-t border-line pt-6">
+        <div className="mt-auto flex items-center justify-between gap-4 border-t border-line pt-6">
           <span
             aria-hidden="true"
             className="inline-flex items-center gap-2 font-medium text-brand"
@@ -109,11 +100,11 @@ export default function FeaturedProjects({
         </SectionHeading>
       </Reveal>
 
-      <ol className="mt-16 space-y-24 sm:mt-20 lg:space-y-32">
-        {projects.map((project, position) => (
+      <ol className="mt-16 grid gap-x-10 gap-y-20 sm:mt-20 md:grid-cols-2">
+        {projects.map((project) => (
           <li key={project.github.url}>
-            <Reveal>
-              <FeaturedProject project={project} position={position} />
+            <Reveal className="h-full">
+              <FeaturedProject project={project} />
             </Reveal>
           </li>
         ))}

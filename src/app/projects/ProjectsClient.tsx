@@ -28,12 +28,8 @@ export default function ProjectsClient({
   // If spellings differ, prefer the capitalized version (e.g. "GraphQL").
   const categories = useMemo<CategoryOption[]>(() => {
     const topicByCategory = new Map<string, string>();
-    const countByCategory = new Map<string, number>();
 
     for (const project of projects) {
-      // A project tagged twice in different spellings still counts once.
-      const seen = new Set<string>();
-
       for (const topic of project.presentation.tags) {
         const category = normalizeTag(topic);
         if (!category) {
@@ -47,23 +43,14 @@ export default function ProjectsClient({
         if (current === undefined || addsCasing) {
           topicByCategory.set(category, topic);
         }
-
-        if (!seen.has(category)) {
-          seen.add(category);
-          countByCategory.set(
-            category,
-            (countByCategory.get(category) ?? 0) + 1,
-          );
-        }
       }
     }
 
     return [
-      { value: "all", label: "All", count: projects.length },
+      { value: "all", label: "All" },
       ...Array.from(topicByCategory, ([value, topic]) => ({
         value,
         label: formatTagName(topic),
-        count: countByCategory.get(value),
       })).sort((a, b) => a.label.localeCompare(b.label)),
     ];
   }, [projects]);
