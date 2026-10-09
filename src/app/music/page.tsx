@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   },
 };
 
+// The Spotify token fetch is deliberately `no-store`, which would otherwise opt this route out of static rendering.
+export const dynamic = "force-static";
+
 export default async function Music() {
   const [tracks, sanityMusic, gearItems] = await Promise.all([
     getSpotifyTracks(),
