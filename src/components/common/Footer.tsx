@@ -14,6 +14,7 @@ export default function Footer({ name }: FooterProps) {
       >
         <p className="flex items-center gap-3">
           <span>
+            {/* oxlint-disable-next-line react/purity -- server component, year is stable */}
             &copy; {new Date().getFullYear()} {name}
           </span>
           <span aria-hidden="true" className="text-slate-700">

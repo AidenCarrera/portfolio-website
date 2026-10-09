@@ -7,7 +7,7 @@
     "dev:mobile": "next dev --hostname 0.0.0.0",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "oxlint",
     "sanity": "sanity",
     "sanity:dev": "sanity dev",
     "sanity:build": "sanity build",
@@ -35,8 +35,7 @@
     "@types/node": "^24.19.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "eslint": "^9.39.5",
-    "eslint-config-next": "16.4.0",
+    "oxlint": "^1.87.0",
     "prettier": "^3.9.9",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
